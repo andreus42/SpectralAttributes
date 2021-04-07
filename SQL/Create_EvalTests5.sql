@@ -1,4 +1,6 @@
-drop table EvalTests
+drop table EvalTests;
+go
+
 create table EvalTests (
 	ID INT IDENTITY (1,1) NOT NULL,
 	TestID INT,
@@ -7,8 +9,9 @@ create table EvalTests (
 	ParamID INT,
 	ParamValue VARCHAR(32)
 )
+go
 
---Group 555
+--Group Set 1, 555
 INSERT INTO EvalTests values (1234, 555, 1, 1,'T-avg')
 INSERT INTO EvalTests values (1234, 555, 1, 3,'1')
 INSERT INTO EvalTests values (1234, 555, 1, 2,'1')
@@ -58,47 +61,48 @@ INSERT INTO EvalTests values (1241, 557, 1, 5,'900')
 INSERT INTO EvalTests values (1241, 557, 1, 4,'1200')
 INSERT INTO EvalTests values (1241, 557, 1, 7,'OD5')
 
---Set 101, Group 558
-INSERT INTO EvalTests values (1240, 558, 1, 1,'B-avg')
-INSERT INTO EvalTests values (1240, 558, 1, 3,'1')
-INSERT INTO EvalTests values (1240, 558, 1, 2,'1')
-INSERT INTO EvalTests values (1240, 558, 1, 5,'700')
-INSERT INTO EvalTests values (1240, 558, 1, 4,'1100')
-INSERT INTO EvalTests values (1240, 558, 1, 7,'OD5')
-INSERT INTO EvalTests values (1241, 558, 1, 1,'B-avg')
-INSERT INTO EvalTests values (1241, 558, 1, 3,'1')
-INSERT INTO EvalTests values (1241, 558, 1, 2,'2')
-INSERT INTO EvalTests values (1241, 558, 1, 5,'300')
-INSERT INTO EvalTests values (1241, 558, 1, 4,'500')
-INSERT INTO EvalTests values (1241, 558, 1, 7,'OD5')
+--Set 2, Group 558
+INSERT INTO EvalTests values (1242, 558, 2, 1,'B-avg')
+INSERT INTO EvalTests values (1242, 558, 2, 3,'1')
+INSERT INTO EvalTests values (1242, 558, 2, 2,'1')
+INSERT INTO EvalTests values (1242, 558, 2, 5,'700')
+INSERT INTO EvalTests values (1242, 558, 2, 4,'1100')
+INSERT INTO EvalTests values (1242, 558, 2, 7,'OD5')
+INSERT INTO EvalTests values (1243, 558, 2, 1,'B-avg')
+INSERT INTO EvalTests values (1243, 558, 2, 3,'1')
+INSERT INTO EvalTests values (1243, 558, 2, 2,'2')
+INSERT INTO EvalTests values (1243, 558, 2, 5,'300')
+INSERT INTO EvalTests values (1243, 558, 2, 4,'500')
+INSERT INTO EvalTests values (1243, 558, 2, 7,'OD5')
 
 --Group 559
-INSERT INTO EvalTests values (1240, 559, 1, 1,'B-abs')
-INSERT INTO EvalTests values (1240, 559, 1, 3,'1')
-INSERT INTO EvalTests values (1240, 559, 1, 2,'2')
-INSERT INTO EvalTests values (1240, 559, 1, 5,'900')
-INSERT INTO EvalTests values (1240, 559, 1, 4,'1200')
-INSERT INTO EvalTests values (1240, 559, 1, 7,'OD6')
-INSERT INTO EvalTests values (1241, 559, 1, 1,'B-avg')
-INSERT INTO EvalTests values (1241, 559, 1, 3,'1')
-INSERT INTO EvalTests values (1241, 559, 1, 2,'2')
-INSERT INTO EvalTests values (1241, 559, 1, 5,'900')
-INSERT INTO EvalTests values (1241, 559, 1, 4,'1200')
-INSERT INTO EvalTests values (1241, 559, 1, 7,'OD5')
+INSERT INTO EvalTests values (1244, 559, 2, 1,'B-abs')
+INSERT INTO EvalTests values (1244, 559, 2, 3,'1')
+INSERT INTO EvalTests values (1244, 559, 2, 2,'2')
+INSERT INTO EvalTests values (1244, 559, 2, 5,'900')
+INSERT INTO EvalTests values (1244, 559, 2, 4,'1200')
+INSERT INTO EvalTests values (1244, 559, 2, 7,'OD6')
+INSERT INTO EvalTests values (1245, 559, 2, 1,'B-avg')
+INSERT INTO EvalTests values (1245, 559, 2, 3,'1')
+INSERT INTO EvalTests values (1245, 559, 2, 2,'2')
+INSERT INTO EvalTests values (1245, 559, 2, 5,'900')
+INSERT INTO EvalTests values (1245, 559, 2, 4,'1200')
+INSERT INTO EvalTests values (1245, 559, 2, 7,'OD5')
 
 --Group 560
-INSERT INTO EvalTests values (1240, 560, 1, 1,'B-avg')
-INSERT INTO EvalTests values (1240, 560, 1, 3,'1')
-INSERT INTO EvalTests values (1240, 560, 1, 2,'1')
-INSERT INTO EvalTests values (1240, 560, 1, 5,'900')
-INSERT INTO EvalTests values (1240, 560, 1, 4,'1200')
-INSERT INTO EvalTests values (1240, 560, 1, 7,'OD6')
-INSERT INTO EvalTests values (1241, 560, 1, 1,'B-abs')
-INSERT INTO EvalTests values (1241, 560, 1, 3,'1')
-INSERT INTO EvalTests values (1241, 560, 1, 2,'2')
-INSERT INTO EvalTests values (1241, 560, 1, 5,'900')
-INSERT INTO EvalTests values (1241, 560, 1, 4,'1200')
-INSERT INTO EvalTests values (1241, 560, 1, 7,'OD5')
+INSERT INTO EvalTests values (1246, 560, 2, 1,'B-avg')
+INSERT INTO EvalTests values (1246, 560, 2, 3,'1')
+INSERT INTO EvalTests values (1246, 560, 2, 2,'1')
+INSERT INTO EvalTests values (1246, 560, 2, 5,'900')
+INSERT INTO EvalTests values (1246, 560, 2, 4,'1200')
+INSERT INTO EvalTests values (1246, 560, 2, 7,'OD6')
+INSERT INTO EvalTests values (1247, 560, 2, 1,'B-abs')
+INSERT INTO EvalTests values (1247, 560, 2, 3,'1')
+INSERT INTO EvalTests values (1247, 560, 2, 2,'2')
+INSERT INTO EvalTests values (1247, 560, 2, 5,'900')
+INSERT INTO EvalTests values (1247, 560, 2, 4,'1200')
+INSERT INTO EvalTests values (1247, 560, 2, 7,'OD5')
+go
 
 select * from TestParams
 select * from EvalTests

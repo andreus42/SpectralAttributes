@@ -3,6 +3,7 @@ object EvalFrame: TEvalFrame
   Top = 0
   Width = 1200
   Height = 28
+  Align = alTop
   TabOrder = 0
   object EvalTestPanel: TPanel
     Left = 0

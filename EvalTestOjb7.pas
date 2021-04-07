@@ -53,7 +53,7 @@ var
 begin
 
   // Initialize Params
-//  Self.TestID := TestID;
+  Self.TestID := TestID;
   Query := TADOQuery.Create(Nil);
   Query.Connection := _ChromaDataModule.ChromaData;
   Query.SQL.Add('select ParamID, ParamValue');
