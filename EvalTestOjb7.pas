@@ -48,6 +48,7 @@ implementation
 constructor TEvalTest.Create(TestID: Integer);
 var
   Query: TADOQuery;
+  Query2: TADOQuery;
   ParamID: Integer;
   ParamValue: String;
 begin
@@ -66,22 +67,30 @@ begin
     ParamID := Query.FieldByName('ParamID').Value;
     ParamValue := Query.FieldByName('ParamValue').Value;
     Case ParamID of
-      1 : Self.Name := ParamValue;
-      2 : Self.Rank := ParamValue;
-      3 : Self.TestType := ParamValue;
-      4 : Self.LambdaFrom := ParamValue;
-      5 : Self.LambdaTo := ParamValue;
-      6 : Self.LambdaAt := ParamValue;
-      7 : Self.Value := ParamValue;
-      8 : Self.Filepath := ParamValue;
-      9 : Self.Symbol := ParamValue;
-      10 : Self.TolPlus := ParamValue;
-      11 : Self.TolMinus := ParamValue;
+      2 : Rank := ParamValue;
+      3 : TestType := ParamValue;
+      4 : LambdaFrom := ParamValue;
+      5 : LambdaTo := ParamValue;
+      6 : LambdaAt := ParamValue;
+      7 : Value := ParamValue;
+      8 : Filepath := ParamValue;
+      9 : Symbol := ParamValue;
+      10: TolPlus := ParamValue;
+      11: TolMinus := ParamValue;
     End;
     Query.Next;
   end;
   Query.Close;
   Query.Free;
+
+  Query2 := TADOQuery.Create(Nil);
+  Query2.Connection := _ChromaDataModule.ChromaData;
+  Query2.SQL.Add('select ParamName from TestTypes where TypeID = ' + TestType);
+  Query2.Open;
+  Name := Query2.FieldByName('ParamName').Value;
+  Query2.Close;
+  Query2.Free;
+
 end;
 
 
@@ -167,6 +176,7 @@ begin
     2: Result := Name + ': ' + Symbol + Value + '% ' + LambdaFrom + '-' + LambdaTo +'nm';
     3: Result := Name + ': ' + Symbol + Value + '% at ' + LambdaAt + 'nm';
     4: Result := Name + ': ' + Filepath;
+    10: Result := Name + ': ' + Symbol + 'OD' + Value + ' ' + LambdaFrom + '-' + LambdaTo +'nm';
   end;
 end;
 

@@ -26,10 +26,6 @@ object _SpectralAttributesForm: T_SpectralAttributesForm
       Margins.Right = 0
       Margins.Bottom = 0
       Caption = 'Summary'
-      ExplicitLeft = 0
-      ExplicitTop = 0
-      ExplicitWidth = 0
-      ExplicitHeight = 0
       object SummaryPanel: TPanel
         Left = 0
         Top = 0
@@ -66,9 +62,9 @@ object _SpectralAttributesForm: T_SpectralAttributesForm
     end
   end
   object Button2: TButton
-    Left = 101
+    Left = 127
     Top = 24
-    Width = 75
+    Width = 82
     Height = 25
     Caption = '&Delete Test'
     TabOrder = 1
@@ -77,18 +73,18 @@ object _SpectralAttributesForm: T_SpectralAttributesForm
   object Button3: TButton
     Left = 20
     Top = 24
-    Width = 75
+    Width = 93
     Height = 25
-    Caption = 'Add Test'
+    Caption = '&Add Test Group'
     TabOrder = 2
     OnClick = Button3Click
   end
   object UpdateButton: TButton
-    Left = 182
+    Left = 224
     Top = 24
-    Width = 75
+    Width = 81
     Height = 25
-    Caption = 'Update'
+    Caption = '&Update'
     TabOrder = 3
     OnClick = UpdateButtonClick
   end

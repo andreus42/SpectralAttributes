@@ -13,7 +13,7 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
     Color = clAppWorkSpace
     ParentBackground = False
     TabOrder = 0
-    object Label3: TLabel
+    object IDLabel: TLabel
       Left = 11
       Top = 12
       Width = 43
@@ -40,17 +40,17 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
       Text = 'IDBox'
     end
     object LoadButton: TButton
-      Left = 42
-      Top = 206
-      Width = 66
+      Left = 164
+      Top = 207
+      Width = 77
       Height = 26
-      Caption = 'Load'
+      Caption = 'Load Existing'
       TabOrder = 2
     end
-    object Button5: TButton
-      Left = 114
-      Top = 206
-      Width = 134
+    object ParseButton: TButton
+      Left = 79
+      Top = 207
+      Width = 79
       Height = 26
       Caption = 'Parse'
       TabOrder = 3
@@ -58,16 +58,16 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
     object AddEvalTestButton: TButton
       Left = 11
       Top = 206
-      Width = 25
-      Height = 25
-      Caption = '+'
+      Width = 62
+      Height = 27
+      Caption = 'Add Test'
       TabOrder = 4
       OnClick = AddEvalTestButtonClick
     end
     object SetUpPanel: TPanel
       Left = 351
       Top = 41
-      Width = 698
+      Width = 314
       Height = 160
       Color = clWhite
       ParentBackground = False

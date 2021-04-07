@@ -14,6 +14,7 @@ uses
   ActiveX,
 
   // Mine
+  ChromaDataModule,
   EvalFrameUnit,
   EvalTestOjb7;
 
@@ -23,8 +24,8 @@ type
     SpecTextMemo: TMemo;
     IDBox: TEdit;
     LoadButton: TButton;
-    Button5: TButton;
-    Label3: TLabel;
+    ParseButton: TButton;
+    IDLabel: TLabel;
     AddEvalTestButton: TButton;
     EvalScrollBox: TScrollBox;
     SetUpPanel: TPanel;
@@ -37,17 +38,18 @@ type
     Edit3: TEdit;
     Label1: TLabel;
     procedure AddEvalTestButtonClick(Sender: TObject);
-    procedure AddEvalPanel(K: Integer);
     procedure AddEvalTestPanel(TestID: Integer);
   private
     { Private declarations }
   public
-    RecID: Integer;
     I: Integer;
     K: Integer;
     PanelList: TList<Integer>;
+    ThisGroupID: Integer;
+    EvalTestGroup: TEvalTestGroup;
+    function InsertNewEvalTest(): Integer;
     constructor CreateWithGroupID(AOwner: TComponent; GroupID: Integer);
-    constructor CreateWithInt(AOwner: TComponent; AnInt: Integer);
+    constructor CreateWithInt(AOwner: TComponent; AnInt: Integer);   // future needs to create group like eval test
   end;
 
 
@@ -59,63 +61,38 @@ procedure TEvalTestGroupFrame.AddEvalTestPanel(TestID: Integer);
 var
   TestFrame: TEvalFrame;
 begin
-  Inc(K);
   TestFrame := TEvalFrame.CreateWithTestID(Self, TestID);
   with TestFrame do
   begin
-    Name := 'EvalFrame_' + (TestID+K).ToString;
+    Name := 'EvalFrame_' + TestID.ToString;
     Parent := EvalScrollBox;     // error here, scrollbox exist?
     Align := alTop;
-    Height := 26;
   end;
 end;
-
-// Add Eval Test from TestEvalObj to Grid
-procedure TEvalTestGroupFrame.AddEvalPanel(K: Integer);
-var
-  TestFrame: TEvalFrame;
-begin
-  Inc(K);
-  TestFrame := TEvalFrame.Create(Self);
-  with TestFrame do
-  begin
-    Name := 'EvalFrame' + K.ToString;
-    Parent := EvalScrollBox;
-    Align := alTop;
-    Height := 26;
-    RankLabel.Caption := K.ToString;
-    if Odd(K) then
-      TestFrame.EvalTestPanel.Color := clMoneyGreen
-    else
-      TestFrame.EvalTestPanel.Color := clWhite;
-  end;
-end;
-
 
 procedure TEvalTestGroupFrame.AddEvalTestButtonClick(Sender: TObject);
 begin
-  Inc(K);
-  AddEvalPanel(K);
+  AddEvalTestPanel(InsertNewEvalTest); // Create & Add New TestID
 end;
 
 
 constructor TEvalTestGroupFrame.CreateWithGroupID(AOwner: TComponent; GroupID: Integer);
 var
   MyEvalTest: TEvalTest;
-  MyEvalTestGroup: TEvalTestGroup;
   TestID : Integer;
   I: Integer;
 begin
   inherited Create(AOwner);
-  MyEvalTestGroup := TEvalTestGroup.Create(GroupID);
+  EvalTestGroup := TEvalTestGroup.Create(GroupID);
   SpecTextMemo.Clear;
   IDBox.Text := GroupID.ToString;
+  ThisGroupID := GroupID;
   Name := 'EvalFrame' + GroupID.ToString;
 
   // Loop through list of tests
-  for I := 0 to MyEvalTestGroup.TestList.Count-1 do
+  for I := 0 to EvalTestGroup.TestList.Count-1 do
   begin
-    MyEvalTest := MyEvalTestGroup.TestList.Items[I];
+    MyEvalTest := EvalTestGroup.TestList.Items[I];
 //    SpecTextMemo.Lines.Add(MyEvalTest.TestID.ToString);
     SpecTextMemo.Lines.Add(MyEvalTest.Stringify2);
     AddEvalTestPanel(MyEvalTest.TestID);
@@ -127,6 +104,29 @@ constructor TEvalTestGroupFrame.CreateWithInt(AOwner: TComponent;
   AnInt: Integer);
 begin
     inherited Create(AOwner);
+end;
+
+function TEvalTestGroupFrame.InsertNewEvalTest: Integer;
+var
+  Query: TADOQuery;
+  Query2: TADOQuery;
+  NextTestID: Integer;
+begin
+  Query := TADOQuery.Create(Nil);
+  Query.Connection := _ChromaDataModule.ChromaData;
+  Query.SQL.Add('select max(TestID) last_id from EvalTests');
+  Query.Open;
+  NextTestID := Query.FieldByName('last_id').Value + 1;
+  Query.Close;
+  Query.Free;
+  Query2 := TADOQuery.Create(Nil);
+  Query2.Connection := _ChromaDataModule.ChromaData;
+  Query2.SQL.Add('insert into EvalTests values (' + NextTestID.ToString + ',');
+  Query2.SQL.Add(EvalTestGroup.GroupID.ToString + ', 1, 3, 0)');
+  Query2.ExecSQL;
+  Query2.Close;
+  Query2.Free;
+  Result := NextTestID;
 end;
 
 end.
