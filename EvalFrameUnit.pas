@@ -5,7 +5,10 @@ interface
 uses
   Winapi.Windows, Winapi.Messages, System.SysUtils, System.Variants, System.Classes,
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls,
-  Vcl.ExtCtrls, Vcl.DBCtrls, Vcl.Buttons;
+  Vcl.ExtCtrls, Vcl.DBCtrls, Vcl.Buttons,
+
+  // Mine
+  EvalTestOjb7;
 
 type
   TEvalFrame = class(TFrame)
@@ -15,21 +18,33 @@ type
     ComboBox1: TComboBox;
     SignComboBox: TComboBox;
     ToLambdaLabeledEdit: TLabeledEdit;
-    NmLabel1: TLabel;
-    NmLabel2: TLabel;
+    FromNmLabel: TLabel;
+    ToNmLabel: TLabel;
     FromLambdaLabeledEdit: TLabeledEdit;
     AtLambdaLabeledEdit: TLabeledEdit;
-    NmLabel3: TLabel;
-    SpecLabeledEdit: TLabeledEdit;
+    AtNmLabel: TLabel;
+    SpecEdit: TEdit;
+    SpecLabel: TLabel;
+    PlusTolLabeledEdit: TLabeledEdit;
+    PlusTolLabel: TLabel;
+    MinusTolLabeledEdit: TLabeledEdit;
+    MinusTolLabel: TLabel;
+    TestIDLabel: TLabel;
 
-    procedure ComboBox1Change(Sender: TObject);
     constructor Create (AOwner: TComponent);
+    constructor CreateWithTestID (AOwner: TComponent; TestID: Integer);
+    procedure ComboBox1Change(Sender: TObject);
     procedure SpeedButton1Click(Sender: TObject);
+    procedure HideAllElements;
 
   private
     { Private declarations }
   public
-    { Public declarations }
+    EvalTest: TEvalTest;
+    TestType: String;
+    Filepath: String;
+    TestName: String;
+    I: Integer;
   end;
 
 implementation
@@ -37,85 +52,167 @@ implementation
 {$R *.dfm}
 
 const
-  P1 = 220;
-  P2 = 340;
-  P3 = 460;
-  P4 = 580;
-
-  L1 = 420;
-  L2 = 540;
-  L3 = 640;
+  EditOffSet = 290;
+  Space = 145;
+  LabelOffset = 78;
+  P1 = 200;
+  P2 = EditOffSet + Space*0;
+  P3 = EditOffSet + Space*1;
+  P4 = EditOffSet + Space*2;
 
 constructor TEvalFrame.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
+  EvalTest := TEvalTest.Create(1234);
 end;
 
+
+constructor TEvalFrame.CreateWithTestID(AOwner: TComponent; TestID: Integer);
+begin
+  inherited Create(AOwner);
+  EvalTest := TEvalTest.Create(TestID);
+  TestName := EvalTest.Name;
+  RankLabel.Caption := EvalTest.Rank;
+  TestType := EvalTest.TestType;
+  ToLambdaLabeledEdit.Text := EvalTest.LambdaTo;
+  FromLambdaLabeledEdit.Text := EvalTest.LambdaFrom;
+  AtLambdaLabeledEdit.Text := EvalTest.LambdaAt;
+  SpecEdit.Text := EvalTest.Value;
+  FilePath := EvalTest.FilePath;
+  TestIDLabel.Caption := 'TestID: ' + TestID.ToString;
+
+  //show fields
+  SignComboBox.Left := P1;
+  SpecEdit.Left := P2;
+  SpecLabel.Caption := '%';
+  SpecLabel.Left := P2 + LabelOffset;
+  FromLambdaLabeledEdit.Left := P3;
+  FromNmLabel.Left := P3 + LabelOffset;
+  ToLambdaLabeledEdit.Left := P4;
+  ToNmLabel.Left := P4 + LabelOffset;
+  SignComboBox.Visible := True;
+  SpecEdit.Visible := True;
+  SpecLabel.Visible := True;
+  FromLambdaLabeledEdit.Visible := True;
+  FromNmLabel.Visible := True;
+  ToLambdaLabeledEdit.Visible := True;
+  ToNmLabel.Visible := True;
+
+end;
+
+procedure TEvalFrame.HideAllElements;
+begin
+  SignComboBox.Visible :=  False;
+  ToLambdaLabeledEdit.Visible :=  False;
+  FromLambdaLabeledEdit.Visible :=  False;
+  AtLambdaLabeledEdit.Visible :=  False;
+  SpecEdit.Visible :=  False;
+  FromNmLabel.Visible :=  False;
+  ToNmLabel.Visible :=  False;
+  AtNmLabel.Visible :=  False;
+  SpecLabel.Visible :=  False;
+  PlusTolLabeledEdit.Visible :=  False;
+  PlusTolLabel.Visible :=  False;
+  MinusTolLabeledEdit.Visible :=  False;
+  MinusTolLabel.Visible :=  False;
+end;
 
 procedure TEvalFrame.ComboBox1Change(Sender: TObject);
 var
   BoxSelection: Integer;
 begin
+  HideAllElements;
   BoxSelection := Combobox1.ItemIndex;
 
-  case BoxSelection of
-    -1:
-    begin
-      SignComboBox.Visible :=  False;
-      ToLambdaLabeledEdit.Visible :=  False;
-      NmLabel1.Visible :=  False;
-      NmLabel2.Visible :=  False;
-      FromLambdaLabeledEdit.Visible :=  False;
-      AtLambdaLabeledEdit.Visible :=  False;
-      NmLabel3.Visible :=  False;
-      SpecLabeledEdit.Visible :=  False;
-    end;
-    0: begin
-      SignComboBox.Left := P1;
-      FromLambdaLabeledEdit.Left := P2;
-      ToLambdaLabeledEdit.Left := P3;
-      SpecLabeledEdit.Left := P4;
-      NmLabel1.Left := L1;
-      NmLabel2.Left := L2;
-      NmLabel3.Left := L3;
-      ToLambdaLabeledEdit.Visible := True;
-      FromLambdaLabeledEdit.Visible := True;
-      SignComboBox.Visible := True;
-      SpecLabeledEdit.Visible := True;
-      NmLabel1.Visible := True;
-      NmLabel2.Visible := True;
-      NmLabel3.Visible := True;
-    end;
-    1: begin
-      SignComboBox.Left := P1;
-      AtLambdaLabeledEdit.Left := P3;
-      SpecLabeledEdit.Left := P4;
-      NmLabel3.Left := L3;
-      AtLambdaLabeledEdit.Visible := True;
-      SignComboBox.Visible := True;
-      SpecLabeledEdit.Visible := True;
-      NmLabel3.Visible := True;
-    end;
-    2: begin
-      SignComboBox.Left := P1;
-      FromLambdaLabeledEdit.Left := P2;
-      ToLambdaLabeledEdit.Left := P3;
-      SpecLabeledEdit.Left := P4;
-      NmLabel1.Left := L1;
-      NmLabel2.Left := L2;
-      NmLabel3.Left := L3;
 
-      ToLambdaLabeledEdit.Visible := True;
-      FromLambdaLabeledEdit.Visible := True;
+  case BoxSelection of
+    -1: HideAllElements;
+    0: begin     // To-From%
+      SignComboBox.Left := P1;
+      SpecEdit.Left := P2;
+      SpecLabel.Caption := '%';
+      SpecLabel.Left := P2 + LabelOffset;
+      FromLambdaLabeledEdit.Left := P3;
+      FromNmLabel.Left := P3 + LabelOffset;
+      ToLambdaLabeledEdit.Left := P4;
+      ToNmLabel.Left := P4 + LabelOffset;
       SignComboBox.Visible := True;
-      SpecLabeledEdit.Visible := True;
-      NmLabel1.Visible := True;
-      NmLabel2.Visible := True;
-      NmLabel3.Visible := True;
-      SpecLabeledEdit.EditLabel.Caption := 'OD';
-      SpecLabeledEdit.LabelPosition := lpLeft;
-      SpecLabeledEdit.Visible := True;
+      SpecEdit.Visible := True;
+      SpecLabel.Visible := True;
+      FromLambdaLabeledEdit.Visible := True;
+      FromNmLabel.Visible := True;
+      ToLambdaLabeledEdit.Visible := True;
+      ToNmLabel.Visible := True;
+
+
+      // Bringing in values
+      SpecEdit.Text := EvalTest.Value;
+      ToLambdaLabeledEdit.Text := EvalTest.LambdaTo;
+      FromLambdaLabeledEdit.Text := EvalTest.LambdaFrom;
+
+
+
     end;
+    1: begin     // To-From OD
+      SignComboBox.Left := P1;
+      SpecEdit.Left := P2;
+      SpecLabel.Caption := 'OD';
+      SpecLabel.Left := P2-18;
+      FromLambdaLabeledEdit.Left := P3;
+      FromNmLabel.Left := P3 + LabelOffset;
+      ToLambdaLabeledEdit.Left := P4;
+      ToNmLabel.Left := P4 + LabelOffset;
+      SignComboBox.Visible := True;
+      SpecEdit.Visible := True;
+      SpecLabel.Visible := True;
+      FromLambdaLabeledEdit.Visible := True;
+      FromNmLabel.Visible := True;
+      ToLambdaLabeledEdit.Visible := True;
+      ToNmLabel.Visible := True;
+    end;
+    2: begin      // At %
+      SignComboBox.Left := P1;
+      SpecEdit.Left := P2;
+      SpecLabel.Caption := '%';
+      SpecLabel.Left := P2 + LabelOffset;
+      AtLambdaLabeledEdit.Left := P3;
+      AtNmLabel.Left := P3 + LabelOffSet;
+      SignComboBox.Visible := True;
+      SpecEdit.Visible := True;
+      SpecLabel.Visible := True;
+      AtLambdaLabeledEdit.Visible := True;
+      AtNmLabel.Visible := True;
+    end;
+    3: begin      // At %
+      SignComboBox.Left := P1;
+      SpecEdit.Left := P2;
+      SpecLabel.Caption := 'OD';
+      SpecLabel.Left := P2-18;
+      AtLambdaLabeledEdit.Left := P3;
+      AtNmLabel.Left := P3 + LabelOffSet;
+      SignComboBox.Visible := True;
+      SpecEdit.Visible := True;
+      SpecLabel.Visible := True;
+      AtLambdaLabeledEdit.Visible := True;
+      AtNmLabel.Visible := True;
+    end;
+    4: begin      // At %
+      SpecEdit.Left := P2;
+      SpecLabel.Caption := 'nm';
+      SpecLabel.Left := P2 + LabelOffset;
+      PlusTolLabeledEdit.Left := P3;
+      PlusTolLabel.Left := P3 + LabelOffSet;
+      MinusTolLabeledEdit.Left := P4;
+      MinusTolLabel.Left := P4 + LabelOffSet;
+
+      SpecEdit.Visible := True;
+      SpecLabel.Visible := True;
+      PlusTolLabeledEdit.Visible :=  True;
+      PlusTolLabel.Visible :=  True;
+      MinusTolLabeledEdit.Visible :=  True;
+      MinusTolLabel.Visible :=  True;
+    end;
+
 
   end;
 

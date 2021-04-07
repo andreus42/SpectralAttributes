@@ -1,4 +1,4 @@
-unit EvalTestOjb6;
+unit EvalTestOjb7;
 
 interface
 
@@ -23,10 +23,14 @@ type
     LambdaFrom: String;
     LambdaAt: String;
     Value: String;
+    Symbol: String;
     FilePath: String;
+    TolPlus: String;
+    TolMinus: String;
     constructor Create(TestID: Integer);
     destructor destroy;
     procedure Stringify;
+    function Stringify2():String;
     procedure WriteEvalTest(ParamID: Integer; ParamValue: String);
   end;
 
@@ -36,15 +40,6 @@ type
     TestList: TObjectList<TEvalTest>;
     constructor Create(GroupID: Integer);
     destructor destroy;
-  end;
-
-  TEvalTestSet = class(TObject)
-  public
-    SetID: Integer;
-    EvalTestGroupList: TObjectList<TEvalTestGroup>;
-    constructor Create(ID: Integer);
-    destructor destroy;
-    procedure WalkTestSet;
   end;
 
 implementation
@@ -58,7 +53,7 @@ var
 begin
 
   // Initialize Params
-  Self.TestID := TestID;
+//  Self.TestID := TestID;
   Query := TADOQuery.Create(Nil);
   Query.Connection := _ChromaDataModule.ChromaData;
   Query.SQL.Add('select ParamID, ParamValue');
@@ -79,6 +74,9 @@ begin
       6 : Self.LambdaAt := ParamValue;
       7 : Self.Value := ParamValue;
       8 : Self.Filepath := ParamValue;
+      9 : Self.Symbol := ParamValue;
+      10 : Self.TolPlus := ParamValue;
+      11 : Self.TolMinus := ParamValue;
     End;
     Query.Next;
   end;
@@ -101,7 +99,7 @@ begin
   Query := TADOQuery.Create(Nil);
   Query.Connection := _ChromaDataModule.ChromaData;
   Query.SQL.Add('select distinct TestID');
-  Query.SQL.Add('from EvalTestSet where GroupID = ' + GroupID.ToString);
+  Query.SQL.Add('from EvalTests where GroupID = ' + GroupID.ToString);
   Query.Open;
   while not Query.eof do
     begin
@@ -109,32 +107,6 @@ begin
       TestID := Query.FieldByName('TestID').Value;
       TempEvalTest := TEvalTest.Create(TestID);
       TestList.Add(TempEvalTest);
-      Query.Next;
-    end;
-  Query.Close;
-  Query.Free;
-end;
-
-
-
-constructor TEvalTestSet.Create(ID: Integer);
-var
-  Query : TADOQuery;
-  TempEvalTestGroup: TEvalTestGroup;
-  GroupID: Integer;
-begin
-  Self.SetID := ID;
-  Self.EvalTestGroupList := TObjectList<TEvalTestGroup>.Create;
-  Query := TADOQuery.Create(Nil);
-  Query.Connection := _ChromaDataModule.ChromaData;
-  Query.SQL.Add('select distinct GroupID');
-  Query.SQL.Add('from EvalTestSet ETS where SetID = ' + SetID.ToString);
-  Query.Open;
-  while not Query.eof do
-    begin
-      GroupID := Query.FieldByName('GroupID').Value;
-      TempEvalTestGroup := TEvalTestGroup.Create(GroupID);
-      Self.EvalTestGroupList.Add(TempEvalTestGroup);
       Query.Next;
     end;
   Query.Close;
@@ -151,12 +123,6 @@ end;
 destructor TEvalTestGroup.destroy;
 begin
   TestList.Free;
-  inherited destroy;
-end;
-
-destructor TEvalTestSet.destroy;
-begin
-  EvalTestGroupList.Free;
   inherited destroy;
 end;
 
@@ -194,20 +160,13 @@ begin
   writeln;
 end;
 
-
-procedure TEvalTestSet.WalkTestSet;
-// Walk through each EvalTest and Stringify
-var
-  TempEvalTestGroup: TEvalTestGroup;
-  TempEvalTest: TEvalTest;
+function TEvalTest.Stringify2: String;
 begin
-  for TempEvalTestGroup in Self.EvalTestGroupList do
-  begin
-    writeln('GroupID: ' + TempEvalTestGroup.GroupID.ToString);
-    for TempEvalTest in TempEvalTestGroup.TestList do
-    begin
-      TempEvalTest.Stringify
-    end;
+  case Self.TestType.ToInteger of
+    1: Result := Name + ': ' + Value + 'nm ' + '+' + TolPlus + '/' + '-' + TolMinus + 'nm';
+    2: Result := Name + ': ' + Symbol + Value + '% ' + LambdaFrom + '-' + LambdaTo +'nm';
+    3: Result := Name + ': ' + Symbol + Value + '% at ' + LambdaAt + 'nm';
+    4: Result := Name + ': ' + Filepath;
   end;
 end;
 

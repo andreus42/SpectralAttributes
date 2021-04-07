@@ -11,6 +11,7 @@ object EvalFrame: TEvalFrame
     Height = 28
     Align = alClient
     TabOrder = 0
+    ExplicitLeft = -40
     object RankLabel: TLabel
       Left = 29
       Top = 7
@@ -26,29 +27,67 @@ object EvalFrame: TEvalFrame
       Caption = '-'
       OnClick = SpeedButton1Click
     end
-    object NmLabel2: TLabel
-      Left = 515
+    object ToNmLabel: TLabel
+      Left = 645
       Top = 6
+      Width = 14
+      Height = 13
+      Caption = 'nm'
+      Layout = tlBottom
+      Visible = False
+    end
+    object FromNmLabel: TLabel
+      Left = 520
+      Top = 7
       Width = 14
       Height = 13
       Caption = 'nm'
       Visible = False
     end
-    object NmLabel1: TLabel
-      Left = 392
-      Top = 6
+    object AtNmLabel: TLabel
+      Left = 783
+      Top = 7
       Width = 14
       Height = 13
       Caption = 'nm'
       Visible = False
     end
-    object NmLabel3: TLabel
-      Left = 647
-      Top = 6
+    object SpecLabel: TLabel
+      Left = 370
+      Top = 7
+      Width = 11
+      Height = 13
+      Caption = '%'
+      Visible = False
+    end
+    object PlusTolLabel: TLabel
+      Left = 911
+      Top = 7
       Width = 14
       Height = 13
       Caption = 'nm'
       Visible = False
+    end
+    object MinusTolLabel: TLabel
+      Left = 1031
+      Top = 7
+      Width = 14
+      Height = 13
+      Caption = 'nm'
+      Visible = False
+    end
+    object TestIDLabel: TLabel
+      Left = 1167
+      Top = 1
+      Width = 32
+      Height = 26
+      Align = alRight
+      Alignment = taCenter
+      Caption = 'TestID'
+      Layout = tlCenter
+      ExplicitLeft = 1136
+      ExplicitTop = 6
+      ExplicitHeight = 13
     end
     object ComboBox1: TComboBox
       Left = 43
@@ -58,9 +97,11 @@ object EvalFrame: TEvalFrame
       TabOrder = 0
       OnChange = ComboBox1Change
       Items.Strings = (
-        'Item1'
-        'Item2'
-        'Item3')
+        'T-avg'
+        'B-avg'
+        'T-Avg@'
+        'B-Avg@'
+        'CWL')
     end
     object SignComboBox: TComboBox
       Left = 210
@@ -71,15 +112,18 @@ object EvalFrame: TEvalFrame
       Visible = False
       OnChange = ComboBox1Change
       Items.Strings = (
-        'Item1'
-        'Item2'
-        'Item3')
+        '>='
+        '>'
+        '='
+        '<='
+        '<')
     end
     object ToLambdaLabeledEdit: TLabeledEdit
-      Left = 436
+      Left = 564
       Top = 3
       Width = 75
       Height = 21
+      Alignment = taCenter
       EditLabel.Width = 12
       EditLabel.Height = 13
       EditLabel.Caption = 'To'
@@ -89,10 +133,11 @@ object EvalFrame: TEvalFrame
       Visible = False
     end
     object FromLambdaLabeledEdit: TLabeledEdit
-      Left = 333
+      Left = 439
       Top = 3
       Width = 75
       Height = 21
+      Alignment = taCenter
       EditLabel.Width = 24
       EditLabel.Height = 13
       EditLabel.Caption = 'From'
@@ -102,10 +147,11 @@ object EvalFrame: TEvalFrame
       Visible = False
     end
     object AtLambdaLabeledEdit: TLabeledEdit
-      Left = 568
+      Left = 702
       Top = 3
       Width = 75
       Height = 21
+      Alignment = taCenter
       EditLabel.Width = 11
       EditLabel.Height = 13
       EditLabel.Caption = 'At'
@@ -114,17 +160,41 @@ object EvalFrame: TEvalFrame
       TabOrder = 4
       Visible = False
     end
-    object SpecLabeledEdit: TLabeledEdit
-      Left = 689
+    object SpecEdit: TEdit
+      Left = 289
       Top = 3
       Width = 75
       Height = 21
-      EditLabel.Width = 11
-      EditLabel.Height = 13
-      EditLabel.Caption = '%'
-      EditLabel.Layout = tlCenter
-      LabelPosition = lpRight
+      Alignment = taCenter
       TabOrder = 5
+      Visible = False
+    end
+    object PlusTolLabeledEdit: TLabeledEdit
+      Left = 830
+      Top = 3
+      Width = 75
+      Height = 21
+      Alignment = taCenter
+      EditLabel.Width = 8
+      EditLabel.Height = 13
+      EditLabel.Caption = '+'
+      EditLabel.Layout = tlCenter
+      LabelPosition = lpLeft
+      TabOrder = 6
+      Visible = False
+    end
+    object MinusTolLabeledEdit: TLabeledEdit
+      Left = 950
+      Top = 3
+      Width = 75
+      Height = 21
+      Alignment = taCenter
+      EditLabel.Width = 4
+      EditLabel.Height = 13
+      EditLabel.Caption = '-'
+      EditLabel.Layout = tlCenter
+      LabelPosition = lpLeft
+      TabOrder = 7
       Visible = False
     end
   end

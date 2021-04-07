@@ -3,13 +3,10 @@ program _SpectralAttributes;
 uses
   Vcl.Forms,
   EvalTestGroupFrameUnit in 'EvalTestGroupFrameUnit.pas' {EvalTestGroupFrame: TFrame},
-  FrameType0 in 'FrameType0.pas' {FrameType01: TFrame},
-  FrameType1 in 'FrameType1.pas' {Type1: TFrame},
-  FrameType2 in 'FrameType2.pas' {Type2: TFrame},
-  EvalTestOjb6 in 'EvalTestOjb6.pas',
   SpectalAttributesForm in 'SpectalAttributesForm.pas' {_SpectralAttributesForm},
   ChromaDataModule in '..\ChromaData\ChromaDataModule.pas' {_ChromaDataModule: TDataModule},
-  EvalFrameUnit in 'EvalFrameUnit.pas' {EvalFrame: TFrame};
+  EvalFrameUnit in 'EvalFrameUnit.pas' {EvalFrame: TFrame},
+  EvalTestOjb7 in 'EvalTestOjb7.pas';
 
 {$R *.res}
 

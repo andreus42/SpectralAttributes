@@ -14,11 +14,8 @@ uses
   ActiveX,
 
   // Mine
-//  ConnectionUnit,
   EvalFrameUnit,
-  FrameType0,
-  FrameType1,
-  EvalTestOjb6;
+  EvalTestOjb7;
 
 type
   TEvalTestGroupFrame = class(TFrame)
@@ -39,21 +36,17 @@ type
     Edit2: TEdit;
     Edit3: TEdit;
     Label1: TLabel;
-    Edit4: TEdit;
     procedure AddEvalTestButtonClick(Sender: TObject);
     procedure AddEvalPanel(K: Integer);
-    procedure AddEvalTestPanel(MyEvalTest: TEvalTest);
+    procedure AddEvalTestPanel(TestID: Integer);
   private
-    FTestList: TList<Integer>;
-    procedure SetTestList(const Value: TList<Integer>);
     { Private declarations }
   public
     RecID: Integer;
     I: Integer;
     K: Integer;
     PanelList: TList<Integer>;
-    property TestList: TList<Integer> read FTestList write SetTestList;
-    constructor CreateWithEvalGroup(AOwner: TComponent; MyEvalTestGroup: TEvalTestGroup);
+    constructor CreateWithGroupID(AOwner: TComponent; GroupID: Integer);
     constructor CreateWithInt(AOwner: TComponent; AnInt: Integer);
   end;
 
@@ -62,22 +55,18 @@ implementation
 {$R *.dfm}
 
 // Add Eval Test from TestEvalObj to Grid
-procedure TEvalTestGroupFrame.AddEvalTestPanel(MyEvalTest: TEvalTest);
+procedure TEvalTestGroupFrame.AddEvalTestPanel(TestID: Integer);
 var
-  TestFrame: TFrameType01;
+  TestFrame: TEvalFrame;
 begin
-  FTestList.Add(1);
-  TestFrame := TFrameType01.Create(Self);
+  Inc(K);
+  TestFrame := TEvalFrame.CreateWithTestID(Self, TestID);
   with TestFrame do
   begin
-    Name := 'EvalFrame' + TestList.Count.ToString;
+    Name := 'EvalFrame_' + (TestID+K).ToString;
     Parent := EvalScrollBox;     // error here, scrollbox exist?
     Align := alTop;
     Height := 26;
-    if Odd(FTestList.Count) then
-      EvalTestPanel.Color := clMoneyGreen
-    else
-      EvalTestPanel.Color := clWhite;
   end;
 end;
 
@@ -86,15 +75,15 @@ procedure TEvalTestGroupFrame.AddEvalPanel(K: Integer);
 var
   TestFrame: TEvalFrame;
 begin
-  FTestList.Add(K);
+  Inc(K);
   TestFrame := TEvalFrame.Create(Self);
   with TestFrame do
   begin
-    Name := 'EvalFrame' + TestList.Count.ToString;
+    Name := 'EvalFrame' + K.ToString;
     Parent := EvalScrollBox;
     Align := alTop;
     Height := 26;
-    NumLabel.Caption := K.ToString;
+    RankLabel.Caption := K.ToString;
     if Odd(K) then
       TestFrame.EvalTestPanel.Color := clMoneyGreen
     else
@@ -104,43 +93,32 @@ end;
 
 
 procedure TEvalTestGroupFrame.AddEvalTestButtonClick(Sender: TObject);
-var
-  NextPanelNum: Integer;
 begin
-  NextPanelNum := FTestList.Count+1;
-  AddEvalPanel(NextPanelNum);
+  Inc(K);
+  AddEvalPanel(K);
 end;
 
 
-constructor TEvalTestGroupFrame.CreateWithEvalGroup(AOwner: TComponent;
-  MyEvalTestGroup: TEvalTestGroup);
+constructor TEvalTestGroupFrame.CreateWithGroupID(AOwner: TComponent; GroupID: Integer);
 var
   MyEvalTest: TEvalTest;
+  MyEvalTestGroup: TEvalTestGroup;
   TestID : Integer;
-  GroupID: Integer;
   I: Integer;
 begin
   inherited Create(AOwner);
-  FTestList := TList<Integer>.Create;
+  MyEvalTestGroup := TEvalTestGroup.Create(GroupID);
   SpecTextMemo.Clear;
-  GroupID := MyEvalTestGroup.GroupID;
   IDBox.Text := GroupID.ToString;
   Name := 'EvalFrame' + GroupID.ToString;
 
-  with Combobox1 do
-  begin
-    AddItem('Bench', nil);
-    AddItem('Cary', nil);
-    AddItem('RMP', nil);
-  end;
-
-  // Walker Loop
-  for I := 1 to MyEvalTestGroup.TestList.Count-1 do
+  // Loop through list of tests
+  for I := 0 to MyEvalTestGroup.TestList.Count-1 do
   begin
     MyEvalTest := MyEvalTestGroup.TestList.Items[I];
-    SpecTextMemo.Lines.Add(MyEvalTest.TestID.ToString);
-    TestList.Add(TestID);
-    AddEvalTestPanel(MyEvalTest);
+//    SpecTextMemo.Lines.Add(MyEvalTest.TestID.ToString);
+    SpecTextMemo.Lines.Add(MyEvalTest.Stringify2);
+    AddEvalTestPanel(MyEvalTest.TestID);
   end;
 end;
 
@@ -149,12 +127,6 @@ constructor TEvalTestGroupFrame.CreateWithInt(AOwner: TComponent;
   AnInt: Integer);
 begin
     inherited Create(AOwner);
-    FTestList := TList<Integer>.Create;
-end;
-
-procedure TEvalTestGroupFrame.SetTestList(const Value: TList<Integer>);
-begin
-  FTestList := Value;
 end;
 
 end.

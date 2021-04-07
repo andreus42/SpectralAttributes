@@ -5,7 +5,6 @@ create table TestParams (
 	ParamName varchar(32),
 )
 
-INSERT INTO TestParams values ('Group')
 INSERT INTO TestParams values ('Name')
 INSERT INTO TestParams values ('Rank')
 INSERT INTO TestParams values ('TestType')

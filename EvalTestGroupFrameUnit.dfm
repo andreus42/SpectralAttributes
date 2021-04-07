@@ -166,12 +166,4 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
     ParentColor = False
     TabOrder = 1
   end
-  object Edit4: TEdit
-    Left = 1128
-    Top = 111
-    Width = 121
-    Height = 21
-    TabOrder = 2
-    Text = 'Edit4'
-  end
 end

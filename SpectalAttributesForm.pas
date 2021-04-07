@@ -16,7 +16,7 @@ uses
   // Proj
   EvalTestGroupFrameUnit,
   ChromaDataModule,
-  EvalTestOjb6;
+  EvalTestOjb7;
 
   type
   T_SpectralAttributesForm = class(TForm)
@@ -33,7 +33,7 @@ uses
     procedure FormCreate(Sender: TObject);
     procedure Button3Click(Sender: TObject);
     procedure MakePageInt(K: Integer);
-    procedure MakePage(MyEvalTestGroup: TEvalTestGroup);
+    procedure MakePage(GroupID: Integer);
     procedure UpdateButtonClick(Sender: TObject);
 
   type
@@ -51,14 +51,13 @@ uses
     ChromaData: TADOConnection;
   end;
 
-const SetID = 100;
+const SetID = 1;
 
 var
   _SpectralAttributesForm: T_SpectralAttributesForm;
   I: integer;
   MyIntList: TList<Integer>;
   Query: TADOQuery;
-  MySet: TEvalTestSet;
 
 
 implementation
@@ -70,20 +69,23 @@ implementation
 procedure T_SpectralAttributesForm.FormCreate(Sender: TObject);
 // On creation, add all SpecGroups of the Spectral set
 var
+  Query : TADOQuery;
   GroupID: Integer;
-  TempEvalTest: TEvalTest;
-  TempEvalTestGroup: TEvalTestGroup;
 begin
-  Memo1.Clear;
-  MySet := TEvalTestSet.Create(SetID);
-  begin
-    for TempEvalTestGroup in MySet.EvalTestGroupList do
+  Query := TADOQuery.Create(Nil);
+  Query.Connection := _ChromaDataModule.ChromaData;
+  Query.SQL.Add('select distinct GroupID');
+  Query.SQL.Add('from EvalTests where SetID = ' + SetID.ToString);
+  Query.Open;
+  while not Query.eof do
     begin
-      GroupID := TempEvalTestGroup.GroupID;
-      MakePage(TempEvalTestGroup);
+      GroupID := Query.FieldByName('GroupID').Value;
+      MakePage(GroupID);
       Memo1.Lines.Add('Add Page: ' + GroupID.ToString);
+      Query.Next;
     end;
-  end;
+  Query.Close;
+  Query.Free;
 end;
 
 
@@ -109,20 +111,17 @@ begin
 end;
 
 
-procedure T_SpectralAttributesForm.MakePage(MyEvalTestGroup: TEvalTestGroup);
+procedure T_SpectralAttributesForm.MakePage(GroupID: Integer);
 var
   ATabSheet: TMyTabSheet;
-  GroupID: Integer;
 begin
   ATabSheet := TMyTabSheet.Create(PageControl1);
-  GroupID := MyEvalTestGroup.GroupID;
   with ATabSheet do
   begin
     Caption := 'Group #' + GroupID.ToString;
     Name := 'TabSheet' + GroupID.ToString;
     PageControl := PageControl1;
-    Tag := GroupID;
-    MySpecSheet := TEvalTestGroupFrame.CreateWithEvalGroup(ATabSheet, MyEvalTestGroup);
+    MySpecSheet := TEvalTestGroupFrame.CreateWithGroupID(ATabSheet, GroupID);
     with MySpecSheet do
     begin
       Parent := ATabSheet;

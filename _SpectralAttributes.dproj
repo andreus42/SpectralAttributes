@@ -94,19 +94,6 @@
             <Form>EvalTestGroupFrame</Form>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
-        <DCCReference Include="FrameType0.pas">
-            <Form>FrameType01</Form>
-            <DesignClass>TFrame</DesignClass>
-        </DCCReference>
-        <DCCReference Include="FrameType1.pas">
-            <Form>Type1</Form>
-            <DesignClass>TFrame</DesignClass>
-        </DCCReference>
-        <DCCReference Include="FrameType2.pas">
-            <Form>Type2</Form>
-            <DesignClass>TFrame</DesignClass>
-        </DCCReference>
-        <DCCReference Include="EvalTestOjb6.pas"/>
         <DCCReference Include="SpectalAttributesForm.pas">
             <Form>_SpectralAttributesForm</Form>
             <FormType>dfm</FormType>
@@ -121,6 +108,7 @@
             <FormType>dfm</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
+        <DCCReference Include="EvalTestOjb7.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>
