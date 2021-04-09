@@ -45,13 +45,9 @@ type
     procedure SpeedButton1Click(Sender: TObject);
     procedure HideAllElements;
     procedure ShowFrame;
-    procedure ShowEvalType1;
-    procedure ShowEvalType2;
-    procedure ShowEvalType3;
-    procedure ShowEvalType4;
-    procedure ShowEvalType5;
     procedure DBLookupComboBox1CloseUp(Sender: TObject);
     procedure SpecEditChange(Sender: TObject);
+    procedure UpdateParameter(Sender: TObject);
   private
     { Private declarations }
   public
@@ -67,15 +63,86 @@ implementation
 
 {$R *.dfm}
 
+procedure TEvalFrame.ShowFrame;
 const
-  EditOffSet = 290;
+  ControlOffSet = 290;
   Space = 145;
   LabelOffset = 78;
   P1 = 200;
-  P2 = EditOffSet + Space*0;
-  P3 = EditOffSet + Space*1;
-  P4 = EditOffSet + Space*2;
+  P2 = ControlOffSet + Space*0;
+  P3 = ControlOffSet + Space*1;
+  P4 = ControlOffSet + Space*2;
+var
+  Query: TADOQuery;
+begin
+  // Use TestType to LookUp Frame Type
+  Query := TADOQuery.Create(Nil);
+  Query.Connection := _ChromaDataModule.ChromaData;
+  Query.SQL.Add('select FrameTypeID from TestTYpes where TypeID = ' + TestType);
+  Query.Open;
+  FrameType := Query.FieldByName('FrameTypeID').Value;
+  Query.Close;
+  Query.Free;
 
+  // Set locations of controls
+  SpecEdit.Left := P2;
+  SpecLabel.Left := P2 + LabelOffset;
+  SignLookUpComboBox.Left := P1;
+  SpecEdit.Left := P2;
+  FromLambdaLabeledEdit.Left := P3;
+  FromNmLabel.Left := P3 + LabelOffset;
+  ToLambdaLabeledEdit.Left := P4;
+  ToNmLabel.Left := P4 + LabelOffset;
+  AtLambdaLabeledEdit.Left := P3;
+  AtNmLabel.Left := P3 + LabelOffset;
+  PlusTolLabeledEdit.Left := P3;
+  PlusTolLabel.Left := P3 + LabelOffset;
+  MinusTolLabeledEdit.Left := P4;
+  MinusTolLabel.Left := P4 + LabelOffset;
+  SpecEdit.Visible := True;
+  SpecLabel.Visible := True;
+
+  case FrameType of
+    0:  HideAllElements;
+    1:  begin
+            SpecLabel.Caption := 'nm';
+            PlusTolLabeledEdit.Visible := True;
+            PlusTolLabel.Visible := True;
+            MinusTolLabeledEdit.Visible := True;
+            MinusTolLabel.Visible := True;
+        end;
+    2:  begin
+            SpecLabel.Caption := '%';
+            SignLookUpComboBox.Visible := True;
+            FromLambdaLabeledEdit.Visible := True;
+            FromNmLabel.Visible := True;
+            ToLambdaLabeledEdit.Visible := True;
+            ToNmLabel.Visible := True;
+        end;
+    3: begin
+            SpecLabel.Caption := 'OD';
+            SpecLabel.Left := P2 - 18;
+            SignLookUpComboBox.Visible := True;
+            FromLambdaLabeledEdit.Visible := True;
+            FromNmLabel.Visible := True;
+            ToLambdaLabeledEdit.Visible := True;
+            ToNmLabel.Visible := True;
+        end;
+    4: begin
+            SpecLabel.Caption := '%';
+            SignLookUpComboBox.Visible := True;
+            AtLambdaLabeledEdit.Visible := True;
+            AtNmLabel.Visible := True;
+      end;
+    5: begin
+            SpecLabel.Caption := 'OD';
+            SpecLabel.Left := P2 - 18;
+            SignLookUpComboBox.Visible := True;
+            AtLambdaLabeledEdit.Visible := True;
+            AtNmLabel.Visible := True;
+       end;
+  end;
+end;
 
 constructor TEvalFrame.Create(AOwner: TComponent);
 begin
@@ -108,7 +175,6 @@ end;
 
 procedure TEvalFrame.DBLookupComboBox1CloseUp(Sender: TObject);
 begin
-  HideAllElements;
   Edit1.Text := ADODataset2.FieldByName('ParamValue').Value;
   TestType := ADODataset2.FieldByName('ParamValue').Value;
   ADODataSet2ParamValue.Value := ADODataset2.FieldByName('ParamValue').Value;
@@ -117,6 +183,8 @@ end;
 
 procedure TEvalFrame.HideAllElements;
 begin
+  SpecEdit.Visible := False;
+  SpecLabel.Visible := False;
   SignLookUpComboBox.Visible :=  False;
   ToLambdaLabeledEdit.Visible :=  False;
   FromLambdaLabeledEdit.Visible :=  False;
@@ -132,117 +200,6 @@ begin
   MinusTolLabel.Visible :=  False;
 end;
 
-procedure TEvalFrame.ShowEvalType1;
-begin
-  SpecEdit.Left := P2;
-  SpecLabel.Caption := 'nm';
-  SpecLabel.Left := P2 + LabelOffset;
-  PlusTolLabeledEdit.Left := P3;
-  PlusTolLabel.Left := P3 + LabelOffset;
-  MinusTolLabeledEdit.Left := P4;
-  MinusTolLabel.Left := P4 + LabelOffset;
-
-  SpecEdit.Visible := True;
-  SpecLabel.Visible := True;
-  PlusTolLabeledEdit.Visible := True;
-  PlusTolLabel.Visible := True;
-  MinusTolLabeledEdit.Visible := True;
-  MinusTolLabel.Visible := True;
-end;
-
-procedure TEvalFrame.ShowEvalType2;
-begin
-  SignLookUpComboBox.Left := P1;
-  SpecEdit.Left := P2;
-  SpecLabel.Caption := '%';
-  SpecLabel.Left := P2 + LabelOffset;
-  FromLambdaLabeledEdit.Left := P3;
-  FromNmLabel.Left := P3 + LabelOffset;
-  ToLambdaLabeledEdit.Left := P4;
-  ToNmLabel.Left := P4 + LabelOffset;
-  SignLookUpComboBox.Visible := True;
-  SpecEdit.Visible := True;
-  SpecLabel.Visible := True;
-  FromLambdaLabeledEdit.Visible := True;
-  FromNmLabel.Visible := True;
-  ToLambdaLabeledEdit.Visible := True;
-  ToNmLabel.Visible := True;
-end;
-
-procedure TEvalFrame.ShowEvalType3;
-begin
-  SignLookUpComboBox.Left := P1;
-  SpecEdit.Left := P2;
-  SpecLabel.Caption := 'OD';
-  SpecLabel.Left := P2 - 18;
-  FromLambdaLabeledEdit.Left := P3;
-  FromNmLabel.Left := P3 + LabelOffset;
-  ToLambdaLabeledEdit.Left := P4;
-  ToNmLabel.Left := P4 + LabelOffset;
-  SignLookUpComboBox.Visible := True;
-  SpecEdit.Visible := True;
-  SpecLabel.Visible := True;
-  FromLambdaLabeledEdit.Visible := True;
-  FromNmLabel.Visible := True;
-  ToLambdaLabeledEdit.Visible := True;
-  ToNmLabel.Visible := True;
-end;
-
-procedure TEvalFrame.ShowEvalType4;
-begin
-  SignLookUpComboBox.Left := P1;
-  SpecEdit.Left := P2;
-  SpecLabel.Caption := '%';
-  SpecLabel.Left := P2 + LabelOffset;
-  AtLambdaLabeledEdit.Left := P3;
-  AtNmLabel.Left := P3 + LabelOffset;
-  SignLookUpComboBox.Visible := True;
-  SpecEdit.Visible := True;
-  SpecLabel.Visible := True;
-  AtLambdaLabeledEdit.Visible := True;
-  AtNmLabel.Visible := True;
-end;
-
-procedure TEvalFrame.ShowEvalType5;
-begin
-  SignLookUpComboBox.Left := P1;
-  SpecEdit.Left := P2;
-  SpecLabel.Caption := 'OD';
-  SpecLabel.Left := P2 - 18;
-  AtLambdaLabeledEdit.Left := P3;
-  AtNmLabel.Left := P3 + LabelOffset;
-  SignLookUpComboBox.Visible := True;
-  SpecEdit.Visible := True;
-  SpecLabel.Visible := True;
-  AtLambdaLabeledEdit.Visible := True;
-  AtNmLabel.Visible := True;
-end;
-
-
-procedure TEvalFrame.ShowFrame;
-var
-  Query: TADOQuery;
-begin
-//   Use TestType to LookUp Frame Type
-  Query := TADOQuery.Create(Nil);
-  Query.Connection := _ChromaDataModule.ChromaData;
-  Query.SQL.Add('select FrameTypeID from TestTYpes where TypeID = ' + TestType);
-  Query.Open;
-  FrameType := Query.FieldByName('FrameTypeID').Value;
-  Query.Close;
-  Query.Free;
-
-  FrameType := 1; //debug
-  case FrameType of
-    1: ShowEvalType1;
-    2: ShowEvalType2;
-    3: ShowEvalType3;
-    4: ShowEvalType4;
-    5: ShowEvalType5;
-  end;
-end;
-
-
 procedure TEvalFrame.SpecEditChange(Sender: TObject);
 var
   Query: TADOQuery;
@@ -250,8 +207,7 @@ begin
   Query := TADOQuery.Create(Nil);
   Query.Connection := _ChromaDataModule.ChromaData;
   Query.SQL.Add('Update EvalTests set ParamValue = ' + SpecEdit.Text);
-  Query.SQL.Add('where TestID = ' + EvalTest.TestID.ToString);
-  Query.SQL.Add('and ParamID = 7');
+  Query.SQL.Add('where ParamID = 7 and TestID = ' + EvalTest.TestID.ToString);
   Query.ExecSQL;
   Query.Free;
 end;
@@ -266,6 +222,27 @@ begin
   Query.ExecSQL;
   Query.Free;
   Self.Destroy;
+end;
+
+procedure TEvalFrame.UpdateParameter(Sender: TObject);
+var
+  Query: TADOQuery;
+begin
+  Query.Connection := _ChromaDataModule.ChromaData;
+  Query := TADOQuery.Create(Nil);
+  if Sender = FromLambdaLabeledEdit then
+  begin
+    Query.SQL.Add('Update EvalTests set ParamValue = ' + FromLambdaLabeledEdit.Text);
+    Query.SQL.Add('where ParamID = 4');
+  end
+  else if Sender = ToLambdaLabeledEdit then
+  begin
+    Query.SQL.Add('Update EvalTests set ParamValue = ' + ToLambdaLabeledEdit.Text);
+    Query.SQL.Add('where TestID = 5');
+  end;
+    Query.SQL.Add('and TestID = ' + EvalTest.TestID.ToString);
+    Query.ExecSQL;
+    Query.Free
 end;
 
 end.

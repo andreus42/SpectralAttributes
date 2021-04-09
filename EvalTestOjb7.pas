@@ -52,7 +52,6 @@ var
   ParamID: Integer;
   ParamValue: String;
 begin
-
   // Initialize Params
   Self.TestID := TestID;
   Query := TADOQuery.Create(Nil);
@@ -82,7 +81,6 @@ begin
   end;
   Query.Close;
   Query.Free;
-
   Query2 := TADOQuery.Create(Nil);
   Query2.Connection := _ChromaDataModule.ChromaData;
   Query2.SQL.Add('select ParamName from TestTypes where TypeID = ' + TestType);
@@ -90,7 +88,6 @@ begin
   Name := Query2.FieldByName('ParamName').Value;
   Query2.Close;
   Query2.Free;
-
 end;
 
 

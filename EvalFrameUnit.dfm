@@ -155,16 +155,18 @@ object EvalFrame: TEvalFrame
     Visible = False
   end
   object SpecEdit: TEdit
+    Tag = 7
     Left = 271
-    Top = 5
+    Top = 6
     Width = 75
     Height = 21
     Alignment = taCenter
     TabOrder = 6
     Visible = False
-    OnChange = SpecEditChange
+    OnChange = UpdateParameter
   end
   object ToLambdaLabeledEdit: TLabeledEdit
+    Tag = 5
     Left = 508
     Top = 5
     Width = 75
@@ -177,6 +179,7 @@ object EvalFrame: TEvalFrame
     LabelPosition = lpLeft
     TabOrder = 7
     Visible = False
+    OnChange = UpdateParameter
   end
   object RankEdit: TEdit
     Left = 29
