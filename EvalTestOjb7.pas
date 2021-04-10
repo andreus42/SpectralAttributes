@@ -18,6 +18,7 @@ type
     TestID: Integer;
     GroupID: Integer;
     SetID: Integer;
+    FrameType: Integer;
     Name: String;
     Rank: String;
     TestType: String;
@@ -32,14 +33,17 @@ type
     constructor Create(TestID: Integer);
     destructor destroy;
     procedure Stringify;
-    function Stringify2():String;
-    procedure WriteEvalTest(ParamID: Integer; ParamValue: String);
+    function GetFrameType(): Integer;
+    function Stringify2(): String;
+    procedure ResetParameters(FrameTypeID: Integer);
+    procedure UpdateParameters(ParamValue: String; ParamID: Integer);
   end;
 
   TEvalTestGroup = class(TObject)      // Future TEvalGroup;
   public
     GroupID: Integer;
     TestList: TObjectList<TEvalTest>;
+
     constructor Create(GroupID: Integer);
     destructor destroy;
   end;
@@ -47,6 +51,11 @@ type
 implementation
 
 // CONSTRUCTORS //////////////
+
+// Create Brand New, needs to check for test IDs and create from last ID
+
+
+// Create Given Existing ID
 constructor TEvalTest.Create(TestID: Integer);
 var
   Query: TADOQuery;
@@ -57,19 +66,21 @@ var
 begin
   // Initialize Params
   Self.TestID := TestID;
-  Self.GroupID := GroupID;
 
   // Read in test associations
   Query0 := TADOQuery.Create(Nil);
   Query0.Connection := _ChromaDataModule.ChromaData;
-  Query0.SQL.Add('select SetID');
+  Query0.SQL.Add('select GroupID, SetID');
   Query0.SQL.Add('from EvalTests where TestID = ' + TestID.ToString);
   Query0.Open;
-  SetID := Query.FieldByName('SetID').Value;
+  GroupID := Query0.FieldByName('GroupID').Value;
+  SetID := Query0.FieldByName('SetID').Value;
   Query0.Close;
   Query0.Free;
 
   // Read in test parameters
+  Query := TADOQuery.Create(Nil);
+  Query.Connection := _ChromaDataModule.ChromaData;
   Query.SQL.Add('select ParamID, ParamValue');
   Query.SQL.Add('from EvalTests where TestID = ' + TestID.ToString);
   Query.Open;
@@ -93,6 +104,7 @@ begin
   end;
   Query.Close;
   Query.Free;
+
   Query2 := TADOQuery.Create(Nil);
   Query2.Connection := _ChromaDataModule.ChromaData;
   Query2.SQL.Add('select ParamName from TestTypes where TypeID = ' + TestType);
@@ -100,6 +112,7 @@ begin
   Name := Query2.FieldByName('ParamName').Value;
   Query2.Close;
   Query2.Free;
+  FrameType := GetFrameType; // Should make into function
 end;
 
 
@@ -138,44 +151,58 @@ begin
   inherited destroy;
 end;
 
+function TEvalTest.GetFrameType: Integer;
+var
+  Query: TADOQuery;
+begin
+  // Use TestType to LookUp Frame Type
+  Query := TADOQuery.Create(Nil);
+  Query.Connection := _ChromaDataModule.ChromaData;
+  Query.SQL.Add('select FrameTypeID from TestTYpes where TypeID = ' + TestType);
+  Query.Open;
+  FrameType := Query.FieldByName('FrameTypeID').Value;
+  Query.Close;
+  Query.Free;
+  Result := FrameType;
+end;
+
+procedure TEvalTest.ResetParameters(FrameTypeID: Integer);
+var
+  Query: TADOQuery;
+begin
+  // Currently moving from EvalFrame
+  Query := TADOQuery.Create(Nil);
+  with query do
+  begin
+    Connection := _ChromaDataModule.ChromaData;
+    SQL.Add('Declare @TestID int =' + TestID);
+    SQL.Add('Declare @GroupID int =' + GroupID);
+    SQL.Add('Declare @SetID int =' + SetID);
+    SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, 2, ''0'')');
+    SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, 7, '''')');
+    case FrameTypeID of
+      1: begin
+          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, 10, ''0'')');
+          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, 11, ''0'')');
+      end;
+      2,3: begin
+          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, 4, ''0'')');
+          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, 5, ''0'')');
+          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, 9, ''0'')');
+      end;
+      4,5: begin
+          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, 6, ''0'')');
+          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, 9, ''0'')');
+      end;
+    end;
+    ExecSQL;
+  end;
+end;
+
 destructor TEvalTestGroup.destroy;
 begin
   TestList.Free;
   inherited destroy;
-end;
-
-
-// METHODS
-procedure TEvalTest.Stringify;
-begin
-  writeln('TestID: ' + TestID.ToString);
-  case TestType.ToInteger of
-    1:
-      begin
-        writeln('Test Type: ' + TestType);
-        writeln('Name: ' + Name);
-        writeln('Rank: ' + Rank);
-        writeln('LambdaFrom: ' + LambdaFrom);
-        writeln('LambdaTo: ' + LambdaTo);
-        writeln('Value: ' + Value);
-      end;
-    2:
-      begin
-        writeln('Test Type: ' + TestType);
-        writeln('Name: ' + Name);
-        writeln('Rank: ' + Rank);
-        writeln('LambdaAt: ' + LambdaAt);
-        writeln('Value: ' + Value);
-      end;
-     3:
-      begin
-        writeln('Test Type: ' + TestType);
-        writeln('Name: ' + Name);
-        writeln('Rank: ' + Rank);
-        writeln('Filepath: ' + Filepath);
-      end;
-  end;
-  writeln;
 end;
 
 function TEvalTest.Stringify2: String;
@@ -190,20 +217,22 @@ begin
 end;
 
 
-procedure TEvalTest.WriteEvalTest(ParamID: Integer; ParamValue: String);
+procedure TEvalTest.UpdateParameters(ParamValue: String; ParamID: Integer);
 var
-  Query : TADOQuery;
+  Query: TADOQuery;
 begin
+  // Moving from EvalFrame
   Query := TADOQuery.Create(Nil);
-  Query.Connection := _ChromaDataModule.ChromaData;
-  Query.SQL.Add('Update TEvalTests set ParamValue = ''' + ParamValue + '''');
-  Query.SQL.Add('where ParamID = ' + ParamID.ToString);
-  Query.SQL.Add('and TestID = ' + Self.TestID.ToString);
-  Query.ExecSQL;
-  Query.Close;
-  Query.Free;
+  with Query do
+  begin
+    Connection := _ChromaDataModule.ChromaData;
+    SQL.Add('Declare @TestID int = ' + TestID.ToString);
+    SQL.Add('Update EvalTests set ParamValue = ' + ParamValue);
+    SQL.Add('where TestID = @TestID and ParamID = ' + ParamID.ToString);
+    ExecSQL;
+    Free
+  end;
 end;
-
 
 end.
 
