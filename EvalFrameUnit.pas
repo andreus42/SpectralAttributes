@@ -40,13 +40,15 @@ type
     DataSource3: TDataSource;
     DataSource4: TDataSource;
     Edit1: TEdit;
+    ADODataSet1TypeID: TStringField;
+    ADODataSet1ParamName: TStringField;
+    SymbolComboBox: TComboBox;
     constructor CreateWithTestID (AOwner: TComponent; TestID: Integer);
     constructor Create (AOwner: TComponent);
     procedure SpeedButton1Click(Sender: TObject);
     procedure HideAllElements;
     procedure ShowFrame;
     procedure DBLookupComboBox1CloseUp(Sender: TObject);
-    procedure SpecEditChange(Sender: TObject);
     procedure UpdateParameter(Sender: TObject);
   private
     { Private declarations }
@@ -65,7 +67,7 @@ implementation
 
 procedure TEvalFrame.ShowFrame;
 const
-  ControlOffSet = 290;
+  ControlOffSet = 250;
   Space = 145;
   LabelOffset = 78;
   P1 = 200;
@@ -88,6 +90,7 @@ begin
   SpecEdit.Left := P2;
   SpecLabel.Left := P2 + LabelOffset;
   SignLookUpComboBox.Left := P1;
+  SymbolComboBox.Left := P1;
   SpecEdit.Left := P2;
   FromLambdaLabeledEdit.Left := P3;
   FromNmLabel.Left := P3 + LabelOffset;
@@ -99,6 +102,7 @@ begin
   PlusTolLabel.Left := P3 + LabelOffset;
   MinusTolLabeledEdit.Left := P4;
   MinusTolLabel.Left := P4 + LabelOffset;
+  HideAllElements;
   SpecEdit.Visible := True;
   SpecLabel.Visible := True;
 
@@ -114,6 +118,7 @@ begin
     2:  begin
             SpecLabel.Caption := '%';
             SignLookUpComboBox.Visible := True;
+            SymbolComboBox := True;
             FromLambdaLabeledEdit.Visible := True;
             FromNmLabel.Visible := True;
             ToLambdaLabeledEdit.Visible := True;
@@ -123,6 +128,7 @@ begin
             SpecLabel.Caption := 'OD';
             SpecLabel.Left := P2 - 18;
             SignLookUpComboBox.Visible := True;
+            SymbolComboBox := True;
             FromLambdaLabeledEdit.Visible := True;
             FromNmLabel.Visible := True;
             ToLambdaLabeledEdit.Visible := True;
@@ -131,6 +137,7 @@ begin
     4: begin
             SpecLabel.Caption := '%';
             SignLookUpComboBox.Visible := True;
+            SymbolComboBox := True;
             AtLambdaLabeledEdit.Visible := True;
             AtNmLabel.Visible := True;
       end;
@@ -138,6 +145,7 @@ begin
             SpecLabel.Caption := 'OD';
             SpecLabel.Left := P2 - 18;
             SignLookUpComboBox.Visible := True;
+            SymbolComboBox := True;
             AtLambdaLabeledEdit.Visible := True;
             AtNmLabel.Visible := True;
        end;
@@ -158,8 +166,8 @@ begin
   inherited Create(AOwner);
   ADODataSet2.Parameters.ParamByName('TestID').Value := TestID;
   ADODataSet2.Requery();
+  TestIDLabel.Caption := 'TestID: ' + TestID.ToString;
   EvalTest := TEvalTest.Create(TestID);
-  TestName := EvalTest.Name;
   RankEdit.Text := EvalTest.Rank;
   TestType := EvalTest.TestType;
   ToLambdaLabeledEdit.Text := EvalTest.LambdaTo;
@@ -169,15 +177,30 @@ begin
   MinusTolLabeledEdit.Text := EvalTest.TolMinus;
   SpecEdit.Text := EvalTest.Value;
   FilePath := EvalTest.FilePath;
-  TestIDLabel.Caption := 'TestID: ' + TestID.ToString;
+  SymbolComboBox.ItemIndex := EvalTest.Symbol;
   ShowFrame;
 end;
 
 procedure TEvalFrame.DBLookupComboBox1CloseUp(Sender: TObject);
+var
+  Query: TADOQuery;
 begin
-  Edit1.Text := ADODataset2.FieldByName('ParamValue').Value;
   TestType := ADODataset2.FieldByName('ParamValue').Value;
-  ADODataSet2ParamValue.Value := ADODataset2.FieldByName('ParamValue').Value;
+  Edit1.Text := TestType;
+  Query := TADOQuery.Create(Nil);
+  Query.Connection := _ChromaDataModule.ChromaData;
+  with query do
+  begin
+    SQL.Add('Update EvalTests set ParamValue = ' + TestType);
+    SQL.Add('where ParamID = 3 and TestID = ' + EvalTest.TestID.ToString);
+    ExecSQL;
+    SQL.Add('delete from EvalTests' + EvalTest.TestID.ToString);
+    SQL.Add('where ParamID != 3 and TestID = ' + EvalTest.TestID.ToString);
+    ExecSQL;
+  end;
+  case TestType.ToInteger of
+    1: ShowMessage('Here');
+  end;
   ShowFrame;
 end;
 
@@ -186,6 +209,7 @@ begin
   SpecEdit.Visible := False;
   SpecLabel.Visible := False;
   SignLookUpComboBox.Visible :=  False;
+  SymbolComboBox.Visible :=  False;
   ToLambdaLabeledEdit.Visible :=  False;
   FromLambdaLabeledEdit.Visible :=  False;
   AtLambdaLabeledEdit.Visible :=  False;
@@ -200,17 +224,6 @@ begin
   MinusTolLabel.Visible :=  False;
 end;
 
-procedure TEvalFrame.SpecEditChange(Sender: TObject);
-var
-  Query: TADOQuery;
-begin
-  Query := TADOQuery.Create(Nil);
-  Query.Connection := _ChromaDataModule.ChromaData;
-  Query.SQL.Add('Update EvalTests set ParamValue = ' + SpecEdit.Text);
-  Query.SQL.Add('where ParamID = 7 and TestID = ' + EvalTest.TestID.ToString);
-  Query.ExecSQL;
-  Query.Free;
-end;
 
 procedure TEvalFrame.SpeedButton1Click(Sender: TObject);
 var
@@ -224,25 +237,75 @@ begin
   Self.Destroy;
 end;
 
+
 procedure TEvalFrame.UpdateParameter(Sender: TObject);
+const
+  RankParam = '2';
+  TestTypeParam = '3' ;
+  FromLambdaParam = '4';
+  ToLambdaParam = '5';
+  AtLambdaParam = '6';
+  SpecParam = '7' ;
+  FilepathParam = '8';
+  SymbolParam = '9';
+  PlusTolParam = '10';
+  MinusTolParam = '11';
+
 var
   Query: TADOQuery;
 begin
-  Query.Connection := _ChromaDataModule.ChromaData;
   Query := TADOQuery.Create(Nil);
-  if Sender = FromLambdaLabeledEdit then
+  Query.Connection := _ChromaDataModule.ChromaData;
+  with Query do
   begin
-    Query.SQL.Add('Update EvalTests set ParamValue = ' + FromLambdaLabeledEdit.Text);
-    Query.SQL.Add('where ParamID = 4');
-  end
-  else if Sender = ToLambdaLabeledEdit then
-  begin
-    Query.SQL.Add('Update EvalTests set ParamValue = ' + ToLambdaLabeledEdit.Text);
-    Query.SQL.Add('where TestID = 5');
+    if (Sender = SpecEdit) and (SpecEdit.Text <> '') then
+    begin
+      SQL.Add('Update EvalTests set ParamValue = ' + SpecEdit.Text);
+      SQL.Add('where ParamID = ' + SpecParam);
+    end
+    else if (Sender = RankEdit) and (RankEdit.Text <> '') then
+    begin
+      SQL.Add('Update EvalTests set ParamValue = ' + RankEdit.Text);
+      SQL.Add('where ParamID = ' + RankParam);
+    end
+    else if (Sender = SymbolComboBox) and (SymbolComboBox.ItemIndex <> -1) then
+    begin
+      SQL.Add('Update EvalTests set ParamValue = ' + SymbolComboBox.ItemIndex.ToString);
+      SQL.Add('where ParamID = ' + SymbolParam);
+    end
+    else if (Sender = FromLambdaLabeledEdit) and (FromLambdaLabeledEdit.Text <> '') then
+    begin
+      SQL.Add('Update EvalTests set ParamValue = ' + FromLambdaLabeledEdit.Text);
+      SQL.Add('where ParamID = ' + FromLambdaParam);
+    end
+    else if (Sender = ToLambdaLabeledEdit) and (ToLambdaLabeledEdit.Text <> '') then
+    begin
+      SQL.Add('Update EvalTests set ParamValue = ' + ToLambdaLabeledEdit.Text);
+      SQL.Add('where ParamID = ' + ToLambdaParam);
+    end
+    else if (Sender = AtLambdaLabeledEdit) and (AtLambdaLabeledEdit.Text <> '') then
+    begin
+      SQL.Add('Update EvalTests set ParamValue = ' + AtLambdaLabeledEdit.Text);
+      SQL.Add('where ParamID = ' + AtLambdaParam);
+    end
+    else if (Sender = PlusTolLabeledEdit) and (PlusTolLabeledEdit.Text <> '') then
+    begin
+      SQL.Add('Update EvalTests set ParamValue = ' + PlusTolLabeledEdit.Text);
+      SQL.Add('where ParamID = ' + PlusTolParam)
+    end
+    else if (Sender = MinusTolLabeledEdit) and (MinusTolLabeledEdit.Text <> '') then
+    begin
+      SQL.Add('Update EvalTests set ParamValue = ' + MinusTolLabeledEdit.Text);
+      SQL.Add('where ParamID = ' + MinusTolParam);
+    end;
+    SQL.Add('and TestID = ' + EvalTest.TestID.ToString);
+    ExecSQL;
+    Free
   end;
-    Query.SQL.Add('and TestID = ' + EvalTest.TestID.ToString);
-    Query.ExecSQL;
-    Query.Free
 end;
+
+//Initialization
+//
+//Finalization
 
 end.

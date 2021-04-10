@@ -75,7 +75,6 @@ begin
   AddEvalTestPanel(InsertNewEvalTest); // Create & Add New TestID
 end;
 
-
 constructor TEvalTestGroupFrame.CreateWithGroupID(AOwner: TComponent; GroupID: Integer);
 var
   MyEvalTest: TEvalTest;
@@ -93,9 +92,9 @@ begin
   for I := 0 to EvalTestGroup.TestList.Count-1 do
   begin
     MyEvalTest := EvalTestGroup.TestList.Items[I];
-//    SpecTextMemo.Lines.Add(MyEvalTest.TestID.ToString);
     SpecTextMemo.Lines.Add(MyEvalTest.Stringify2);
     AddEvalTestPanel(MyEvalTest.TestID);
+    //    SpecTextMemo.Lines.Add(MyEvalTest.TestID.ToString);
   end;
 end;
 
