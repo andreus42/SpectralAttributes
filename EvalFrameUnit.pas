@@ -50,6 +50,7 @@ type
     procedure ShowFrame;
     procedure DBLookupComboBox1CloseUp(Sender: TObject);
     procedure UpdateParameter(Sender: TObject);
+    procedure InsertTestParameters(TestTypeID: Integer);
   private
     { Private declarations }
   public
@@ -106,6 +107,7 @@ begin
   SpecEdit.Visible := True;
   SpecLabel.Visible := True;
 
+  // Show control fields based on test type
   case FrameType of
     0:  HideAllElements;
     1:  begin
@@ -117,8 +119,7 @@ begin
         end;
     2:  begin
             SpecLabel.Caption := '%';
-            SignLookUpComboBox.Visible := True;
-            SymbolComboBox := True;
+            SymbolComboBox.Visible := True;
             FromLambdaLabeledEdit.Visible := True;
             FromNmLabel.Visible := True;
             ToLambdaLabeledEdit.Visible := True;
@@ -127,8 +128,7 @@ begin
     3: begin
             SpecLabel.Caption := 'OD';
             SpecLabel.Left := P2 - 18;
-            SignLookUpComboBox.Visible := True;
-            SymbolComboBox := True;
+            SymbolComboBox.Visible := True;
             FromLambdaLabeledEdit.Visible := True;
             FromNmLabel.Visible := True;
             ToLambdaLabeledEdit.Visible := True;
@@ -136,16 +136,14 @@ begin
         end;
     4: begin
             SpecLabel.Caption := '%';
-            SignLookUpComboBox.Visible := True;
-            SymbolComboBox := True;
+            SymbolComboBox.Visible := True;
             AtLambdaLabeledEdit.Visible := True;
             AtNmLabel.Visible := True;
       end;
     5: begin
             SpecLabel.Caption := 'OD';
             SpecLabel.Left := P2 - 18;
-            SignLookUpComboBox.Visible := True;
-            SymbolComboBox := True;
+            SymbolComboBox.Visible := True;
             AtLambdaLabeledEdit.Visible := True;
             AtNmLabel.Visible := True;
        end;
@@ -188,16 +186,20 @@ begin
   TestType := ADODataset2.FieldByName('ParamValue').Value;
   Edit1.Text := TestType;
   Query := TADOQuery.Create(Nil);
-  Query.Connection := _ChromaDataModule.ChromaData;
   with query do
   begin
-    SQL.Add('Update EvalTests set ParamValue = ' + TestType);
-    SQL.Add('where ParamID = 3 and TestID = ' + EvalTest.TestID.ToString);
+    Connection := _ChromaDataModule.ChromaData;
+    SQL.Add('Declare @TestID int =' + EvalTest.TestID.ToString);
+    SQL.Add('Update EvalTests set ParamValue =' + TestType);
+    SQL.Add('where ParamID = 3 and TestID = @TestID');
     ExecSQL;
-    SQL.Add('delete from EvalTests' + EvalTest.TestID.ToString);
-    SQL.Add('where ParamID != 3 and TestID = ' + EvalTest.TestID.ToString);
+    SQL.Add('delete from EvalTests');
+    SQL.Add('where ParamID != 3 and TestID = @TestID');
     ExecSQL;
+    Free;
   end;
+  // create fields specific to test type
+
   case TestType.ToInteger of
     1: ShowMessage('Here');
   end;
@@ -224,6 +226,49 @@ begin
   MinusTolLabel.Visible :=  False;
 end;
 
+
+procedure TEvalFrame.InsertTestParameters(TestTypeID: Integer);
+var
+  Query: TADOQuery;
+begin
+  Query := TADOQuery.Create(Nil);
+  with query do
+  begin
+    Connection := _ChromaDataModule.ChromaData;
+    SQL.Add('Declare @TestID int =' + EvalTest.TestID.ToString);
+    SQL.Add('Declare @GroupID int =' + EvalTest.TestID.ToString);
+    SQL.Add('Declare @SetID int =' + EvalTest.TestID.ToString);
+    SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, 7, '''')');
+    case TestTypeID of
+      1: begin
+          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, 10, '''')');
+          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, 11, '''')');
+      end;
+      2: begin
+            SpecLabel.Caption := '%';
+            SymbolComboBox.Visible := True;
+            FromNmLabel.Visible := True;
+            ToNmLabel.Visible := True;
+      end;
+      3: begin
+            SpecLabel.Caption := 'OD';
+            SpecLabel.Left := P2 - 18;
+            SymbolComboBox.Visible := True;
+            FromNmLabel.Visible := True;
+            ToNmLabel.Visible := True;
+      end;
+      4: begin
+              SpecLabel.Caption := '%';
+              SymbolComboBox.Visible := True;
+              AtNmLabel.Visible := True;
+      end;
+      5: begin
+              SpecLabel.Caption := 'OD';
+              SpecLabel.Left := P2 - 18;
+              SymbolComboBox.Visible := True;
+              AtNmLabel.Visible := True;
+      end;
+end;
 
 procedure TEvalFrame.SpeedButton1Click(Sender: TObject);
 var

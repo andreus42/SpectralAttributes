@@ -16,6 +16,8 @@ type
 //  private
   public
     TestID: Integer;
+    GroupID: Integer;
+    SetID: Integer;
     Name: String;
     Rank: String;
     TestType: String;
@@ -23,7 +25,7 @@ type
     LambdaFrom: String;
     LambdaAt: String;
     Value: String;
-    Symbol: String;
+    Symbol: Integer;
     FilePath: String;
     TolPlus: String;
     TolMinus: String;
@@ -48,19 +50,29 @@ implementation
 constructor TEvalTest.Create(TestID: Integer);
 var
   Query: TADOQuery;
+  Query0: TADOQuery;
   Query2: TADOQuery;
   ParamID: Integer;
   ParamValue: String;
 begin
   // Initialize Params
   Self.TestID := TestID;
-  Query := TADOQuery.Create(Nil);
-  Query.Connection := _ChromaDataModule.ChromaData;
+  Self.GroupID := GroupID;
+
+  // Read in test associations
+  Query0 := TADOQuery.Create(Nil);
+  Query0.Connection := _ChromaDataModule.ChromaData;
+  Query0.SQL.Add('select SetID');
+  Query0.SQL.Add('from EvalTests where TestID = ' + TestID.ToString);
+  Query0.Open;
+  SetID := Query.FieldByName('SetID').Value;
+  Query0.Close;
+  Query0.Free;
+
+  // Read in test parameters
   Query.SQL.Add('select ParamID, ParamValue');
   Query.SQL.Add('from EvalTests where TestID = ' + TestID.ToString);
   Query.Open;
-
-  // Translate Query to TestEval obj
   while not Query.eof do
   begin
     ParamID := Query.FieldByName('ParamID').Value;
@@ -73,7 +85,7 @@ begin
       6 : LambdaAt := ParamValue;
       7 : Value := ParamValue;
       8 : Filepath := ParamValue;
-      9 : Symbol := ParamValue;
+      9 : Symbol := ParamValue.ToInteger;
       10: TolPlus := ParamValue;
       11: TolMinus := ParamValue;
     End;
@@ -170,10 +182,10 @@ function TEvalTest.Stringify2: String;
 begin
   case Self.TestType.ToInteger of
     1: Result := Name + ': ' + Value + 'nm ' + '+' + TolPlus + '/' + '-' + TolMinus + 'nm';
-    2: Result := Name + ': ' + Symbol + Value + '% ' + LambdaFrom + '-' + LambdaTo +'nm';
-    3: Result := Name + ': ' + Symbol + Value + '% at ' + LambdaAt + 'nm';
+    2: Result := Name + ': ' + Symbol.ToString + 'f ' + Value + '% ' + LambdaFrom + '-' + LambdaTo +'nm';
+    3: Result := Name + ': ' + Symbol.ToString + 'f ' + Value + '% at ' + LambdaAt + 'nm';
     4: Result := Name + ': ' + Filepath;
-    10: Result := Name + ': ' + Symbol + 'OD' + Value + ' ' + LambdaFrom + '-' + LambdaTo +'nm';
+    10: Result := Name + ': ' + Symbol.ToString + 'f ' + 'OD' + Value + ' ' + LambdaFrom + '-' + LambdaTo +'nm';
   end;
 end;
 

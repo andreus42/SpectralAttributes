@@ -113,19 +113,34 @@ var
 begin
   Query := TADOQuery.Create(Nil);
   Query.Connection := _ChromaDataModule.ChromaData;
-  Query.SQL.Add('select max(TestID) last_id from EvalTests');
-  Query.Open;
-  NextTestID := Query.FieldByName('last_id').Value + 1;
-  Query.Close;
-  Query.Free;
-  Query2 := TADOQuery.Create(Nil);
-  Query2.Connection := _ChromaDataModule.ChromaData;
-  Query2.SQL.Add('insert into EvalTests values (' + NextTestID.ToString + ',');
-  Query2.SQL.Add(EvalTestGroup.GroupID.ToString + ', 1, 3, 0)');
-  Query2.ExecSQL;
-  Query2.Close;
-  Query2.Free;
+  with query do
+  begin
+  SQL.Add('select max(TestID) last_id from EvalTests');
+  Open;
+  NextTestID := FieldByName('last_id').Value + 1;
+  Close;
+  end;
   Result := NextTestID;
+  with query do
+  begin
+      SQL.Add('begin tran');
+      SQL.Add('Declare @TestID int = ' + NextTestID.ToString);
+      SQL.Add('Declare @GroupID int = ' + EvalTestGroup.GroupID.ToString);
+      SQL.Add('if exists (select * from EvalTests with (updlock,serializable) where TestID = @TestID) ');
+      SQL.Add('begin');
+      SQL.Add('update EvalTests set ParamValue = 0 ');
+      SQL.Add('where TestID = @TestID and ParamID = 2 ');
+      SQL.Add('end');
+      SQL.Add('else');
+      SQL.Add('begin');
+      SQL.Add('insert EvalTests (TestID, GroupID, SetID, ParamID, ParamValue)');
+      SQL.Add('values (@TestID, @GroupID, 1, 3, 0)');
+      SQL.Add('end');
+      SQL.Add('commit tran');
+      ExecSQL;
+      Close;
+      Free;
+  end
 end;
 
 end.

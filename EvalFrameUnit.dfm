@@ -2,7 +2,7 @@ object EvalFrame: TEvalFrame
   Left = 0
   Top = 0
   Width = 1200
-  Height = 69
+  Height = 35
   Align = alClient
   TabOrder = 0
   object AtNmLabel: TLabel
