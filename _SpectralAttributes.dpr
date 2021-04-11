@@ -6,7 +6,9 @@ uses
   SpectalAttributesForm in 'SpectalAttributesForm.pas' {_SpectralAttributesForm},
   ChromaDataModule in '..\ChromaData\ChromaDataModule.pas' {_ChromaDataModule: TDataModule},
   EvalFrameUnit in 'EvalFrameUnit.pas' {EvalFrame: TFrame},
-  EvalTestOjb7 in 'EvalTestOjb7.pas';
+  TEvalTestUnit in 'TEvalTestUnit.pas',
+  TEvalTestGroupUnit in 'TEvalTestGroupUnit.pas',
+  TEvalTestSetUnit in 'TEvalTestSetUnit.pas';
 
 {$R *.res}
 

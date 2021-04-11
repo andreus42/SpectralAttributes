@@ -16,7 +16,8 @@ uses
   // Mine
   ChromaDataModule,
   EvalFrameUnit,
-  EvalTestOjb7;
+  TEvalTestUnit,
+  TEvalTestGroupUnit;
 
 type
   TEvalTestGroupFrame = class(TFrame)
@@ -37,18 +38,17 @@ type
     Edit2: TEdit;
     Edit3: TEdit;
     Label1: TLabel;
+    Edit4: TEdit;
+    Label3: TLabel;
+    Label6: TLabel;
     procedure AddEvalTestButtonClick(Sender: TObject);
-    procedure AddEvalTestPanel(TestID: Integer);
   private
-    { Private declarations }
+    procedure AddEvalTestPanel(TestID: Integer); overload;
+    procedure AddEvalTestPanel(EvalTest: TEvalTest); overload;
   public
-    I: Integer;
-    K: Integer;
     PanelList: TList<Integer>;
-    ThisGroupID: Integer;
     EvalTestGroup: TEvalTestGroup;
-    function InsertNewEvalTest(): Integer;
-    constructor CreateWithGroupID(AOwner: TComponent; GroupID: Integer);
+    constructor CreateWithGroupID(AOwner: TComponent; GroupID: Integer);  // Create with EvalGroup
     constructor CreateWithInt(AOwner: TComponent; AnInt: Integer);   // future needs to create group like eval test
   end;
 
@@ -61,23 +61,39 @@ procedure TEvalTestGroupFrame.AddEvalTestPanel(TestID: Integer);
 var
   TestFrame: TEvalFrame;
 begin
-  TestFrame := TEvalFrame.CreateWithTestID(Self, TestID);
+  TestFrame := TEvalFrame.CreateWithTestID(EvalScrollBox, TestID);
   with TestFrame do
   begin
     Name := 'EvalFrame_' + TestID.ToString;
-    Parent := EvalScrollBox;     // error here, scrollbox exist?
+    Parent := EvalScrollBox;
     Align := alTop;
   end;
 end;
 
 procedure TEvalTestGroupFrame.AddEvalTestButtonClick(Sender: TObject);
+var
+  NewEvalTEest: TEvalTest;
 begin
-  AddEvalTestPanel(InsertNewEvalTest); // Create & Add New TestID
+  NewEvalTEest := TEvalTest.CreateNew(555, 1);  // TODO: EvalGroupObj to return GroupID, SetID
+  AddEvalTestPanel(NewEvalTEest);
+end;
+
+procedure TEvalTestGroupFrame.AddEvalTestPanel(EvalTest: TEvalTest);
+var
+  TestFrame: TEvalFrame;
+begin
+  TestFrame := TEvalFrame.CreateWithTestID(EvalScrollBox, EvalTest.TestID);
+  with TestFrame do
+  begin
+    Name := 'EvalFrame_' + EvalTest.TestID.ToString;
+    Parent := EvalScrollBox;
+    Align := alTop;
+  end;
 end;
 
 constructor TEvalTestGroupFrame.CreateWithGroupID(AOwner: TComponent; GroupID: Integer);
 var
-  MyEvalTest: TEvalTest;
+  AnEvalTest: TEvalTest;
   TestID : Integer;
   I: Integer;
 begin
@@ -85,62 +101,24 @@ begin
   EvalTestGroup := TEvalTestGroup.Create(GroupID);
   SpecTextMemo.Clear;
   IDBox.Text := GroupID.ToString;
-  ThisGroupID := GroupID;
   Name := 'EvalFrame' + GroupID.ToString;
 
   // Loop through list of tests
-  for I := 0 to EvalTestGroup.TestList.Count-1 do
+  for AnEvalTest in EvalTestGroup.TestList do
   begin
-    MyEvalTest := EvalTestGroup.TestList.Items[I];
-    SpecTextMemo.Lines.Add(MyEvalTest.Stringify2);
-    AddEvalTestPanel(MyEvalTest.TestID);
-    //    SpecTextMemo.Lines.Add(MyEvalTest.TestID.ToString);
+    SpecTextMemo.Lines.Add(AnEvalTest.Stringify2);
+    AddEvalTestPanel(AnEvalTest.TestID);
   end;
 end;
-
 
 constructor TEvalTestGroupFrame.CreateWithInt(AOwner: TComponent;
   AnInt: Integer);
 begin
-    inherited Create(AOwner);
-end;
-
-function TEvalTestGroupFrame.InsertNewEvalTest: Integer;
-var
-  Query: TADOQuery;
-  Query2: TADOQuery;
-  NextTestID: Integer;
-begin
-  Query := TADOQuery.Create(Nil);
-  Query.Connection := _ChromaDataModule.ChromaData;
-  with query do
-  begin
-  SQL.Add('select max(TestID) last_id from EvalTests');
-  Open;
-  NextTestID := FieldByName('last_id').Value + 1;
-  Close;
-  end;
-  Result := NextTestID;
-  with query do
-  begin
-      SQL.Add('begin tran');
-      SQL.Add('Declare @TestID int = ' + NextTestID.ToString);
-      SQL.Add('Declare @GroupID int = ' + EvalTestGroup.GroupID.ToString);
-      SQL.Add('if exists (select * from EvalTests with (updlock,serializable) where TestID = @TestID) ');
-      SQL.Add('begin');
-      SQL.Add('update EvalTests set ParamValue = 0 ');
-      SQL.Add('where TestID = @TestID and ParamID = 2 ');
-      SQL.Add('end');
-      SQL.Add('else');
-      SQL.Add('begin');
-      SQL.Add('insert EvalTests (TestID, GroupID, SetID, ParamID, ParamValue)');
-      SQL.Add('values (@TestID, @GroupID, 1, 3, 0)');
-      SQL.Add('end');
-      SQL.Add('commit tran');
-      ExecSQL;
-      Close;
-      Free;
-  end
+  inherited Create(AOwner);
+  EvalTestGroup := TEvalTestGroup.Create(AnInt);
+  SpecTextMemo.Clear;
+  IDBox.Text := AnInt.ToString;
+  Name := 'EvalFrame' + AnInt.ToString;
 end;
 
 end.

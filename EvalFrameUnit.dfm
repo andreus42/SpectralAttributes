@@ -1,13 +1,13 @@
 object EvalFrame: TEvalFrame
   Left = 0
   Top = 0
-  Width = 1200
-  Height = 35
+  Width = 1076
+  Height = 26
   Align = alClient
   TabOrder = 0
   object AtNmLabel: TLabel
     Left = 679
-    Top = 8
+    Top = 3
     Width = 14
     Height = 21
     Caption = 'nm'
@@ -15,8 +15,8 @@ object EvalFrame: TEvalFrame
     Visible = False
   end
   object FromNmLabel: TLabel
-    Left = 472
-    Top = 8
+    Left = 561
+    Top = 3
     Width = 14
     Height = 21
     Caption = 'nm'
@@ -25,7 +25,7 @@ object EvalFrame: TEvalFrame
   end
   object MinusTolLabel: TLabel
     Left = 900
-    Top = 9
+    Top = 3
     Width = 14
     Height = 21
     Caption = 'nm'
@@ -34,7 +34,7 @@ object EvalFrame: TEvalFrame
   end
   object PlusTolLabel: TLabel
     Left = 791
-    Top = 9
+    Top = 3
     Width = 14
     Height = 21
     Caption = 'nm'
@@ -43,7 +43,7 @@ object EvalFrame: TEvalFrame
   end
   object SpecLabel: TLabel
     Left = 336
-    Top = 8
+    Top = 3
     Width = 11
     Height = 21
     Caption = '%'
@@ -52,33 +52,33 @@ object EvalFrame: TEvalFrame
   end
   object SpeedButton1: TSpeedButton
     Left = 0
-    Top = 8
+    Top = 3
     Width = 23
     Height = 21
     Caption = '-'
     OnClick = SpeedButton1Click
   end
   object TestIDLabel: TLabel
-    Left = 1165
-    Top = 12
+    Left = 941
+    Top = 3
     Width = 32
-    Height = 13
+    Height = 21
     Alignment = taCenter
     Caption = 'TestID'
     Layout = tlCenter
   end
   object ToNmLabel: TLabel
     Left = 541
-    Top = 12
+    Top = 3
     Width = 14
-    Height = 13
+    Height = 21
     Caption = 'nm'
     Layout = tlBottom
     Visible = False
   end
   object DBLookupComboBox1: TDBLookupComboBox
     Left = 59
-    Top = 8
+    Top = 3
     Width = 126
     Height = 21
     DataField = 'ParamValue'
@@ -92,7 +92,7 @@ object EvalFrame: TEvalFrame
   end
   object AtLambdaLabeledEdit: TLabeledEdit
     Left = 710
-    Top = 9
+    Top = 3
     Width = 75
     Height = 21
     Alignment = taCenter
@@ -101,26 +101,13 @@ object EvalFrame: TEvalFrame
     EditLabel.Caption = 'At'
     EditLabel.Layout = tlCenter
     LabelPosition = lpLeft
-    TabOrder = 1
+    TabOrder = 6
     Visible = False
     OnExit = UpdateParameter
   end
-  object SignLookUpComboBox: TDBLookupComboBox
-    Left = 1106
-    Top = 3
-    Width = 47
-    Height = 21
-    DataField = 'ParamValue'
-    DataSource = DataSource4
-    KeyField = 'ID'
-    ListField = 'Symbol'
-    ListSource = DataSource3
-    TabOrder = 2
-    Visible = False
-  end
   object FromLambdaLabeledEdit: TLabeledEdit
-    Left = 391
-    Top = 8
+    Left = 369
+    Top = 3
     Width = 75
     Height = 21
     Alignment = taCenter
@@ -135,7 +122,7 @@ object EvalFrame: TEvalFrame
   end
   object MinusTolLabeledEdit: TLabeledEdit
     Left = 819
-    Top = 9
+    Top = 3
     Width = 75
     Height = 21
     Alignment = taCenter
@@ -144,13 +131,13 @@ object EvalFrame: TEvalFrame
     EditLabel.Caption = '-'
     EditLabel.Layout = tlCenter
     LabelPosition = lpLeft
-    TabOrder = 4
+    TabOrder = 7
     Visible = False
     OnExit = UpdateParameter
   end
   object PlusTolLabeledEdit: TLabeledEdit
     Left = 598
-    Top = 9
+    Top = 3
     Width = 75
     Height = 21
     Alignment = taCenter
@@ -161,23 +148,24 @@ object EvalFrame: TEvalFrame
     LabelPosition = lpLeft
     TabOrder = 5
     Visible = False
+    OnChange = UpdateParameter
     OnExit = UpdateParameter
   end
   object SpecEdit: TEdit
     Tag = 7
     Left = 255
-    Top = 8
+    Top = 3
     Width = 75
     Height = 21
     Alignment = taCenter
-    TabOrder = 6
+    TabOrder = 2
     Visible = False
     OnExit = UpdateParameter
   end
   object ToLambdaLabeledEdit: TLabeledEdit
     Tag = 5
-    Left = 508
-    Top = 8
+    Left = 472
+    Top = 3
     Width = 75
     Height = 21
     Alignment = taCenter
@@ -186,40 +174,42 @@ object EvalFrame: TEvalFrame
     EditLabel.Caption = 'To'
     EditLabel.Layout = tlCenter
     LabelPosition = lpLeft
-    TabOrder = 7
+    TabOrder = 4
     Visible = False
+    OnChange = UpdateParameter
     OnExit = UpdateParameter
   end
   object RankEdit: TEdit
     Left = 29
-    Top = 8
+    Top = 3
     Width = 24
     Height = 21
-    TabOrder = 8
-    OnChange = UpdateParameter
-  end
-  object Edit1: TEdit
-    Left = 944
-    Top = 8
-    Width = 89
-    Height = 21
     TabOrder = 9
-    Text = 'Edit1'
+    OnChange = UpdateParameter
   end
   object SymbolComboBox: TComboBox
     Left = 191
-    Top = 8
+    Top = 3
     Width = 47
     Height = 21
-    TabOrder = 10
+    TabOrder = 1
     Visible = False
-    OnCloseUp = UpdateParameter
+    OnChange = UpdateParameter
     Items.Strings = (
       '>='
       '>'
       '='
       '<='
       '<')
+  end
+  object FilepathEdit: TEdit
+    Left = 912
+    Top = 3
+    Width = 121
+    Height = 21
+    TabOrder = 8
+    Visible = False
+    OnExit = UpdateParameter
   end
   object ADODataSet1: TADODataSet
     Active = True
@@ -266,38 +256,6 @@ object EvalFrame: TEvalFrame
   end
   object DataSource2: TDataSource
     DataSet = ADODataSet2
-    Left = 1024
-  end
-  object ADODataSet3: TADODataSet
-    Active = True
-    Connection = _ChromaDataModule.ChromaData
-    CursorType = ctStatic
-    CommandText = 'select ID, Symbol from TestSymbols'
-    Parameters = <>
-    Left = 1056
-  end
-  object ADODataSet4: TADODataSet
-    Active = True
-    Connection = _ChromaDataModule.ChromaData
-    CursorType = ctStatic
-    CommandText = 
-      'declare @TestID int'#13#10'set @TestID = :TestID'#13#10#13#10'select ParamValue ' +
-      'from EvalTests'#13#10'where ParamID = 10'#13#10'and TestID = 1234'
-    Parameters = <
-      item
-        Name = 'TestID'
-        DataType = ftWideString
-        Size = 4
-        Value = '1234'
-      end>
-    Left = 1088
-  end
-  object DataSource3: TDataSource
-    DataSet = ADODataSet3
-    Left = 1120
-  end
-  object DataSource4: TDataSource
-    DataSet = ADODataSet4
-    Left = 1152
+    Left = 1016
   end
 end

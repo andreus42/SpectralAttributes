@@ -108,7 +108,9 @@
             <FormType>dfm</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
-        <DCCReference Include="EvalTestOjb7.pas"/>
+        <DCCReference Include="TEvalTestUnit.pas"/>
+        <DCCReference Include="TEvalTestGroupUnit.pas"/>
+        <DCCReference Include="TEvalTestSetUnit.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

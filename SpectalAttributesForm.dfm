@@ -2,8 +2,8 @@ object _SpectralAttributesForm: T_SpectralAttributesForm
   Left = 0
   Top = 0
   Caption = 'Spectral Attributes'
-  ClientHeight = 927
-  ClientWidth = 1478
+  ClientHeight = 883
+  ClientWidth = 1062
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -16,9 +16,9 @@ object _SpectralAttributesForm: T_SpectralAttributesForm
   TextHeight = 13
   object PageControl1: TPageControl
     Left = 20
-    Top = 55
-    Width = 1405
-    Height = 818
+    Top = 39
+    Width = 1021
+    Height = 836
     ActivePage = SummaryTab
     TabOrder = 0
     object SummaryTab: TTabSheet
@@ -62,8 +62,8 @@ object _SpectralAttributesForm: T_SpectralAttributesForm
     end
   end
   object Button2: TButton
-    Left = 127
-    Top = 24
+    Left = 119
+    Top = 8
     Width = 82
     Height = 25
     Caption = '&Delete Test'
@@ -72,20 +72,11 @@ object _SpectralAttributesForm: T_SpectralAttributesForm
   end
   object Button3: TButton
     Left = 20
-    Top = 24
+    Top = 8
     Width = 93
     Height = 25
     Caption = '&Add Test Group'
     TabOrder = 2
     OnClick = Button3Click
-  end
-  object UpdateButton: TButton
-    Left = 224
-    Top = 24
-    Width = 81
-    Height = 25
-    Caption = '&Update'
-    TabOrder = 3
-    OnClick = UpdateButtonClick
   end
 end

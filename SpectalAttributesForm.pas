@@ -16,7 +16,8 @@ uses
   // Proj
   EvalTestGroupFrameUnit,
   ChromaDataModule,
-  EvalTestOjb7;
+  TEvalTestUnit,
+  TEvalTestGroupUnit;
 
   type
   T_SpectralAttributesForm = class(TForm)
@@ -33,7 +34,7 @@ uses
     procedure FormCreate(Sender: TObject);
     procedure Button3Click(Sender: TObject);
     procedure MakePageInt(K: Integer);
-    procedure MakePage(GroupID: Integer);
+
     procedure UpdateButtonClick(Sender: TObject);
 
   type
@@ -46,7 +47,8 @@ uses
     end;
 
   private
-    { Private declarations }
+    procedure MakePage(GroupID: Integer); overload;
+    procedure MakePage(EvalTestGroup: TEvalTestGroup); overload;
   public
     ChromaData: TADOConnection;
   end;
@@ -90,6 +92,8 @@ end;
 
 
 // CREATE TAB ///////////////////////
+// Need to add dynamic frame data to database groups
+
 procedure T_SpectralAttributesForm.MakePageInt(K: Integer);
 var
   ATabSheet: TMyTabSheet;
@@ -97,10 +101,8 @@ begin
   ATabSheet := TMyTabSheet.Create(PageControl1);
   with ATabSheet do
   begin
-    Caption := 'Group #' + K.ToString;
+    Caption := 'In-process #' + K.ToString;
     PageControl := PageControl1;
-
-    Tag := K;
     MySpecSheet := TEvalTestGroupFrame.CreateWithInt(ATabSheet, K);
     with MySpecSheet do
     begin
@@ -110,7 +112,6 @@ begin
   end;
 end;
 
-
 procedure T_SpectralAttributesForm.MakePage(GroupID: Integer);
 var
   ATabSheet: TMyTabSheet;
@@ -118,9 +119,10 @@ begin
   ATabSheet := TMyTabSheet.Create(PageControl1);
   with ATabSheet do
   begin
-    Caption := 'Group #' + GroupID.ToString;
+    Caption := 'In-process #' + GroupID.ToString;
     Name := 'TabSheet' + GroupID.ToString;
     PageControl := PageControl1;
+    Tag := GroupID;
     MySpecSheet := TEvalTestGroupFrame.CreateWithGroupID(ATabSheet, GroupID);
     with MySpecSheet do
     begin
@@ -129,6 +131,31 @@ begin
     end;
   end;
 end;
+
+// Create By GroupObj
+procedure T_SpectralAttributesForm.MakePage(MyEvalTestGroup: TEvalTestGroup);
+var
+  ATabSheet: TMyTabSheet;
+  GroupID: Integer;
+begin
+  ATabSheet := TMyTabSheet.Create(PageControl1);
+  GroupID := MyEvalTestGroup.GroupID;
+  with ATabSheet do
+  begin
+    PageList.Add(PageList.Count);
+    Caption := 'In-Process #' + PageList.Count.ToString;
+    Name := 'TabSheet' + PageList.Count.ToString;
+    PageControl := PageControl1;
+    Tag := GroupID;
+    MySpecSheet := TEvalTestGroupFrame.CreateWithEvalGroup(ATabSheet, MyEvalTestGroup);
+    with MySpecSheet do
+    begin
+      Parent := ATabSheet;
+      Align := alClient;
+    end;
+  end;
+end;
+
 
 procedure T_SpectralAttributesForm.Button2Click(Sender: TObject);
 var

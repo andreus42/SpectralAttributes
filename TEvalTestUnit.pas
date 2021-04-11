@@ -1,4 +1,4 @@
-unit EvalTestOjb7;
+unit TEvalTestUnit;
 
 interface
 
@@ -42,14 +42,11 @@ type
 implementation
 
 // CONSTRUCTORS //////////////
-
-// Create Brand New, needs to check for test IDs and create from last ID
-
 // Create Given Existing ID
 constructor TEvalTest.Create(TestID: Integer);
 var
-  Query: TADOQuery;
   Query0: TADOQuery;
+  Query1: TADOQuery;
   Query2: TADOQuery;
   ParamID: Integer;
   ParamValue: String;
@@ -69,15 +66,15 @@ begin
   Query0.Free;
 
   // Read in test parameters
-  Query := TADOQuery.Create(Nil);
-  Query.Connection := _ChromaDataModule.ChromaData;
-  Query.SQL.Add('select ParamID, ParamValue');
-  Query.SQL.Add('from EvalTests where TestID = ' + TestID.ToString);
-  Query.Open;
-  while not Query.eof do
+  Query1 := TADOQuery.Create(Nil);
+  Query1.Connection := _ChromaDataModule.ChromaData;
+  Query1.SQL.Add('select ParamID, ParamValue');
+  Query1.SQL.Add('from EvalTests where TestID = ' + TestID.ToString);
+  Query1.Open;
+  while not Query1.eof do
   begin
-    ParamID := Query.FieldByName('ParamID').Value;
-    ParamValue := Query.FieldByName('ParamValue').Value;
+    ParamID := Query1.FieldByName('ParamID').Value;
+    ParamValue := Query1.FieldByName('ParamValue').Value;
     Case ParamID of
       2 : Rank := ParamValue;
       3 : TestType := ParamValue;
@@ -90,10 +87,10 @@ begin
       10: TolPlus := ParamValue;
       11: TolMinus := ParamValue;
     End;
-    Query.Next;
+    Query1.Next;
   end;
-  Query.Close;
-  Query.Free;
+  Query1.Close;
+  Query1.Free;
   Query2 := TADOQuery.Create(Nil);
   Query2.Connection := _ChromaDataModule.ChromaData;
   Query2.SQL.Add('select ParamName from TestTypes where TypeID = ' + TestType);
@@ -105,36 +102,6 @@ begin
 end;
 
 
-constructor TEvalTestGroup.Create(GroupID: Integer);
-var
-  Query : TADOQuery;
-  TestID: Integer;
-  TempEvalTest: TEvalTest;
-begin
-  // Initialize Params
-  Self.GroupID := GroupID;
-  Self.TestList := TObjectList<TEvalTest>.Create;
-
-// Query
-  Query := TADOQuery.Create(Nil);
-  Query.Connection := _ChromaDataModule.ChromaData;
-  Query.SQL.Add('select distinct TestID');
-  Query.SQL.Add('from EvalTests where GroupID = ' + GroupID.ToString);
-  Query.Open;
-  while not Query.eof do
-    begin
-      // Loop to add TestIDs to TestList
-      TestID := Query.FieldByName('TestID').Value;
-      TempEvalTest := TEvalTest.Create(TestID);
-      TestList.Add(TempEvalTest);
-      Query.Next;
-    end;
-  Query.Close;
-  Query.Free;
-end;
-
-
-// DESTRUCTORS //////////////
 constructor TEvalTest.CreateNew(GroupID: Integer; SetID: Integer);
 var
   Query: TADOQuery;
@@ -170,6 +137,9 @@ begin
     Close;
     Free;
   end;
+    Self.TestID := NextTestID;
+    Self.GroupID := GroupID;
+    Self.SetID := SetID;
 end;
 
 destructor TEvalTest.destroy;
@@ -227,20 +197,23 @@ begin
   end;
 end;
 
-destructor TEvalTestGroup.destroy;
-begin
-  TestList.Free;
-  inherited destroy;
-end;
-
 function TEvalTest.Stringify2: String;
+var
+  TextSymbol: String;
 begin
-  case Self.TestType.ToInteger of
-    1: Result := Name + ': ' + Value + 'nm ' + '+' + TolPlus + '/' + '-' + TolMinus + 'nm';
-    2: Result := Name + ': ' + Symbol.ToString + 'f ' + Value + '% ' + LambdaFrom + '-' + LambdaTo +'nm';
-    3: Result := Name + ': ' + Symbol.ToString + 'f ' + Value + '% at ' + LambdaAt + 'nm';
-    4: Result := Name + ': ' + Filepath;
-    10: Result := Name + ': ' + Symbol.ToString + 'f ' + 'OD' + Value + ' ' + LambdaFrom + '-' + LambdaTo +'nm';
+  case Symbol of
+    1: TextSymbol := '>=';
+    2: TextSymbol := '>';
+    3: TextSymbol := '=';
+    4: TextSymbol := '<=';
+    5: TextSymbol := '<';
+  end;
+  case Self.TestType.ToInteger of     // Perhaps do by frame type?
+    1,2,3,4,20,21: Result := Name + ': ' + Value + 'nm ' + '+' + TolPlus + '/' + '-' + TolMinus + 'nm';
+    5,15,18: Result := Name + ': ' + TextSymbol + Value + '% ' + LambdaFrom + '-' + LambdaTo  + 'nm';
+    7,8,9,16,17:  Result := Name + ': ' + TextSymbol +  Value + '% at ' + LambdaAt + 'nm';
+    10,11: Result := Name + ': ' + TextSymbol + ' OD' + Value + ' ' + LambdaFrom + '-' + LambdaTo + 'nm';
+    12:  Result := Name + ': ' + TextSymbol + ' OD' + Value + '@' + LambdaAt + 'nm';
   end;
 end;
 

@@ -1,28 +1,43 @@
 object EvalTestGroupFrame: TEvalTestGroupFrame
   Left = 0
   Top = 0
-  Width = 1363
-  Height = 830
+  Width = 1093
+  Height = 757
   TabOrder = 0
+  object Label3: TLabel
+    Left = 13
+    Top = 10
+    Width = 48
+    Height = 13
+    Caption = 'Operation'
+  end
   object Panel1: TPanel
     Left = 0
     Top = 0
-    Width = 1363
-    Height = 249
+    Width = 1093
+    Height = 265
     Align = alTop
-    Color = clAppWorkSpace
+    Color = clActiveBorder
     ParentBackground = False
     TabOrder = 0
+    ExplicitTop = -6
     object IDLabel: TLabel
-      Left = 11
-      Top = 12
-      Width = 43
+      Left = 13
+      Top = 10
+      Width = 62
       Height = 13
-      Caption = 'Group ID'
+      Caption = 'Operation ID'
+    end
+    object Label6: TLabel
+      Left = 140
+      Top = 10
+      Width = 48
+      Height = 13
+      Caption = 'Operation'
     end
     object SpecTextMemo: TMemo
       Left = 11
-      Top = 41
+      Top = 56
       Width = 318
       Height = 160
       Lines.Strings = (
@@ -30,8 +45,8 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
       TabOrder = 0
     end
     object IDBox: TEdit
-      Left = 60
-      Top = 9
+      Left = 140
+      Top = 29
       Width = 121
       Height = 21
       TabStop = False
@@ -41,7 +56,7 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
     end
     object LoadButton: TButton
       Left = 164
-      Top = 207
+      Top = 223
       Width = 77
       Height = 26
       Caption = 'Load Existing'
@@ -49,7 +64,7 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
     end
     object ParseButton: TButton
       Left = 79
-      Top = 207
+      Top = 223
       Width = 79
       Height = 26
       Caption = 'Parse'
@@ -57,7 +72,7 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
     end
     object AddEvalTestButton: TButton
       Left = 11
-      Top = 206
+      Top = 222
       Width = 62
       Height = 27
       Caption = 'Add Test'
@@ -65,16 +80,16 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
       OnClick = AddEvalTestButtonClick
     end
     object SetUpPanel: TPanel
-      Left = 351
-      Top = 41
-      Width = 314
+      Left = 375
+      Top = 53
+      Width = 498
       Height = 160
       Color = clWhite
       ParentBackground = False
       TabOrder = 5
       object Label4: TLabel
-        Left = 14
-        Top = 19
+        Left = 7
+        Top = 75
         Width = 47
         Height = 13
         Alignment = taCenter
@@ -88,8 +103,8 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
         Layout = tlCenter
       end
       object Label2: TLabel
-        Left = 42
-        Top = 66
+        Left = 23
+        Top = 12
         Width = 19
         Height = 13
         Alignment = taCenter
@@ -103,8 +118,8 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
         Layout = tlCenter
       end
       object Label5: TLabel
-        Left = 37
-        Top = 104
+        Left = 23
+        Top = 39
         Width = 24
         Height = 13
         Alignment = taCenter
@@ -118,38 +133,38 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
         Layout = tlCenter
       end
       object Label1: TLabel
-        Left = 145
-        Top = 104
+        Left = 133
+        Top = 39
         Width = 12
         Height = 13
         Caption = 'To'
       end
       object ComboBox1: TComboBox
-        Left = 67
-        Top = 20
-        Width = 121
+        Left = 60
+        Top = 70
+        Width = 149
         Height = 21
         DropDownCount = 10
         TabOrder = 0
       end
       object Edit1: TEdit
-        Left = 67
-        Top = 63
-        Width = 38
+        Left = 59
+        Top = 9
+        Width = 60
         Height = 21
         TabOrder = 1
       end
       object Edit2: TEdit
-        Left = 67
-        Top = 101
+        Left = 59
+        Top = 36
         Width = 60
         Height = 21
         TabOrder = 2
       end
       object Edit3: TEdit
-        Left = 167
-        Top = 101
-        Width = 57
+        Left = 151
+        Top = 36
+        Width = 58
         Height = 21
         TabOrder = 3
       end
@@ -157,13 +172,26 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
   end
   object EvalScrollBox: TScrollBox
     Left = 0
-    Top = 249
-    Width = 1363
-    Height = 653
-    Align = alTop
+    Top = 265
+    Width = 1093
+    Height = 492
+    Align = alClient
     BevelEdges = []
-    Color = clGradientActiveCaption
+    Color = clBtnFace
     ParentColor = False
     TabOrder = 1
+    ExplicitTop = 249
+    ExplicitWidth = 1073
+    ExplicitHeight = 480
+  end
+  object Edit4: TEdit
+    Left = 13
+    Top = 29
+    Width = 121
+    Height = 21
+    TabStop = False
+    ReadOnly = True
+    TabOrder = 2
+    Text = 'IDBox'
   end
 end
