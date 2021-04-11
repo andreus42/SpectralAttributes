@@ -43,43 +43,26 @@ type
     Label6: TLabel;
     procedure AddEvalTestButtonClick(Sender: TObject);
   private
-    procedure AddEvalTestPanel(TestID: Integer); overload;
-    procedure AddEvalTestPanel(EvalTest: TEvalTest); overload;
+    procedure AddEvalTestFrame(EvalTest: TEvalTest); overload;
   public
     PanelList: TList<Integer>;
     EvalTestGroup: TEvalTestGroup;
-    constructor CreateWithEvalGroup(AOwner: TComponent; EvalTestGroup: TEvalTestGroup);
-    constructor CreateWithGroupID(AOwner: TComponent; GroupID: Integer);  // Create with EvalGroup
-    constructor CreateWithInt(AOwner: TComponent; AnInt: Integer);   // future needs to create group like eval test
+    constructor Create(AOwner: TComponent; EvalTestGroup: TEvalTestGroup);
   end;
 
 
 implementation
 {$R *.dfm}
 
-// Add Eval Test from TestEvalObj to Grid
-procedure TEvalTestGroupFrame.AddEvalTestPanel(TestID: Integer);
-var
-  TestFrame: TEvalFrame;
-begin
-  TestFrame := TEvalFrame.CreateWithTestID(EvalScrollBox, TestID);
-  with TestFrame do
-  begin
-    Name := 'EvalFrame_' + TestID.ToString;
-    Parent := EvalScrollBox;
-    Align := alTop;
-  end;
-end;
-
 procedure TEvalTestGroupFrame.AddEvalTestButtonClick(Sender: TObject);
 var
   NewEvalTEest: TEvalTest;
 begin
   NewEvalTEest := TEvalTest.CreateNew(555, 1);  // TODO: EvalGroupObj to return GroupID, SetID
-  AddEvalTestPanel(NewEvalTEest);
+  AddEvalTestFrame(NewEvalTEest);
 end;
 
-procedure TEvalTestGroupFrame.AddEvalTestPanel(EvalTest: TEvalTest);
+procedure TEvalTestGroupFrame.AddEvalTestFrame(EvalTest: TEvalTest);
 var
   TestFrame: TEvalFrame;
 begin
@@ -92,7 +75,7 @@ begin
   end;
 end;
 
-constructor TEvalTestGroupFrame.CreateWithEvalGroup(AOwner: TComponent;
+constructor TEvalTestGroupFrame.Create(AOwner: TComponent;
   EvalTestGroup: TEvalTestGroup);
 var
   EvalTest: TEvalTest;
@@ -104,36 +87,8 @@ begin
   for EvalTest in EvalTestGroup.TestList do
   begin
     SpecTextMemo.Lines.Add(EvalTest.Stringify2);
-    AddEvalTestPanel(EvalTest.TestID);
+    AddEvalTestFrame(EvalTest);
   end;
-end;
-
-constructor TEvalTestGroupFrame.CreateWithGroupID(AOwner: TComponent; GroupID: Integer);
-var
-  EvalTest: TEvalTest;
-  TestID : Integer;
-begin
-  inherited Create(AOwner);
-  EvalTestGroup := TEvalTestGroup.Create(GroupID);
-  GroupDescEdit.Text := 'In-Process #' + EvalTestGroup.GroupID.ToString;
-  SpecTextMemo.Clear;
-  IDBox.Text := GroupID.ToString;
-  Name := 'EvalFrame' + GroupID.ToString;
-  for EvalTest in EvalTestGroup.TestList do
-  begin
-    SpecTextMemo.Lines.Add(EvalTest.Stringify2);
-    AddEvalTestPanel(EvalTest.TestID);
-  end;
-end;
-
-constructor TEvalTestGroupFrame.CreateWithInt(AOwner: TComponent;
-  AnInt: Integer);
-begin
-  inherited Create(AOwner);
-  EvalTestGroup := TEvalTestGroup.Create(AnInt);
-  SpecTextMemo.Clear;
-  IDBox.Text := AnInt.ToString;
-  Name := 'EvalFrame' + AnInt.ToString;
 end;
 
 end.

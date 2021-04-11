@@ -16,8 +16,11 @@ type
   TEvalTestGroup = class(TObject)      // Future TEvalGroup;
   public
     GroupID: Integer;
+    GroupNum: Integer;
+    SetID: Integer;
     TestList: TObjectList<TEvalTest>;
     constructor Create(GroupID: Integer);
+    constructor CreateNew(SetID: Integer);
     destructor destroy;
   end;
 
@@ -31,7 +34,7 @@ var
 begin
   // Initialize Params
   Self.GroupID := GroupID;
-  Self.TestList := TObjectList<TEvalTest>.Create;
+  TestList := TObjectList<TEvalTest>.Create;
 
 // Query
   Query := TADOQuery.Create(Nil);
@@ -52,6 +55,39 @@ begin
     Free;
   end;
 end;
+
+constructor TEvalTestGroup.CreateNew(SetID: Integer);
+var
+  Query: TADOQuery;
+  NextGroupID: Integer;
+begin
+  Query := TADOQuery.Create(Nil);
+  with query do
+  begin
+    Connection := _ChromaDataModule.ChromaData;
+    SQL.Add('select max(GroupID) last_id from EvalTestGroups');
+    Open;
+    NextGroupID := FieldByName('last_id').Value + 1;
+    Close;
+  end;
+  with query do
+  begin
+    SQL.Add('begin tran');
+    SQL.Add('Declare @SetID int = ' + SetID.ToString);
+    SQL.Add('Declare @GroupID int = ' + NextGroupID.ToString);
+    SQL.Add('Declare @NextGroupNum int = 1'); //Need to enumerate group nums
+    SQL.Add('insert into EvalTestGroups values (@GroupID, @SetID, @NextGroupNum)');
+    SQL.Add('commit tran');
+    ExecSQL;
+    Close;
+    Free;
+  end;
+    TestList := TObjectList<TEvalTest>.Create;
+    Self.GroupID := NextGroupID;
+    Self.GroupNum := 1;
+    Self.SetID := SetID;
+end;
+
 
 destructor TEvalTestGroup.destroy;
 begin

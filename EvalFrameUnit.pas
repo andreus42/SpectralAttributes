@@ -230,11 +230,14 @@ var
   Query: TADOQuery;
 begin
   Query := TADOQuery.Create(Nil);
-  Query.Connection := _ChromaDataModule.ChromaData;
-  Query.SQL.Add('delete from EvalTests where TestID = ' + EvalTest.TestID.ToString);
-  Query.ExecSQL;
-  Query.Free;
-  Self.Destroy;
+  with Query do
+  begin
+    Connection := _ChromaDataModule.ChromaData;
+    SQL.Add('delete from EvalTests where TestID = ' + EvalTest.TestID.ToString);
+    ExecSQL;
+    Free;
+  end;
+  Destroy;
 end;
 
 procedure TEvalFrame.SpeedButton2Click(Sender: TObject);

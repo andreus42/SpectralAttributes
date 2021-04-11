@@ -39,7 +39,7 @@ begin
   begin
     Connection := _ChromaDataModule.ChromaData;
     SQL.Add('select GroupID');
-    SQL.Add('from EvalTestGroup where SetID = ' + SetID.ToString);
+    SQL.Add('from EvalTestGroups where SetID = ' + SetID.ToString);
     Open;
     while not eof do
     begin
