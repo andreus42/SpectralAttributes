@@ -27,7 +27,7 @@ constructor TEvalTestGroup.Create(GroupID: Integer);
 var
   Query : TADOQuery;
   TestID: Integer;
-  TempEvalTest: TEvalTest;
+  EvalTest: TEvalTest;
 begin
   // Initialize Params
   Self.GroupID := GroupID;
@@ -35,20 +35,22 @@ begin
 
 // Query
   Query := TADOQuery.Create(Nil);
-  Query.Connection := _ChromaDataModule.ChromaData;
-  Query.SQL.Add('select distinct TestID');
-  Query.SQL.Add('from EvalTests where GroupID = ' + GroupID.ToString);
-  Query.Open;
-  while not Query.eof do
-    begin
-      // Loop to add TestIDs to TestList
-      TestID := Query.FieldByName('TestID').Value;
-      TempEvalTest := TEvalTest.Create(TestID);
-      TestList.Add(TempEvalTest);
-      Query.Next;
-    end;
-  Query.Close;
-  Query.Free;
+  with Query do
+  begin
+    Connection := _ChromaDataModule.ChromaData;
+    SQL.Add('select distinct TestID');
+    SQL.Add('from EvalTests where GroupID = ' + GroupID.ToString);
+    Open;
+    while not eof do
+      begin
+        TestID := Query.FieldByName('TestID').Value;
+        EvalTest := TEvalTest.Create(TestID);
+        TestList.Add(EvalTest);
+        Query.Next;
+      end;
+    Close;
+    Free;
+  end;
 end;
 
 destructor TEvalTestGroup.destroy;

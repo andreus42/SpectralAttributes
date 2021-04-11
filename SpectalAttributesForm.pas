@@ -17,25 +17,23 @@ uses
   EvalTestGroupFrameUnit,
   ChromaDataModule,
   TEvalTestUnit,
-  TEvalTestGroupUnit;
+  TEvalTestGroupUnit,
+  TEvalTestSetUnit;
 
   type
   T_SpectralAttributesForm = class(TForm)
     PageControl1: TPageControl;
-    Button2: TButton;
-    Button3: TButton;
+    DeleteTestButton: TButton;
+    AddTestGroupButton: TButton;
     SummaryTab: TTabSheet;
     SummaryPanel: TPanel;
     Memo1: TMemo;
     SummaryLabel: TLabel;
     Memo2: TMemo;
-//    function  GetTestGroups(TestSetNum: Integer): Integer;
-    procedure Button2Click(Sender: TObject);
+    procedure DeleteTestButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
-    procedure Button3Click(Sender: TObject);
+    procedure AddTestGroupButtonClick(Sender: TObject);
     procedure MakePageInt(K: Integer);
-
-    procedure UpdateButtonClick(Sender: TObject);
 
   type
     TMyTabSheet = class(TTabSheet)
@@ -45,7 +43,6 @@ uses
       ActiveButton: TButton;
       MySpecSheet: TEvalTestGroupFrame;
     end;
-
   private
     procedure MakePage(GroupID: Integer); overload;
     procedure MakePage(EvalTestGroup: TEvalTestGroup); overload;
@@ -59,7 +56,7 @@ var
   _SpectralAttributesForm: T_SpectralAttributesForm;
   I: integer;
   MyIntList: TList<Integer>;
-  Query: TADOQuery;
+  EvalTestSet: TEvalTestSet;
 
 
 implementation
@@ -69,25 +66,34 @@ implementation
 { Form 1 }
 
 procedure T_SpectralAttributesForm.FormCreate(Sender: TObject);
+// recreate this starting with EvalSetID
+
 // On creation, add all SpecGroups of the Spectral set
 var
-  Query : TADOQuery;
-  GroupID: Integer;
+//  Query : TADOQuery;
+//  GroupID: Integer;
+  EvalTestGroup: TEvalTestGroup;
 begin
-  Query := TADOQuery.Create(Nil);
-  Query.Connection := _ChromaDataModule.ChromaData;
-  Query.SQL.Add('select distinct GroupID');
-  Query.SQL.Add('from EvalTests where SetID = ' + SetID.ToString);
-  Query.Open;
-  while not Query.eof do
-    begin
-      GroupID := Query.FieldByName('GroupID').Value;
-      MakePage(GroupID);
-      Memo1.Lines.Add('Add Page: ' + GroupID.ToString);
-      Query.Next;
-    end;
-  Query.Close;
-  Query.Free;
+//  EvalTestSet := TEvalTestSet.Create(1);
+//  Query := TADOQuery.Create(Nil);
+//  Query.Connection := _ChromaDataModule.ChromaData;
+//  Query.SQL.Add('select distinct GroupID');
+//  Query.SQL.Add('from EvalTests where SetID = ' + SetID.ToString);
+//  Query.Open;
+//  while not Query.eof do
+//    begin
+//      GroupID := Query.FieldByName('GroupID').Value;
+//      MakePage(GroupID);
+//      Memo1.Lines.Add('Add Page: ' + GroupID.ToString);
+//      Query.Next;
+//    end;
+//  Query.Close;
+//  Query.Free;
+  for EvalTestGroup in EvalTestSet.EvalTestGroupList do
+  begin
+    MakePage(EvalTestGroup);
+  end;
+
 end;
 
 
@@ -133,21 +139,17 @@ begin
 end;
 
 // Create By GroupObj
-procedure T_SpectralAttributesForm.MakePage(MyEvalTestGroup: TEvalTestGroup);
+procedure T_SpectralAttributesForm.MakePage(EvalTestGroup: TEvalTestGroup);
 var
   ATabSheet: TMyTabSheet;
-  GroupID: Integer;
 begin
   ATabSheet := TMyTabSheet.Create(PageControl1);
-  GroupID := MyEvalTestGroup.GroupID;
   with ATabSheet do
   begin
-    PageList.Add(PageList.Count);
-    Caption := 'In-Process #' + PageList.Count.ToString;
-    Name := 'TabSheet' + PageList.Count.ToString;
+    Caption := 'In-Process #' + EvalTestGroup.ToString;
+    Name := 'TabSheet' + EvalTestGroup.ToString;
     PageControl := PageControl1;
-    Tag := GroupID;
-    MySpecSheet := TEvalTestGroupFrame.CreateWithEvalGroup(ATabSheet, MyEvalTestGroup);
+    MySpecSheet := TEvalTestGroupFrame.CreateWithEvalGroup(ATabSheet, EvalTestGroup);
     with MySpecSheet do
     begin
       Parent := ATabSheet;
@@ -157,7 +159,7 @@ begin
 end;
 
 
-procedure T_SpectralAttributesForm.Button2Click(Sender: TObject);
+procedure T_SpectralAttributesForm.DeleteTestButtonClick(Sender: TObject);
 var
   ActivePageName: String;
 begin
@@ -165,20 +167,7 @@ begin
   If (PageControl1.ActivePage <> SummaryTab) then PageControl1.ActivePage.Destroy;
 end;
 
-
-procedure T_SpectralAttributesForm.UpdateButtonClick(Sender: TObject);
-var
-  j: Integer;
-begin
-  for j := 1 to (PageControl1.PageCount-1) do
-  begin
-//    Application.MessageBox('Hello, World', 0, 0);
-//    Memo1.Text := Memo1.Text + ATabSheet.Name
-  end;
-end;
-
-
-procedure T_SpectralAttributesForm.Button3Click(Sender: TObject);
+procedure T_SpectralAttributesForm.AddTestGroupButtonClick(Sender: TObject);
 var
   NextPageNum: Integer;
 begin

@@ -38,7 +38,7 @@ type
     Edit2: TEdit;
     Edit3: TEdit;
     Label1: TLabel;
-    Edit4: TEdit;
+    GroupDescEdit: TEdit;
     Label3: TLabel;
     Label6: TLabel;
     procedure AddEvalTestButtonClick(Sender: TObject);
@@ -48,6 +48,7 @@ type
   public
     PanelList: TList<Integer>;
     EvalTestGroup: TEvalTestGroup;
+    constructor CreateWithEvalGroup(AOwner: TComponent; EvalTestGroup: TEvalTestGroup);
     constructor CreateWithGroupID(AOwner: TComponent; GroupID: Integer);  // Create with EvalGroup
     constructor CreateWithInt(AOwner: TComponent; AnInt: Integer);   // future needs to create group like eval test
   end;
@@ -91,23 +92,37 @@ begin
   end;
 end;
 
+constructor TEvalTestGroupFrame.CreateWithEvalGroup(AOwner: TComponent;
+  EvalTestGroup: TEvalTestGroup);
+var
+  EvalTest: TEvalTest;
+begin
+  inherited Create(AOwner);
+  SpecTextMemo.Clear;
+  GroupDescEdit.Text := 'In-Process #' + EvalTestGroup.GroupID.ToString;
+  Name := 'EvalFrame' + EvalTestGroup.GroupID.ToString;
+  for EvalTest in EvalTestGroup.TestList do
+  begin
+    SpecTextMemo.Lines.Add(EvalTest.Stringify2);
+    AddEvalTestPanel(EvalTest.TestID);
+  end;
+end;
+
 constructor TEvalTestGroupFrame.CreateWithGroupID(AOwner: TComponent; GroupID: Integer);
 var
-  AnEvalTest: TEvalTest;
+  EvalTest: TEvalTest;
   TestID : Integer;
-  I: Integer;
 begin
   inherited Create(AOwner);
   EvalTestGroup := TEvalTestGroup.Create(GroupID);
+  GroupDescEdit.Text := 'In-Process #' + EvalTestGroup.GroupID.ToString;
   SpecTextMemo.Clear;
   IDBox.Text := GroupID.ToString;
   Name := 'EvalFrame' + GroupID.ToString;
-
-  // Loop through list of tests
-  for AnEvalTest in EvalTestGroup.TestList do
+  for EvalTest in EvalTestGroup.TestList do
   begin
-    SpecTextMemo.Lines.Add(AnEvalTest.Stringify2);
-    AddEvalTestPanel(AnEvalTest.TestID);
+    SpecTextMemo.Lines.Add(EvalTest.Stringify2);
+    AddEvalTestPanel(EvalTest.TestID);
   end;
 end;
 

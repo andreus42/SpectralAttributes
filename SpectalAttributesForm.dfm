@@ -61,22 +61,22 @@ object _SpectralAttributesForm: T_SpectralAttributesForm
       end
     end
   end
-  object Button2: TButton
+  object DeleteTestButton: TButton
     Left = 119
     Top = 8
     Width = 82
     Height = 25
     Caption = '&Delete Test'
     TabOrder = 1
-    OnClick = Button2Click
+    OnClick = DeleteTestButtonClick
   end
-  object Button3: TButton
+  object AddTestGroupButton: TButton
     Left = 20
     Top = 8
     Width = 93
     Height = 25
     Caption = '&Add Test Group'
     TabOrder = 2
-    OnClick = Button3Click
+    OnClick = AddTestGroupButtonClick
   end
 end

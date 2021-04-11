@@ -41,7 +41,6 @@ type
 
 implementation
 
-// CONSTRUCTORS //////////////
 // Create Given Existing ID
 constructor TEvalTest.Create(TestID: Integer);
 var
@@ -180,17 +179,17 @@ begin
     SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, 7, '''')');
     case FrameTypeID of
       1: begin
-          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, 10, ''0'')');
-          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, 11, ''0'')');
+          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, 10, '''')');
+          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, 11, '''')');
       end;
       2,3: begin
-          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, 4, ''0'')');
-          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, 5, ''0'')');
-          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, 9, ''0'')');
+          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, 4, '''')');
+          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, 5, '''')');
+          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, 9, '''')');
       end;
       4,5: begin
-          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, 6, ''0'')');
-          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, 9, ''0'')');
+          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, 6, '''')');
+          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, 9, '''')');
       end;
     end;
     ExecSQL;

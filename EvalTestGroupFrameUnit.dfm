@@ -45,7 +45,7 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
       TabOrder = 0
     end
     object IDBox: TEdit
-      Left = 140
+      Left = 13
       Top = 29
       Width = 121
       Height = 21
@@ -184,8 +184,8 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
     ExplicitWidth = 1073
     ExplicitHeight = 480
   end
-  object Edit4: TEdit
-    Left = 13
+  object GroupDescEdit: TEdit
+    Left = 140
     Top = 29
     Width = 121
     Height = 21
