@@ -1,49 +1,13 @@
 object EvalFrame: TEvalFrame
   Left = 0
   Top = 0
-  Width = 1473
-  Height = 107
+  Width = 1015
+  Height = 31
   Align = alClient
   TabOrder = 0
-  object AtNmLabel: TLabel
-    Left = 679
-    Top = 3
-    Width = 14
-    Height = 13
-    Caption = 'nm'
-    Layout = tlCenter
-    Visible = False
-  end
-  object FromNmLabel: TLabel
-    Left = 561
-    Top = 3
-    Width = 14
-    Height = 13
-    Caption = 'nm'
-    Layout = tlCenter
-    Visible = False
-  end
-  object MinusTolLabel: TLabel
-    Left = 932
-    Top = 3
-    Width = 14
-    Height = 13
-    Caption = 'nm'
-    Layout = tlCenter
-    Visible = False
-  end
-  object PlusTolLabel: TLabel
-    Left = 791
-    Top = 3
-    Width = 14
-    Height = 13
-    Caption = 'nm'
-    Layout = tlCenter
-    Visible = False
-  end
   object SpecLabel: TLabel
-    Left = 416
-    Top = 14
+    Left = 244
+    Top = 7
     Width = 11
     Height = 13
     Caption = '%'
@@ -59,22 +23,15 @@ object EvalFrame: TEvalFrame
     OnClick = SpeedButton1Click
   end
   object TestIDLabel: TLabel
-    Left = 1015
-    Top = 3
-    Width = 32
-    Height = 13
+    Left = 966
+    Top = 0
+    Width = 49
+    Height = 31
+    Align = alRight
     Alignment = taCenter
     Caption = 'TestID'
     Layout = tlCenter
-  end
-  object ToNmLabel: TLabel
-    Left = 525
-    Top = 2
-    Width = 14
-    Height = 13
-    Caption = 'nm'
-    Layout = tlBottom
-    Visible = False
+    ExplicitLeft = 977
   end
   object DBLookupComboBox1: TDBLookupComboBox
     Left = 59
@@ -90,71 +47,10 @@ object EvalFrame: TEvalFrame
     TabOrder = 0
     OnCloseUp = DBLookupComboBox1CloseUp
   end
-  object AtLambdaLabeledEdit: TLabeledEdit
-    Left = 710
-    Top = 3
-    Width = 75
-    Height = 21
-    Alignment = taCenter
-    EditLabel.Width = 11
-    EditLabel.Height = 13
-    EditLabel.Caption = 'At'
-    EditLabel.Layout = tlCenter
-    LabelPosition = lpLeft
-    TabOrder = 6
-    Visible = False
-    OnExit = UpdateParameter
-  end
-  object FromLambdaLabeledEdit: TLabeledEdit
-    Left = 450
-    Top = -1
-    Width = 75
-    Height = 21
-    Alignment = taCenter
-    EditLabel.Width = 24
-    EditLabel.Height = 13
-    EditLabel.Caption = 'From'
-    EditLabel.Layout = tlCenter
-    LabelPosition = lpLeft
-    TabOrder = 3
-    Visible = False
-    OnExit = UpdateParameter
-  end
-  object MinusTolLabeledEdit: TLabeledEdit
-    Left = 851
-    Top = 3
-    Width = 75
-    Height = 21
-    Alignment = taCenter
-    EditLabel.Width = 4
-    EditLabel.Height = 13
-    EditLabel.Caption = '-'
-    EditLabel.Layout = tlCenter
-    LabelPosition = lpLeft
-    TabOrder = 7
-    Visible = False
-    OnExit = UpdateParameter
-  end
-  object PlusTolLabeledEdit: TLabeledEdit
-    Left = 598
-    Top = 2
-    Width = 75
-    Height = 21
-    Alignment = taCenter
-    EditLabel.Width = 8
-    EditLabel.Height = 13
-    EditLabel.Caption = '+'
-    EditLabel.Layout = tlCenter
-    LabelPosition = lpLeft
-    TabOrder = 5
-    Visible = False
-    OnChange = UpdateParameter
-    OnExit = UpdateParameter
-  end
   object SpecEdit: TEdit
     Tag = 7
-    Left = 518
-    Top = 55
+    Left = 261
+    Top = 3
     Width = 75
     Height = 21
     Alignment = taCenter
@@ -162,29 +58,12 @@ object EvalFrame: TEvalFrame
     Visible = False
     OnExit = UpdateParameter
   end
-  object ToLambdaLabeledEdit: TLabeledEdit
-    Tag = 5
-    Left = 450
-    Top = 2
-    Width = 75
-    Height = 21
-    Alignment = taCenter
-    EditLabel.Width = 12
-    EditLabel.Height = 13
-    EditLabel.Caption = 'To'
-    EditLabel.Layout = tlCenter
-    LabelPosition = lpLeft
-    TabOrder = 4
-    Visible = False
-    OnChange = UpdateParameter
-    OnExit = UpdateParameter
-  end
   object RankEdit: TEdit
     Left = 29
     Top = 3
     Width = 24
     Height = 21
-    TabOrder = 9
+    TabOrder = 3
     OnChange = UpdateParameter
   end
   object SymbolComboBox: TComboBox
@@ -202,58 +81,207 @@ object EvalFrame: TEvalFrame
       '<='
       '<')
   end
-  object FilepathEdit: TEdit
-    Left = 1176
-    Top = -1
-    Width = 121
+  object RefOnlyCheckBox: TCheckBox
+    Left = 864
+    Top = 7
+    Width = 73
+    Height = 17
+    Caption = 'Ref Only'
+    TabOrder = 4
+    Visible = False
+    OnClick = RefOnlyCheckBoxClick
+  end
+  object FilepathEdit: TLabeledEdit
+    Left = 272
+    Top = 3
+    Width = 38
     Height = 21
-    TabOrder = 8
+    EditLabel.Width = 38
+    EditLabel.Height = 13
+    EditLabel.Caption = 'Filepath'
+    LabelPosition = lpLeft
+    TabOrder = 5
     Visible = False
     OnExit = UpdateParameter
   end
-  object TargetCheckBox: TCheckBox
-    Left = 1066
+  object FromLambdaEdit_v3: DoulbedLabeledEdit_v3
+    Left = 342
     Top = 3
-    Width = 63
-    Height = 17
-    Caption = 'Target'
-    TabOrder = 10
-    Visible = False
-    OnClick = TargetCheckBoxClick
-  end
-  object SpecEdit1: DoulbedLabeledEdit
-    Left = 260
-    Top = 41
-    Width = 105
-    Height = 21
-    AEdit.Left = 15
+    Width = 125
+    Height = 25
+    AEdit.Left = 33
     AEdit.Top = 0
     AEdit.Width = 75
     AEdit.Height = 21
-    AEdit.Align = alLeft
+    AEdit.Alignment = taCenter
+    AEdit.TabOrder = 0
+    AEdit.OnExit = UpdateParameter
+    LLabel.Left = 0
+    LLabel.Top = 0
+    LLabel.Width = 36
+    LLabel.Height = 25
+    LLabel.Align = alLeft
+    LLabel.Alignment = taRightJustify
+    LLabel.Caption = '   From '
+    LLabel.Layout = tlCenter
+    LLabel.ExplicitLeft = -3
+    LLabel.ExplicitHeight = 13
+    RLabel.Left = 111
+    RLabel.Top = 0
+    RLabel.Width = 14
+    RLabel.Height = 25
+    RLabel.Align = alRight
+    RLabel.Caption = 'nm'
+    RLabel.Layout = tlCenter
+    RLabel.ExplicitLeft = 107
+    LCaption = '   From '
+    RCaption = 'nm'
+    TabOrder = 6
+    TabStop = False
+    Text = ''
+  end
+  object AtLambdaEdit_v3: DoulbedLabeledEdit_v3
+    Left = 473
+    Top = 3
+    Width = 125
+    Height = 25
+    AEdit.Left = 33
+    AEdit.Top = 0
+    AEdit.Width = 75
+    AEdit.Height = 21
+    AEdit.Alignment = taCenter
     AEdit.TabOrder = 0
     LLabel.Left = 0
     LLabel.Top = 0
-    LLabel.Width = 15
-    LLabel.Height = 21
+    LLabel.Width = 29
+    LLabel.Height = 25
     LLabel.Align = alLeft
-    LLabel.Caption = 'OD'
+    LLabel.Alignment = taRightJustify
+    LLabel.Caption = '      At'
     LLabel.Layout = tlCenter
+    LLabel.ExplicitLeft = 3
     LLabel.ExplicitHeight = 13
-    RLabel.Left = 90
+    RLabel.Left = 111
     RLabel.Top = 0
-    RLabel.Width = 11
-    RLabel.Height = 21
-    RLabel.Align = alLeft
-    RLabel.Caption = '%'
+    RLabel.Width = 14
+    RLabel.Height = 25
+    RLabel.Align = alRight
+    RLabel.Caption = 'nm'
     RLabel.Layout = tlCenter
+    RLabel.ExplicitLeft = 114
     RLabel.ExplicitHeight = 13
-    LCaption = 'OD'
-    RCaption = '%'
-    LLabelSpacing = 2
-    RLabelSpacing = 2
-    OnExit = UpdateParameter
-    TabOrder = 11
+    LCaption = '       At'
+    RCaption = 'nm'
+    TabOrder = 7
+    TabStop = False
+    Text = ''
+  end
+  object ToLambdaEdit_v3: DoulbedLabeledEdit_v3
+    Left = 470
+    Top = 3
+    Width = 125
+    Height = 25
+    AEdit.Left = 33
+    AEdit.Top = 0
+    AEdit.Width = 75
+    AEdit.Height = 21
+    AEdit.Alignment = taCenter
+    AEdit.TabOrder = 0
+    AEdit.OnExit = UpdateParameter
+    LLabel.Left = 0
+    LLabel.Top = 0
+    LLabel.Width = 36
+    LLabel.Height = 25
+    LLabel.Align = alLeft
+    LLabel.Alignment = taRightJustify
+    LLabel.Caption = '       To '
+    LLabel.Layout = tlCenter
+    LLabel.ExplicitLeft = -6
+    LLabel.ExplicitHeight = 13
+    RLabel.Left = 111
+    RLabel.Top = 0
+    RLabel.Width = 14
+    RLabel.Height = 25
+    RLabel.Align = alRight
+    RLabel.Caption = 'nm  '
+    RLabel.Layout = tlCenter
+    LCaption = '       To '
+    RCaption = 'nm'
+    TabOrder = 8
+    TabStop = False
+    Text = ''
+  end
+  object PlusTolEdit_v3: DoulbedLabeledEdit_v3
+    Left = 601
+    Top = 3
+    Width = 125
+    Height = 25
+    AEdit.Left = 33
+    AEdit.Top = 0
+    AEdit.Width = 75
+    AEdit.Height = 21
+    AEdit.Alignment = taCenter
+    AEdit.TabOrder = 0
+    AEdit.OnExit = UpdateParameter
+    LLabel.Left = 0
+    LLabel.Top = 0
+    LLabel.Width = 29
+    LLabel.Height = 25
+    LLabel.Align = alLeft
+    LLabel.Alignment = taRightJustify
+    LLabel.Caption = '       +'
+    LLabel.Layout = tlCenter
+    LLabel.ExplicitLeft = -3
+    LLabel.ExplicitHeight = 13
+    RLabel.Left = 111
+    RLabel.Top = 0
+    RLabel.Width = 14
+    RLabel.Height = 25
+    RLabel.Align = alRight
+    RLabel.Caption = 'nm'
+    RLabel.Layout = tlCenter
+    RLabel.ExplicitLeft = 114
+    RLabel.ExplicitHeight = 13
+    LCaption = '       +'
+    RCaption = 'nm'
+    TabOrder = 9
+    TabStop = False
+    Text = ''
+  end
+  object MinusTolEdit_v3: DoulbedLabeledEdit_v3
+    Left = 724
+    Top = 3
+    Width = 125
+    Height = 25
+    AEdit.Left = 33
+    AEdit.Top = 0
+    AEdit.Width = 75
+    AEdit.Height = 21
+    AEdit.Alignment = taCenter
+    AEdit.TabOrder = 0
+    AEdit.OnExit = UpdateParameter
+    LLabel.Left = 0
+    LLabel.Top = 0
+    LLabel.Width = 28
+    LLabel.Height = 25
+    LLabel.Align = alLeft
+    LLabel.Alignment = taRightJustify
+    LLabel.Caption = '        -'
+    LLabel.Layout = tlCenter
+    LLabel.ExplicitLeft = 3
+    LLabel.ExplicitHeight = 13
+    RLabel.Left = 111
+    RLabel.Top = 0
+    RLabel.Width = 14
+    RLabel.Height = 25
+    RLabel.Align = alRight
+    RLabel.Caption = 'nm'
+    RLabel.Layout = tlCenter
+    RLabel.ExplicitLeft = 114
+    RLabel.ExplicitHeight = 13
+    LCaption = '        -'
+    RCaption = 'nm'
+    TabOrder = 10
     TabStop = False
     Text = ''
   end

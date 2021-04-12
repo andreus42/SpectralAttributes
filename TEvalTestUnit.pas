@@ -190,16 +190,16 @@ begin
     SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, 2, ''0'')');
     SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, 7, '''')');
     case FrameTypeID of
-      1: begin
+      1: begin  //With Tol+, Tol-, CWL, FWHM, Cuton, Cutoff
           SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, 10, '''')');
           SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, 11, '''')');
       end;
-      2,3: begin
+      2,3: begin  //To-From: T-Avg, R-Avg, B-Avg
           SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, 4, '''')');
           SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, 5, '''')');
           SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, 9, '''')');
       end;
-      4,5: begin
+      4,5: begin  //At: T-Avg@, R-Avg@, B-Avg@
           SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, 6, '''')');
           SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, 9, '''')');
       end;
@@ -219,12 +219,12 @@ begin
     4: TextSymbol := '<=';
     5: TextSymbol := '<';
   end;
-  case Self.TestType.ToInteger of     // Perhaps do by frame type?
-    1,2,3,4,20,21: Result := Name + ': ' + Value + 'nm ' + '+' + TolPlus + '/' + '-' + TolMinus + 'nm';
-    5,15,18: Result := Name + ': ' + TextSymbol + Value + '% ' + LambdaFrom + '-' + LambdaTo  + 'nm';
-    7,8,9,16,17:  Result := Name + ': ' + TextSymbol +  Value + '% at ' + LambdaAt + 'nm';
-    10,11: Result := Name + ': ' + TextSymbol + ' OD' + Value + ' ' + LambdaFrom + '-' + LambdaTo + 'nm';
-    12:  Result := Name + ': ' + TextSymbol + ' OD' + Value + '@' + LambdaAt + 'nm';
+  case Self.FrameType of     // Perhaps do by frame type?
+    1: Result := Name + ': ' + Value + 'nm ' + '+' + TolPlus + '/' + '-' + TolMinus + 'nm';
+    2: Result := Name + ': ' + TextSymbol + Value + '% ' + LambdaFrom + '-' + LambdaTo  + 'nm';
+    3: Result := Name + ': ' + TextSymbol +  Value + '% at ' + LambdaAt + 'nm';
+    4: Result := Name + ': ' + TextSymbol + ' OD' + Value + ' ' + LambdaFrom + '-' + LambdaTo + 'nm';
+    5: Result := Name + ': ' + TextSymbol + ' OD' + Value + '@' + LambdaAt + 'nm';
   end;
 end;
 
