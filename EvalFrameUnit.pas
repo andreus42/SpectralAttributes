@@ -12,7 +12,7 @@ uses
 
   // Mine
   ChromaDataModule,
-  TEvalTestUnit;
+  TEvalTestUnit, DoubledLabeledEdit;
 
 type
   TEvalFrame = class(TFrame)
@@ -42,6 +42,7 @@ type
     SymbolComboBox: TComboBox;
     FilepathEdit: TEdit;
     TargetCheckBox: TCheckBox;
+    SpecEdit1: DoulbedLabeledEdit;
     constructor CreateWithTestID (AOwner: TComponent; TestID: Integer);
     constructor Create (AOwner: TComponent);
     procedure SpeedButton1Click(Sender: TObject);
@@ -273,6 +274,8 @@ procedure TEvalFrame.UpdateParameter(Sender: TObject);
 begin
   if (Sender = SpecEdit) and (SpecEdit.Text <> '') then
     EvalTest.UpdateParameters(SpecEdit.Text, SpecParam) // SpecEdit.Text
+  else if (Sender = SpecEdit1) and (SpecEdit1.AEdit.Text <> '') then
+    EvalTest.UpdateParameters(SpecEdit1.AEdit.Text, SpecParam) // SpecEdit.Text
   else if (Sender = RankEdit) and (RankEdit.Text <> '') then
     EvalTest.UpdateParameters(RankEdit.Text, RankParam)
   else if (Sender = SymbolComboBox) and (SymbolComboBox.ItemIndex <> -1) then

@@ -1,15 +1,15 @@
 object EvalFrame: TEvalFrame
   Left = 0
   Top = 0
-  Width = 1076
-  Height = 26
+  Width = 1473
+  Height = 107
   Align = alClient
   TabOrder = 0
   object AtNmLabel: TLabel
     Left = 679
     Top = 3
     Width = 14
-    Height = 21
+    Height = 13
     Caption = 'nm'
     Layout = tlCenter
     Visible = False
@@ -18,16 +18,16 @@ object EvalFrame: TEvalFrame
     Left = 561
     Top = 3
     Width = 14
-    Height = 21
+    Height = 13
     Caption = 'nm'
     Layout = tlCenter
     Visible = False
   end
   object MinusTolLabel: TLabel
-    Left = 900
+    Left = 932
     Top = 3
     Width = 14
-    Height = 21
+    Height = 13
     Caption = 'nm'
     Layout = tlCenter
     Visible = False
@@ -36,16 +36,16 @@ object EvalFrame: TEvalFrame
     Left = 791
     Top = 3
     Width = 14
-    Height = 21
+    Height = 13
     Caption = 'nm'
     Layout = tlCenter
     Visible = False
   end
   object SpecLabel: TLabel
-    Left = 336
-    Top = 3
+    Left = 416
+    Top = 14
     Width = 11
-    Height = 21
+    Height = 13
     Caption = '%'
     Layout = tlCenter
     Visible = False
@@ -59,10 +59,10 @@ object EvalFrame: TEvalFrame
     OnClick = SpeedButton1Click
   end
   object TestIDLabel: TLabel
-    Left = 941
+    Left = 1015
     Top = 3
     Width = 32
-    Height = 21
+    Height = 13
     Alignment = taCenter
     Caption = 'TestID'
     Layout = tlCenter
@@ -71,7 +71,7 @@ object EvalFrame: TEvalFrame
     Left = 525
     Top = 2
     Width = 14
-    Height = 21
+    Height = 13
     Caption = 'nm'
     Layout = tlBottom
     Visible = False
@@ -106,8 +106,8 @@ object EvalFrame: TEvalFrame
     OnExit = UpdateParameter
   end
   object FromLambdaLabeledEdit: TLabeledEdit
-    Left = 369
-    Top = 3
+    Left = 450
+    Top = -1
     Width = 75
     Height = 21
     Alignment = taCenter
@@ -121,7 +121,7 @@ object EvalFrame: TEvalFrame
     OnExit = UpdateParameter
   end
   object MinusTolLabeledEdit: TLabeledEdit
-    Left = 819
+    Left = 851
     Top = 3
     Width = 75
     Height = 21
@@ -153,8 +153,8 @@ object EvalFrame: TEvalFrame
   end
   object SpecEdit: TEdit
     Tag = 7
-    Left = 255
-    Top = 3
+    Left = 518
+    Top = 55
     Width = 75
     Height = 21
     Alignment = taCenter
@@ -203,8 +203,8 @@ object EvalFrame: TEvalFrame
       '<')
   end
   object FilepathEdit: TEdit
-    Left = 912
-    Top = 3
+    Left = 1176
+    Top = -1
     Width = 121
     Height = 21
     TabOrder = 8
@@ -212,14 +212,50 @@ object EvalFrame: TEvalFrame
     OnExit = UpdateParameter
   end
   object TargetCheckBox: TCheckBox
-    Left = 857
-    Top = 5
-    Width = 57
+    Left = 1066
+    Top = 3
+    Width = 63
     Height = 17
     Caption = 'Target'
     TabOrder = 10
     Visible = False
     OnClick = TargetCheckBoxClick
+  end
+  object SpecEdit1: DoulbedLabeledEdit
+    Left = 260
+    Top = 41
+    Width = 105
+    Height = 21
+    AEdit.Left = 15
+    AEdit.Top = 0
+    AEdit.Width = 75
+    AEdit.Height = 21
+    AEdit.Align = alLeft
+    AEdit.TabOrder = 0
+    LLabel.Left = 0
+    LLabel.Top = 0
+    LLabel.Width = 15
+    LLabel.Height = 21
+    LLabel.Align = alLeft
+    LLabel.Caption = 'OD'
+    LLabel.Layout = tlCenter
+    LLabel.ExplicitHeight = 13
+    RLabel.Left = 90
+    RLabel.Top = 0
+    RLabel.Width = 11
+    RLabel.Height = 21
+    RLabel.Align = alLeft
+    RLabel.Caption = '%'
+    RLabel.Layout = tlCenter
+    RLabel.ExplicitHeight = 13
+    LCaption = 'OD'
+    RCaption = '%'
+    LLabelSpacing = 2
+    RLabelSpacing = 2
+    OnExit = UpdateParameter
+    TabOrder = 11
+    TabStop = False
+    Text = ''
   end
   object ADODataSet1: TADODataSet
     Active = True
