@@ -20,7 +20,6 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
     Color = clActiveBorder
     ParentBackground = False
     TabOrder = 0
-    ExplicitTop = -6
     object IDLabel: TLabel
       Left = 13
       Top = 10
@@ -180,9 +179,6 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
     Color = clBtnFace
     ParentColor = False
     TabOrder = 1
-    ExplicitTop = 249
-    ExplicitWidth = 1073
-    ExplicitHeight = 480
   end
   object GroupDescEdit: TEdit
     Left = 140

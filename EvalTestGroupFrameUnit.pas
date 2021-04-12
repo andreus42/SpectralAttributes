@@ -86,7 +86,7 @@ procedure TEvalTestGroupFrame.AddEvalTestFrame(EvalTest: TEvalTest);
 var
   TestFrame: TEvalFrame;
 begin
-  TestFrame := TEvalFrame.CreateWithTestID(EvalScrollBox, EvalTest.TestID);
+  TestFrame := TEvalFrame.CreateWith(EvalScrollBox, EvalTest.TestID);
   with TestFrame do
   begin
     Name := 'EvalFrame_' + EvalTest.TestID.ToString;
