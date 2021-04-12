@@ -47,33 +47,14 @@ type
   public
     PanelList: TList<Integer>;
     EvalTestGroup: TEvalTestGroup;
+    GroupID: Integer;
+    SetID: Integer;
     constructor Create(AOwner: TComponent; EvalTestGroup: TEvalTestGroup);
   end;
 
 
 implementation
 {$R *.dfm}
-
-procedure TEvalTestGroupFrame.AddEvalTestButtonClick(Sender: TObject);
-var
-  NewEvalTEest: TEvalTest;
-begin
-  NewEvalTEest := TEvalTest.CreateNew(555, 1);  // TODO: EvalGroupObj to return GroupID, SetID
-  AddEvalTestFrame(NewEvalTEest);
-end;
-
-procedure TEvalTestGroupFrame.AddEvalTestFrame(EvalTest: TEvalTest);
-var
-  TestFrame: TEvalFrame;
-begin
-  TestFrame := TEvalFrame.CreateWithTestID(EvalScrollBox, EvalTest.TestID);
-  with TestFrame do
-  begin
-    Name := 'EvalFrame_' + EvalTest.TestID.ToString;
-    Parent := EvalScrollBox;
-    Align := alTop;
-  end;
-end;
 
 constructor TEvalTestGroupFrame.Create(AOwner: TComponent;
   EvalTestGroup: TEvalTestGroup);
@@ -88,6 +69,29 @@ begin
   begin
     SpecTextMemo.Lines.Add(EvalTest.Stringify2);
     AddEvalTestFrame(EvalTest);
+  end;
+  Self.GroupID := EvalTestGroup.GroupID;
+  Self.SetID := EvalTestGroup.SetID;
+end;
+
+procedure TEvalTestGroupFrame.AddEvalTestButtonClick(Sender: TObject);
+var
+  NewEvalTEest: TEvalTest;
+begin
+  NewEvalTEest := TEvalTest.CreateNew(GroupID, SetID);
+  AddEvalTestFrame(NewEvalTEest);
+end;
+
+procedure TEvalTestGroupFrame.AddEvalTestFrame(EvalTest: TEvalTest);
+var
+  TestFrame: TEvalFrame;
+begin
+  TestFrame := TEvalFrame.CreateWithTestID(EvalScrollBox, EvalTest.TestID);
+  with TestFrame do
+  begin
+    Name := 'EvalFrame_' + EvalTest.TestID.ToString;
+    Parent := EvalScrollBox;
+    Align := alTop;
   end;
 end;
 

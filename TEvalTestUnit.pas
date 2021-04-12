@@ -39,6 +39,18 @@ type
     procedure UpdateParameters(ParamValue: String; ParamID: Integer);
   end;
 
+const
+  RankParam = 2;
+  TestTypeParam = 3;
+  FromLambdaParam = 4;
+  ToLambdaParam = 5;
+  AtLambdaParam = 6;
+  SpecParam = 7;
+  FilepathParam = 8;
+  SymbolParam = 9;
+  PlusTolParam = 10;
+  MinusTolParam = 11;
+
 implementation
 
 // Create Given Existing ID
@@ -75,16 +87,16 @@ begin
     ParamID := Query1.FieldByName('ParamID').Value;
     ParamValue := Query1.FieldByName('ParamValue').Value;
     Case ParamID of
-      2 : Rank := ParamValue;
-      3 : TestType := ParamValue;
-      4 : LambdaFrom := ParamValue;
-      5 : LambdaTo := ParamValue;
-      6 : LambdaAt := ParamValue;
-      7 : Value := ParamValue;
-      8 : Filepath := ParamValue;
-      9 : Symbol := ParamValue.ToInteger;
-      10: TolPlus := ParamValue;
-      11: TolMinus := ParamValue;
+      RankParam: Rank := ParamValue;
+      TestTypeParam: TestType := ParamValue;
+      FromLambdaParam: LambdaFrom := ParamValue;
+      ToLambdaParam: LambdaTo := ParamValue;
+      AtLambdaParam: LambdaAt := ParamValue;
+      SpecParam: Value := ParamValue;
+      FilepathParam: Filepath := ParamValue;
+      SymbolParam: Symbol := ParamValue.ToInteger;
+      PlusTolParam: TolPlus := ParamValue;
+      MinusTolParam: TolMinus := ParamValue;
     End;
     Query1.Next;
   end;

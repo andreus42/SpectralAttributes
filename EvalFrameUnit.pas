@@ -41,6 +41,7 @@ type
     ADODataSet1ParamName: TStringField;
     SymbolComboBox: TComboBox;
     FilepathEdit: TEdit;
+    TargetCheckBox: TCheckBox;
     constructor CreateWithTestID (AOwner: TComponent; TestID: Integer);
     constructor Create (AOwner: TComponent);
     procedure SpeedButton1Click(Sender: TObject);
@@ -50,6 +51,7 @@ type
     procedure DBLookupComboBox1CloseUp(Sender: TObject);
     procedure UpdateParameter(Sender: TObject);
     procedure SpeedButton2Click(Sender: TObject);
+    procedure TargetCheckBoxClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -65,10 +67,9 @@ constructor TEvalFrame.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   ADODataSet2.Parameters.ParamByName('TestID').Value := 0;
-//  DBLookupComboBox1.Refresh;
 end;
 
-constructor TEvalFrame.CreateWithTestID(AOwner: TComponent; TestID: Integer);
+constructor TEvalFrame.CreateWithTestID(AOwner: TComponent; TestID: Integer);   // refactor to have eval test parameter
 var
   Query: TADOQuery;
 begin
@@ -91,13 +92,14 @@ end;
 
 procedure TEvalFrame.ShowFrame;
 const
-  ControlOffSet = 250;
+  ControlOffSet = 290;
   Space = 145;
   LabelOffset = 78;
   P1 = 200;
   P2 = ControlOffSet + Space*0;
   P3 = ControlOffSet + Space*1;
   P4 = ControlOffSet + Space*2;
+  P5 = ControlOffSet + Space*3;
 begin
   // Set locations of controls
   SpecEdit.Left := P2;
@@ -126,6 +128,7 @@ begin
             PlusTolLabel.Visible := True;
             MinusTolLabeledEdit.Visible := True;
             MinusTolLabel.Visible := True;
+            TargetCheckBox.Visible := True;
         end;
     2:  begin
             SpecLabel.Caption := '%';
@@ -149,6 +152,7 @@ begin
             SymbolComboBox.Visible := True;
             AtLambdaLabeledEdit.Visible := True;
             AtNmLabel.Visible := True;
+            TargetCheckBox.Visible := True;
         end;
     5:  begin
             SpecLabel.Caption := 'OD';
@@ -156,6 +160,7 @@ begin
             SymbolComboBox.Visible := True;
             AtLambdaLabeledEdit.Visible := True;
             AtNmLabel.Visible := True;
+            TargetCheckBox.Visible := True;
         end;
   end;
 end;
@@ -223,6 +228,7 @@ begin
   PlusTolLabel.Visible :=  False;
   MinusTolLabeledEdit.Visible :=  False;
   MinusTolLabel.Visible :=  False;
+  TargetCheckBox.Visible := False;
 end;
 
 procedure TEvalFrame.SpeedButton1Click(Sender: TObject);
@@ -245,35 +251,42 @@ begin
   Self.ShowFrame;
 end;
 
+procedure TEvalFrame.TargetCheckBoxClick(Sender: TObject);
+begin
+  if TargetCheckBox.Checked then
+  begin
+    PlusTolLabeledEdit.Visible :=  False;
+    PlusTolLabel.Visible :=  False;
+    MinusTolLabeledEdit.Visible :=  False;
+    MinusTolLabel.Visible :=  False;
+  end
+  else
+  begin
+    PlusTolLabeledEdit.Visible :=  True;
+    PlusTolLabel.Visible :=  True;
+    MinusTolLabeledEdit.Visible :=  True;
+    MinusTolLabel.Visible :=  True;
+  end;
+end;
+
 procedure TEvalFrame.UpdateParameter(Sender: TObject);
-const
-  RankParam = 2;
-  TestTypeParam = 3;
-  FromLambdaParam = 4;
-  ToLambdaParam = 5;
-  AtLambdaParam = 6;
-  SpecParam = 7;
-  FilepathParam = 8;
-  SymbolParam = 9;
-  PlusTolParam = 10;
-  MinusTolParam = 11;
 begin
   if (Sender = SpecEdit) and (SpecEdit.Text <> '') then
-      EvalTest.UpdateParameters(SpecEdit.Text, SpecParam) // SpecEdit.Text
+    EvalTest.UpdateParameters(SpecEdit.Text, SpecParam) // SpecEdit.Text
   else if (Sender = RankEdit) and (RankEdit.Text <> '') then
-      EvalTest.UpdateParameters(RankEdit.Text, RankParam)
+    EvalTest.UpdateParameters(RankEdit.Text, RankParam)
   else if (Sender = SymbolComboBox) and (SymbolComboBox.ItemIndex <> -1) then
-      EvalTest.UpdateParameters(SymbolComboBox.ItemIndex.ToString, SymbolParam)
+    EvalTest.UpdateParameters(SymbolComboBox.ItemIndex.ToString, SymbolParam)
   else if (Sender = FromLambdaLabeledEdit) and (FromLambdaLabeledEdit.Text <> '') then
-       EvalTest.UpdateParameters(FromLambdaLabeledEdit.Text, FromLambdaParam)
+    EvalTest.UpdateParameters(FromLambdaLabeledEdit.Text, FromLambdaParam)
   else if (Sender = ToLambdaLabeledEdit) and (ToLambdaLabeledEdit.Text <> '') then
-       EvalTest.UpdateParameters(ToLambdaLabeledEdit.Text, ToLambdaParam)
+    EvalTest.UpdateParameters(ToLambdaLabeledEdit.Text, ToLambdaParam)
   else if (Sender = AtLambdaLabeledEdit) and (AtLambdaLabeledEdit.Text <> '') then
-       EvalTest.UpdateParameters(AtLambdaLabeledEdit.Text, AtLambdaParam)
+    EvalTest.UpdateParameters(AtLambdaLabeledEdit.Text, AtLambdaParam)
   else if (Sender = PlusTolLabeledEdit) and (PlusTolLabeledEdit.Text <> '') then
-       EvalTest.UpdateParameters(PlusTolLabeledEdit.Text, PlusTolParam)
+    EvalTest.UpdateParameters(PlusTolLabeledEdit.Text, PlusTolParam)
   else if (Sender = MinusTolLabeledEdit) and (MinusTolLabeledEdit.Text <> '') then
-       EvalTest.UpdateParameters(MinusTolLabeledEdit.Text, MinusTolParam);
+    EvalTest.UpdateParameters(MinusTolLabeledEdit.Text, MinusTolParam);
 end;
 
 end.

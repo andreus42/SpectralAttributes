@@ -18,7 +18,7 @@ uses
   ChromaDataModule,
   TEvalTestUnit,
   TEvalTestGroupUnit,
-  TEvalTestSetUnit;
+  TEvalTestSetUnit, LabeledMemo;
 
   type
     T_SpectralAttributesForm = class(TForm)
@@ -27,9 +27,7 @@ uses
       AddTestGroupButton: TButton;
       SummaryTab: TTabSheet;
       SummaryPanel: TPanel;
-      SummaryLabel: TLabel;
-      Memo1: TMemo;
-      Memo2: TMemo;
+    LabledMemo1: TLabledMemo;
       procedure DeleteTestButtonClick(Sender: TObject);
       procedure FormCreate(Sender: TObject);
       procedure AddTestGroupButtonClick(Sender: TObject);
@@ -50,7 +48,6 @@ const SetID = 1;
 var
   _SpectralAttributesForm: T_SpectralAttributesForm;
   EvalTestSet: TEvalTestSet;
-
 
 implementation
 

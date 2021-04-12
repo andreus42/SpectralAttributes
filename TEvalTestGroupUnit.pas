@@ -13,7 +13,7 @@ uses
   TEvalTestUnit;
 
 type
-  TEvalTestGroup = class(TObject)      // Future TEvalGroup;
+  TEvalTestGroup = class(TObject)
   public
     GroupID: Integer;
     GroupNum: Integer;

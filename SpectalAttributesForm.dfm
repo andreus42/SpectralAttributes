@@ -15,8 +15,8 @@ object _SpectralAttributesForm: T_SpectralAttributesForm
   PixelsPerInch = 96
   TextHeight = 13
   object PageControl1: TPageControl
-    Left = 20
-    Top = 39
+    Left = 24
+    Top = 40
     Width = 1021
     Height = 836
     ActivePage = SummaryTab
@@ -33,36 +33,11 @@ object _SpectralAttributesForm: T_SpectralAttributesForm
         Height = 201
         ParentBackground = False
         TabOrder = 0
-        object SummaryLabel: TLabel
-          Left = 16
-          Top = 88
-          Width = 44
-          Height = 13
-          Caption = 'Summary'
-        end
-        object Memo1: TMemo
-          Left = 64
-          Top = 16
-          Width = 369
-          Height = 169
-          Lines.Strings = (
-            'Memo1')
-          TabOrder = 0
-        end
-        object Memo2: TMemo
-          Left = 456
-          Top = 16
-          Width = 305
-          Height = 169
-          Lines.Strings = (
-            'Memo2')
-          TabOrder = 1
-        end
       end
     end
   end
   object DeleteTestButton: TButton
-    Left = 119
+    Left = 120
     Top = 8
     Width = 82
     Height = 25
@@ -71,12 +46,46 @@ object _SpectralAttributesForm: T_SpectralAttributesForm
     OnClick = DeleteTestButtonClick
   end
   object AddTestGroupButton: TButton
-    Left = 20
+    Left = 24
     Top = 8
     Width = 93
     Height = 25
     Caption = '&Add Test Group'
     TabOrder = 2
     OnClick = AddTestGroupButtonClick
+  end
+  object LabledMemo1: TLabledMemo
+    Left = 48
+    Top = 80
+    Width = 345
+    Height = 169
+    AMemo.Left = 0
+    AMemo.Top = 13
+    AMemo.Width = 345
+    AMemo.Height = 156
+    AMemo.Align = alClient
+    AMemo.TabOrder = 0
+    AMemo.ExplicitWidth = 100
+    AMemo.ExplicitHeight = 90
+    ALabel.Left = 0
+    ALabel.Top = 0
+    ALabel.Width = 345
+    ALabel.Height = 13
+    ALabel.Align = alTop
+    ALabel.Caption = 'Summary'
+    ALabel.Font.Charset = DEFAULT_CHARSET
+    ALabel.Font.Color = clWindowText
+    ALabel.Font.Height = -11
+    ALabel.Font.Name = 'Tahoma'
+    ALabel.Font.Style = [fsBold]
+    ALabel.ParentFont = False
+    ALabel.Layout = tlCenter
+    ALabel.ExplicitWidth = 55
+    Caption = ''
+    FieldWidth = 100
+    LabelSpacing = 1
+    TabOrder = 3
+    TabStop = False
+    Text = ''
   end
 end

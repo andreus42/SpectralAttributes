@@ -68,8 +68,8 @@ object EvalFrame: TEvalFrame
     Layout = tlCenter
   end
   object ToNmLabel: TLabel
-    Left = 541
-    Top = 3
+    Left = 525
+    Top = 2
     Width = 14
     Height = 21
     Caption = 'nm'
@@ -137,7 +137,7 @@ object EvalFrame: TEvalFrame
   end
   object PlusTolLabeledEdit: TLabeledEdit
     Left = 598
-    Top = 3
+    Top = 2
     Width = 75
     Height = 21
     Alignment = taCenter
@@ -164,8 +164,8 @@ object EvalFrame: TEvalFrame
   end
   object ToLambdaLabeledEdit: TLabeledEdit
     Tag = 5
-    Left = 472
-    Top = 3
+    Left = 450
+    Top = 2
     Width = 75
     Height = 21
     Alignment = taCenter
@@ -210,6 +210,16 @@ object EvalFrame: TEvalFrame
     TabOrder = 8
     Visible = False
     OnExit = UpdateParameter
+  end
+  object TargetCheckBox: TCheckBox
+    Left = 857
+    Top = 5
+    Width = 57
+    Height = 17
+    Caption = 'Target'
+    TabOrder = 10
+    Visible = False
+    OnClick = TargetCheckBoxClick
   end
   object ADODataSet1: TADODataSet
     Active = True
