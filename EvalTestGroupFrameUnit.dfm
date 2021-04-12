@@ -15,7 +15,7 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
     Left = 0
     Top = 0
     Width = 1093
-    Height = 265
+    Height = 281
     Align = alTop
     Color = clActiveBorder
     ParentBackground = False
@@ -34,15 +34,6 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
       Height = 13
       Caption = 'Operation'
     end
-    object SpecTextMemo: TMemo
-      Left = 11
-      Top = 56
-      Width = 318
-      Height = 160
-      Lines.Strings = (
-        'Memo1')
-      TabOrder = 0
-    end
     object IDBox: TEdit
       Left = 13
       Top = 29
@@ -50,42 +41,42 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
       Height = 21
       TabStop = False
       ReadOnly = True
-      TabOrder = 1
+      TabOrder = 0
       Text = 'IDBox'
     end
     object LoadButton: TButton
-      Left = 164
-      Top = 223
+      Left = 296
+      Top = 231
       Width = 77
       Height = 26
       Caption = 'Load Existing'
-      TabOrder = 2
+      TabOrder = 1
     end
     object ParseButton: TButton
-      Left = 79
-      Top = 223
+      Left = 211
+      Top = 231
       Width = 79
       Height = 26
       Caption = 'Parse'
-      TabOrder = 3
+      TabOrder = 2
     end
     object AddEvalTestButton: TButton
       Left = 11
-      Top = 222
-      Width = 62
+      Top = 230
+      Width = 94
       Height = 27
-      Caption = 'Add Test'
-      TabOrder = 4
+      Caption = 'Add Eval Test'
+      TabOrder = 3
       OnClick = AddEvalTestButtonClick
     end
     object SetUpPanel: TPanel
-      Left = 375
+      Left = 471
       Top = 53
       Width = 498
       Height = 160
       Color = clWhite
       ParentBackground = False
-      TabOrder = 5
+      TabOrder = 4
       object Label4: TLabel
         Left = 7
         Top = 75
@@ -168,12 +159,53 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
         TabOrder = 3
       end
     end
+    object Button1: TButton
+      Left = 111
+      Top = 230
+      Width = 94
+      Height = 27
+      Caption = 'Add Setup Param'
+      TabOrder = 5
+      OnClick = AddEvalTestButtonClick
+    end
+    object SpecTextMemo: TLabledMemo
+      Left = 13
+      Top = 56
+      Width = 360
+      Height = 168
+      AMemo.Left = 0
+      AMemo.Top = 13
+      AMemo.Width = 360
+      AMemo.Height = 155
+      AMemo.Align = alClient
+      AMemo.TabOrder = 0
+      ALabel.Left = 0
+      ALabel.Top = 0
+      ALabel.Width = 360
+      ALabel.Height = 13
+      ALabel.Align = alTop
+      ALabel.Caption = 'Spectral Text'
+      ALabel.Font.Charset = DEFAULT_CHARSET
+      ALabel.Font.Color = clWindowText
+      ALabel.Font.Height = -11
+      ALabel.Font.Name = 'Tahoma'
+      ALabel.Font.Style = [fsBold]
+      ALabel.ParentFont = False
+      ALabel.Layout = tlCenter
+      ALabel.ExplicitWidth = 76
+      Caption = 'Spectral Text'
+      FieldWidth = 100
+      LabelSpacing = 1
+      TabOrder = 6
+      TabStop = False
+      Text = ''
+    end
   end
   object EvalScrollBox: TScrollBox
     Left = 0
-    Top = 265
+    Top = 281
     Width = 1093
-    Height = 492
+    Height = 476
     Align = alClient
     BevelEdges = []
     Color = clBtnFace

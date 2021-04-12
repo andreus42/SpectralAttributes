@@ -28,6 +28,7 @@ uses
       SummaryTab: TTabSheet;
       SummaryPanel: TPanel;
     LabledMemo1: TLabledMemo;
+    LabledMemo2: TLabledMemo;
       procedure DeleteTestButtonClick(Sender: TObject);
       procedure FormCreate(Sender: TObject);
       procedure AddTestGroupButtonClick(Sender: TObject);

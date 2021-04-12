@@ -5,10 +5,10 @@ uses
   EvalTestGroupFrameUnit in 'EvalTestGroupFrameUnit.pas' {EvalTestGroupFrame: TFrame},
   SpectalAttributesForm in 'SpectalAttributesForm.pas' {_SpectralAttributesForm},
   ChromaDataModule in '..\ChromaData\ChromaDataModule.pas' {_ChromaDataModule: TDataModule},
-  EvalFrameUnit in 'EvalFrameUnit.pas' {EvalFrame: TFrame},
   TEvalTestUnit in 'TEvalTestUnit.pas',
   TEvalTestGroupUnit in 'TEvalTestGroupUnit.pas',
-  TEvalTestSetUnit in 'TEvalTestSetUnit.pas';
+  TEvalTestSetUnit in 'TEvalTestSetUnit.pas',
+  EvalFrameUnit in 'EvalFrameUnit.pas' {EvalFrame: TFrame};
 
 {$R *.res}
 

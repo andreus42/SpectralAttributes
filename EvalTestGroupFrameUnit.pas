@@ -17,12 +17,11 @@ uses
   ChromaDataModule,
   EvalFrameUnit,
   TEvalTestUnit,
-  TEvalTestGroupUnit;
+  TEvalTestGroupUnit, LabeledMemo;
 
 type
   TEvalTestGroupFrame = class(TFrame)
     Panel1: TPanel;
-    SpecTextMemo: TMemo;
     IDBox: TEdit;
     LoadButton: TButton;
     ParseButton: TButton;
@@ -41,6 +40,8 @@ type
     GroupDescEdit: TEdit;
     Label3: TLabel;
     Label6: TLabel;
+    Button1: TButton;
+    SpecTextMemo: TLabledMemo;
     procedure AddEvalTestButtonClick(Sender: TObject);
   private
     procedure AddEvalTestFrame(EvalTest: TEvalTest); overload;
@@ -52,6 +53,8 @@ type
     constructor Create(AOwner: TComponent; EvalTestGroup: TEvalTestGroup);
   end;
 
+const
+  FrameHeight = 26;
 
 implementation
 {$R *.dfm}
@@ -62,12 +65,12 @@ var
   EvalTest: TEvalTest;
 begin
   inherited Create(AOwner);
-  SpecTextMemo.Clear;
+  SpecTextMemo.AMemo.Clear;
   GroupDescEdit.Text := 'In-Process #' + EvalTestGroup.GroupID.ToString;
   Name := 'EvalFrame' + EvalTestGroup.GroupID.ToString;
   for EvalTest in EvalTestGroup.TestList do
   begin
-    SpecTextMemo.Lines.Add(EvalTest.Stringify2);
+    SpecTextMemo.AMemo.Lines.Add(EvalTest.Stringify2);
     AddEvalTestFrame(EvalTest);
   end;
   Self.GroupID := EvalTestGroup.GroupID;
@@ -86,12 +89,13 @@ procedure TEvalTestGroupFrame.AddEvalTestFrame(EvalTest: TEvalTest);
 var
   TestFrame: TEvalFrame;
 begin
-  TestFrame := TEvalFrame.CreateWith(EvalScrollBox, EvalTest.TestID);
+  TestFrame := TEvalFrame.Create(EvalScrollBox, EvalTest.TestID);
   with TestFrame do
   begin
     Name := 'EvalFrame_' + EvalTest.TestID.ToString;
     Parent := EvalScrollBox;
     Align := alTop;
+    Height := FrameHeight;
   end;
 end;
 
