@@ -34,7 +34,6 @@ object _SpectralAttributesForm: T_SpectralAttributesForm
         Align = alTop
         ParentBackground = False
         TabOrder = 0
-        ExplicitLeft = 48
         object LabledMemo1: TLabledMemo
           Left = 16
           Top = 16
