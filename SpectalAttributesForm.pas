@@ -18,7 +18,7 @@ uses
   ChromaDataModule,
   TEvalTestUnit,
   TEvalTestGroupUnit,
-  TEvalTestSetUnit, LabeledMemo;
+  TEvalTestSetUnit, LabeledMemo, Vcl.DBCtrls;
 
   type
     T_SpectralAttributesForm = class(TForm)
@@ -28,7 +28,6 @@ uses
       SummaryTab: TTabSheet;
       SummaryPanel: TPanel;
     LabledMemo1: TLabledMemo;
-    LabledMemo2: TLabledMemo;
       procedure DeleteTestButtonClick(Sender: TObject);
       procedure FormCreate(Sender: TObject);
       procedure AddTestGroupButtonClick(Sender: TObject);
@@ -70,8 +69,10 @@ end;
 procedure T_SpectralAttributesForm.AddTestGroupPage(EvalTestGroup: TEvalTestGroup);
 var
   ATabSheet: TMyTabSheet;
+  TempGroupID: Integer;
 begin
   ATabSheet := TMyTabSheet.Create(PageControl1);
+  TempGroupID := EvalTestGroup.GroupID;
   with ATabSheet do
   begin
     Caption := 'In-Process #' + EvalTestGroup.GroupID.ToString;

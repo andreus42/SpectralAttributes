@@ -30,11 +30,12 @@ type
     FilePath: String;
     TolPlus: String;
     TolMinus: String;
-    constructor Create(TestID: Integer);
+    constructor Create(); overload;
+    constructor Create(TestID: Integer); overload;
     constructor CreateNew(GroupID: Integer; SetID: Integer);
     destructor destroy;
     function GetFrameType(): Integer;
-    function Stringify2(): String;
+    function Stringify(): String;
     procedure ResetParameters;
     procedure UpdateParameters(ParamValue: String; ParamID: Integer);
   end;
@@ -47,11 +48,17 @@ const
   AtLambdaParam = 6;
   SpecParam = 7;
   FilepathParam = 8;
-  SymbolParam = 9;
-  PlusTolParam = 10;
-  MinusTolParam = 11;
+  SymbolParam = 11;
+  PlusTolParam = 9;
+  MinusTolParam = 10;
 
 implementation
+
+// Create Given Existing ID
+constructor TEvalTest.Create;
+begin
+    inherited;
+end;
 
 // Create Given Existing ID
 constructor TEvalTest.Create(TestID: Integer);
@@ -68,7 +75,7 @@ begin
   // Read in test associations
   Query0 := TADOQuery.Create(Nil);
   Query0.Connection := _ChromaDataModule.ChromaData;
-  Query0.SQL.Add('select GroupID, SetID');
+  Query0.SQL.Add('select GroupID, SetID');       // Explore using EvalSets Table
   Query0.SQL.Add('from EvalTests where TestID = ' + TestID.ToString);
   Query0.Open;
   GroupID := Query0.FieldByName('GroupID').Value;
@@ -124,7 +131,11 @@ begin
     Connection := _ChromaDataModule.ChromaData;
     SQL.Add('select max(TestID) last_id from EvalTests');
     Open;
-    NextTestID := FieldByName('last_id').Value + 1;
+    // need Try/Except Blocks
+    if (FieldByName('last_id').IsNull) then
+      NextTestID := 1
+    else
+      NextTestID := FieldByName('last_id').Value + 1;
     Close;
   end;
   with query do
@@ -133,15 +144,17 @@ begin
     SQL.Add('Declare @TestID int = ' + NextTestID.ToString);
     SQL.Add('Declare @GroupID int = ' + GroupID.ToString);
     SQL.Add('Declare @SetID int = ' + SetID.ToString);
+    SQL.Add('Declare @TestParam int =' + TestID.ToString);
+    SQL.Add('Declare @TestTypeParam int =' + TestTypeParam.ToString);
     SQL.Add('if exists (select * from EvalTests with (updlock,serializable) where TestID = @TestID) ');
     SQL.Add('begin');
     SQL.Add('update EvalTests set ParamValue = 0 ');
-    SQL.Add('where TestID = @TestID and ParamID = 2 ');
+    SQL.Add('where TestID = @TestID and ParamID = @TestParam ');
     SQL.Add('end');
     SQL.Add('else');
     SQL.Add('begin');
     SQL.Add('insert EvalTests (TestID, GroupID, SetID, ParamID, ParamValue)');
-    SQL.Add('values (@TestID, @GroupID, @SetID, 3, 0)');
+    SQL.Add('values (@TestID, @GroupID, @SetID, @TestTypeParam, 0)');
     SQL.Add('end');
     SQL.Add('commit tran');
     ExecSQL;
@@ -165,7 +178,7 @@ begin
   // Use TestType to LookUp Frame Type
   Query := TADOQuery.Create(Nil);
   Query.Connection := _ChromaDataModule.ChromaData;
-  Query.SQL.Add('select FrameTypeID from TestTYpes where TypeID = ' + TestType);
+  Query.SQL.Add('select FrameTypeID from TestTypes where TypeID = ' + TestType);
   Query.Open;
   FrameType := Query.FieldByName('FrameTypeID').Value;
   Query.Close;
@@ -187,37 +200,49 @@ begin
     SQL.Add('Declare @TestID int =' + TestID.ToString);
     SQL.Add('Declare @GroupID int =' + GroupID.ToString);
     SQL.Add('Declare @SetID int =' + SetID.ToString);
-    SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, 2, ''0'')');
-    SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, 7, '''')');
+    SQL.Add('Declare @RankParam int =' + RankParam.ToString);
+    SQL.Add('Declare @TestTypeParam int =' + TestTypeParam.ToString);
+    SQL.Add('Declare @FromLambdaParam int =' + FromLambdaParam.ToString);
+    SQL.Add('Declare @ToLambdaParam int =' + ToLambdaParam.ToString);
+    SQL.Add('Declare @AtLambdaParam int =' + AtLambdaParam.ToString);
+    SQL.Add('Declare @SpecParam int =' + SpecParam.ToString);
+    SQL.Add('Declare @FilepathParam int =' + FilepathParam.ToString);
+    SQL.Add('Declare @SymbolParam int =' + SymbolParam.ToString );
+    SQL.Add('Declare @PlusTolParam int =' + PlusTolParam.ToString);
+    SQL.Add('Declare @MinusTolParam int =' + MinusTolParam.ToString);
+
+    SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @RankParam, ''0'')');
+    SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @SpecParam, '''')');
     case FrameTypeID of
       1: begin  //With Tol+, Tol-, CWL, FWHM, Cuton, Cutoff
-          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, 10, '''')');
-          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, 11, '''')');
+          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @AtLambdaParam, '''')');
+          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @PlusTolParam, '''')');
+          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @MinusTolParam, '''')');
       end;
       2,3: begin  //To-From: T-Avg, R-Avg, B-Avg
-          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, 4, '''')');
-          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, 5, '''')');
-          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, 9, '''')');
+          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @FromLambdaParam, '''')');
+          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @ToLambdaParam, '''')');
+          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @SymbolParam, '''')');
       end;
       4,5: begin  //At: T-Avg@, R-Avg@, B-Avg@
-          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, 6, '''')');
-          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, 9, '''')');
+          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @AtLambdaParam, '''')');
+          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @SymbolParam, '''')');
       end;
     end;
     ExecSQL;
   end;
 end;
 
-function TEvalTest.Stringify2: String;
+function TEvalTest.Stringify: String;
 var
   TextSymbol: String;
 begin
-  case Symbol of
-    1: TextSymbol := '>=';
-    2: TextSymbol := '>';
-    3: TextSymbol := '=';
-    4: TextSymbol := '<=';
-    5: TextSymbol := '<';
+  case Self.Symbol of
+    0: TextSymbol := '>=';
+    1: TextSymbol := '>';
+    2: TextSymbol := '=';
+    3: TextSymbol := '<=';
+    4: TextSymbol := '<';
   end;
   case Self.FrameType of     // Perhaps do by frame type?
     1: Result := Name + ': ' + Value + 'nm ' + '+' + TolPlus + '/' + '-' + TolMinus + 'nm';

@@ -32,11 +32,11 @@ type
     SymbolComboBox: TComboBox;
     RefOnlyCheckBox: TCheckBox;
     FilepathEdit: TLabeledEdit;
-    FromLambdaEdit_v3: DoulbedLabeledEdit_v3;
-    AtLambdaEdit_v3: DoulbedLabeledEdit_v3;
-    ToLambdaEdit_v3: DoulbedLabeledEdit_v3;
-    PlusTolEdit_v3: DoulbedLabeledEdit_v3;
-    MinusTolEdit_v3: DoulbedLabeledEdit_v3;
+    FromLambdaEdit: DoulbedLabeledEdit_v3;
+    AtLambdaEdit: DoulbedLabeledEdit_v3;
+    ToLambdaEdit: DoulbedLabeledEdit_v3;
+    PlusTolEdit: DoulbedLabeledEdit_v3;
+    MinusTolEdit: DoulbedLabeledEdit_v3;
     constructor Create (AOwner: TComponent; TestID: Integer);
     procedure SpeedButton1Click(Sender: TObject);
     procedure HideAllElements;
@@ -67,12 +67,10 @@ begin
   TestIDLabel.Caption := 'TestID: ' + TestID.ToString;
   EvalTest := TEvalTest.Create(TestID);
   RankEdit.Text := EvalTest.Rank;
-
-  ToLambdaEdit_v3.Text := EvalTest.LambdaTo;
-  FromLambdaEdit_v3.Text := EvalTest.LambdaFrom;
-  PlusTolEdit_v3.Text := EvalTest.TolPlus;
-  MinusTolEdit_v3.Text := EvalTest.TolMinus;
-
+  ToLambdaEdit.Text := EvalTest.LambdaTo;
+  FromLambdaEdit.Text := EvalTest.LambdaFrom;
+  PlusTolEdit.Text := EvalTest.TolPlus;
+  MinusTolEdit.Text := EvalTest.TolMinus;
   SpecEdit.Text := EvalTest.Value;
   FilepathEdit.Text := EvalTest.FilePath;
   SymbolComboBox.ItemIndex := EvalTest.Symbol;
@@ -95,11 +93,11 @@ begin
   SpecLabel.Left := P2 + LabelOffset;
   SymbolComboBox.Left := P1;
   SpecEdit.Left := P2;
-  FromLambdaEdit_v3.Left := P3;
-  ToLambdaEdit_v3.Left := P4;
-  AtLambdaEdit_v3.Left := P3;
-  PlusTolEdit_v3.Left := P3;
-  MinusTolEdit_v3.Left := P4;
+  FromLambdaEdit.Left := P3;
+  ToLambdaEdit.Left := P4;
+  AtLambdaEdit.Left := P3;
+  PlusTolEdit.Left := P3;
+  MinusTolEdit.Left := P4;
   RefOnlyCheckBox.Left := P5;
   HideAllElements;
   SpecEdit.Visible := True;
@@ -110,34 +108,34 @@ begin
     0:  HideAllElements;
     1:  begin
             SpecLabel.Caption := 'nm';
-            PlusTolEdit_v3.Visible := True;
-            MinusTolEdit_v3.Visible := True;
+            PlusTolEdit.Visible := True;
+            MinusTolEdit.Visible := True;
             RefOnlyCheckBox.Visible := True;
         end;
     2:  begin
             SpecLabel.Caption := '%';
             SymbolComboBox.Visible := True;
-            FromLambdaEdit_v3.Visible := True;
-            ToLambdaEdit_v3.Visible := True;
+            FromLambdaEdit.Visible := True;
+            ToLambdaEdit.Visible := True;
         end;
     3:  begin
             SpecLabel.Caption := 'OD';
             SpecLabel.Left := P2 - 18;
             SymbolComboBox.Visible := True;
-            FromLambdaEdit_v3.Visible := True;
-            ToLambdaEdit_v3.Visible := True;
+            FromLambdaEdit.Visible := True;
+            ToLambdaEdit.Visible := True;
         end;
     4:  begin
             SpecLabel.Caption := '%';
             SymbolComboBox.Visible := True;
-            AtLambdaEdit_v3.Visible := True;
+            AtLambdaEdit.Visible := True;
             RefOnlyCheckBox.Visible := True;
         end;
     5:  begin
             SpecLabel.Caption := 'OD';
             SpecLabel.Left := P2 - 18;
             SymbolComboBox.Visible := True;
-            AtLambdaEdit_v3.Visible := True;
+            AtLambdaEdit.Visible := True;
             RefOnlyCheckBox.Visible := True;
         end;
   end;
@@ -146,11 +144,11 @@ end;
 procedure TEvalFrame.ClearAllElements;
 begin
   SpecEdit.Text := '';
-  ToLambdaEdit_v3.Text :=  '';
-  FromLambdaEdit_v3.Text := '';
-  PlusTolEdit_v3.Text := '';
-  AtLambdaEdit_v3.Text := '';
-  MinusTolEdit_v3.Text := '';
+  ToLambdaEdit.Text :=  '';
+  FromLambdaEdit.Text := '';
+  PlusTolEdit.Text := '';
+  AtLambdaEdit.Text := '';
+  MinusTolEdit.Text := '';
   SymbolComboBox.ItemIndex := -1;
 end;
 
@@ -189,21 +187,21 @@ begin
   ShowFrame;
 end;
 
+
 procedure TEvalFrame.HideAllElements;
 begin
   SpecEdit.Visible := False;
   SpecLabel.Visible := False;
   SpecEdit.Visible :=  False;
   SymbolComboBox.Visible :=  False;
-  ToLambdaEdit_v3.Visible :=  False;
-  FromLambdaEdit_v3.Visible :=  False;
-  AtLambdaEdit_v3.Visible :=  False;
-  PlusTolEdit_v3.Visible :=  False;
-  MinusTolEdit_v3.Visible :=  False;
-
-  AtLambdaEdit_v3.Visible :=  False;
-  PlusTolEdit_v3.Visible :=  False;
-  MinusTolEdit_v3.Visible :=  False;
+  ToLambdaEdit.Visible :=  False;
+  FromLambdaEdit.Visible :=  False;
+  AtLambdaEdit.Visible :=  False;
+  PlusTolEdit.Visible :=  False;
+  MinusTolEdit.Visible :=  False;
+  AtLambdaEdit.Visible :=  False;
+  PlusTolEdit.Visible :=  False;
+  MinusTolEdit.Visible :=  False;
 end;
 
 procedure TEvalFrame.SpeedButton1Click(Sender: TObject);
@@ -230,41 +228,38 @@ procedure TEvalFrame.RefOnlyCheckBoxClick(Sender: TObject);
 begin
   if (RefOnlyCheckBox.Checked = True) and (EvalTest.FrameType = 1)then
   begin
-    PlusTolEdit_v3.Visible :=  False;
-    MinusTolEdit_v3.Visible :=  False;
+    PlusTolEdit.Visible :=  False;
+    MinusTolEdit.Visible :=  False;
   end
   else if (RefOnlyCheckBox.Checked = False) and (EvalTest.FrameType = 1) then
   begin
-    PlusTolEdit_v3.Visible :=  True;
-    MinusTolEdit_v3.Visible :=  True;
+    PlusTolEdit.Visible :=  True;
+    MinusTolEdit.Visible :=  True;
   end;
 end;
 
 procedure TEvalFrame.UpdateParameter(Sender: TObject);
 begin
   if (Sender = SpecEdit) and (SpecEdit.Text <> '') then
-    EvalTest.UpdateParameters(SpecEdit.Text, SpecParam) // SpecEdit.Text
+    EvalTest.UpdateParameters(SpecEdit.Text, SpecParam) // TODO: Change second conditions to validate as real
   else if (Sender = RankEdit) and (RankEdit.Text <> '') then
     EvalTest.UpdateParameters(RankEdit.Text, RankParam)
   else if (Sender = SymbolComboBox) and (SymbolComboBox.ItemIndex <> -1) then
     EvalTest.UpdateParameters(SymbolComboBox.ItemIndex.ToString, SymbolParam)
+  else if (Sender = FromLambdaEdit.AEdit) and (FromLambdaEdit.AEdit.Text <> '') then
+    EvalTest.UpdateParameters(FromLambdaEdit.AEdit.Text, FromLambdaParam)
+  else if (Sender = ToLambdaEdit.AEdit) and (ToLambdaEdit.AEdit.Text <> '') then
+    EvalTest.UpdateParameters(ToLambdaEdit.AEdit.Text, ToLambdaParam)
 
-    //----------------------Adding
-  else if (Sender = FromLambdaEdit_v3) and (FromLambdaEdit_v3.AEdit.Text <> '') then
-    EvalTest.UpdateParameters(FromLambdaEdit_v3.AEdit.Text, FromLambdaParam)
+  //debug
+  else if (Sender = AtLambdaEdit.AEdit) and (AtLambdaEdit.AEdit.Text <> '') then
+    EvalTest.UpdateParameters(AtLambdaEdit.AEdit.Text, AtLambdaParam)
+  ///
 
-  else if (Sender = ToLambdaEdit_v3) and (ToLambdaEdit_v3.AEdit.Text <> '') then
-    EvalTest.UpdateParameters(ToLambdaEdit_v3.AEdit.Text, ToLambdaParam)
-
-  else if (Sender = AtLambdaEdit_v3) and (AtLambdaEdit_v3.AEdit.Text <> '') then
-    EvalTest.UpdateParameters(AtLambdaEdit_v3.AEdit.Text, AtLambdaParam)
-
-  else if (Sender = PlusTolEdit_v3) and (PlusTolEdit_v3.AEdit.Text <> '') then
-    EvalTest.UpdateParameters(PlusTolEdit_v3.AEdit.Text, PlusTolParam)
-
-  else if (Sender = MinusTolEdit_v3) and (MinusTolEdit_v3.AEdit.Text <> '') then
-    EvalTest.UpdateParameters(MinusTolEdit_v3.AEdit.Text, MinusTolParam);
-
+  else if (Sender = PlusTolEdit.AEdit) and (PlusTolEdit.AEdit.Text <> '') then
+    EvalTest.UpdateParameters(PlusTolEdit.AEdit.Text, PlusTolParam)
+  else if (Sender = MinusTolEdit.AEdit) and (MinusTolEdit.AEdit.Text <> '') then
+    EvalTest.UpdateParameters(MinusTolEdit.AEdit.Text, MinusTolParam);
 end;
 
 end.

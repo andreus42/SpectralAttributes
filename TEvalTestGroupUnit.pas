@@ -19,8 +19,9 @@ type
     GroupNum: Integer;
     SetID: Integer;
     TestList: TObjectList<TEvalTest>;
+//    IDsList: TList<Integer>;
     constructor Create(GroupID: Integer);
-    constructor CreateNew(SetID: Integer);
+    constructor CreateNew(SetID: Integer);      // needs to genearte new ID and pass back to EvalSet
     destructor destroy;
   end;
 
@@ -28,15 +29,15 @@ implementation
 
 constructor TEvalTestGroup.Create(GroupID: Integer);
 var
-  Query : TADOQuery;
+  Query: TADOQuery;
   TestID: Integer;
-  EvalTest: TEvalTest;
+  AEvalTest: TEvalTest;
 begin
-  // Initialize Params
-  Self.GroupID := GroupID;
   TestList := TObjectList<TEvalTest>.Create;
-
-// Query
+//  IDsList := TList<Integer>.Create;
+  //
+  Self.GroupID := GroupID;
+//  Self.SetID := SetID;
   Query := TADOQuery.Create(Nil);
   with Query do
   begin
@@ -45,55 +46,61 @@ begin
     SQL.Add('from EvalTests where GroupID = ' + GroupID.ToString);
     Open;
     while not eof do
-      begin
-        TestID := Query.FieldByName('TestID').Value;
-        EvalTest := TEvalTest.Create(TestID);
-        TestList.Add(EvalTest);
-        Query.Next;
-      end;
+    begin
+      TestID := Query.FieldByName('TestID').Value;
+      AEvalTest := TEvalTest.Create(TestID);
+      TestList.Add(AEvalTest);
+      Query.Next;
+    end;
     Close;
     Free;
   end;
+//  AEvalTest.Free; Can't free if not created
 end;
 
+
 constructor TEvalTestGroup.CreateNew(SetID: Integer);
+// Replace by genearting groupID from Set
 var
   Query: TADOQuery;
   NextGroupID: Integer;
 begin
   Query := TADOQuery.Create(Nil);
-  with query do
+  with Query do
   begin
     Connection := _ChromaDataModule.ChromaData;
     SQL.Add('select max(GroupID) last_id from EvalTestGroups');
     Open;
-    NextGroupID := FieldByName('last_id').Value + 1;
+    // need Try/Except Blocks
+    if (FieldByName('last_id').IsNull) then
+      NextGroupID := 1
+    else
+      NextGroupID := FieldByName('last_id').Value + 1;
     Close;
   end;
-  with query do
+  with Query do
   begin
     SQL.Add('begin tran');
     SQL.Add('Declare @SetID int = ' + SetID.ToString);
     SQL.Add('Declare @GroupID int = ' + NextGroupID.ToString);
-    SQL.Add('Declare @NextGroupNum int = 1'); //Need to enumerate group nums
+    SQL.Add('Declare @NextGroupNum int = 1'); // Need to enumerate group nums
     SQL.Add('insert into EvalTestGroups values (@GroupID, @SetID, @NextGroupNum)');
     SQL.Add('commit tran');
     ExecSQL;
     Close;
     Free;
   end;
-    TestList := TObjectList<TEvalTest>.Create;
-    Self.GroupID := NextGroupID;
-    Self.GroupNum := 1;
-    Self.SetID := SetID;
+  TestList := TObjectList<TEvalTest>.Create;
+  Self.GroupID := NextGroupID;
+  Self.GroupNum := 1;
+  Self.SetID := SetID;
 end;
-
 
 destructor TEvalTestGroup.destroy;
 begin
-  TestList.Free;
+   TestList.Free;
+//  IDsList.Free;
   inherited destroy;
 end;
-
 
 end.

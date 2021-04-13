@@ -13,13 +13,11 @@ INSERT INTO TestParams values ('LambdaTo')
 INSERT INTO TestParams values ('LambdaAt')
 INSERT INTO TestParams values ('Value')
 INSERT INTO TestParams values ('Filepath')
-INSERT INTO TestParams values ('<')
-INSERT INTO TestParams values ('<=')
-INSERT INTO TestParams values ('=')
-INSERT INTO TestParams values ('>=')
-INSERT INTO TestParams values ('>')
+INSERT INTO TestParams values ('PlusTol')
+INSERT INTO TestParams values ('MinusTol')
+INSERT INTO TestParams values ('Symbol')
 
 
 select * from TestParams
---delete from TestParams where tpID in (11, 12, 13, 14)
+
 

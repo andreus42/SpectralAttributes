@@ -27,12 +27,14 @@ object _SpectralAttributesForm: T_SpectralAttributesForm
       Margins.Bottom = 0
       Caption = 'Summary'
       object SummaryPanel: TPanel
-        Left = 3
+        Left = 0
         Top = 0
-        Width = 1401
+        Width = 1013
         Height = 201
+        Align = alTop
         ParentBackground = False
         TabOrder = 0
+        ExplicitLeft = 48
         object LabledMemo1: TLabledMemo
           Left = 16
           Top = 16
@@ -102,20 +104,22 @@ object _SpectralAttributesForm: T_SpectralAttributesForm
   end
   object DeleteTestButton: TButton
     Left = 120
-    Top = 8
+    Top = 6
     Width = 82
     Height = 25
     Caption = '&Delete Test'
     TabOrder = 1
+    TabStop = False
     OnClick = DeleteTestButtonClick
   end
   object AddTestGroupButton: TButton
     Left = 24
-    Top = 8
+    Top = 6
     Width = 93
     Height = 25
     Caption = '&Add Test Group'
     TabOrder = 2
+    TabStop = False
     OnClick = AddTestGroupButtonClick
   end
 end

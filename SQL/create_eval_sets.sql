@@ -14,17 +14,22 @@ create table EvalSet (
 go
 
 
-INSERT INTO EvalSet values (100, 555, 1232)
-INSERT INTO EvalSet values (100, 555, 1234)
-INSERT INTO EvalSet values (100, 555, 1235)
-INSERT INTO EvalSet values (100, 555, 1236)
-INSERT INTO EvalSet values (100, 556, 1237)
-INSERT INTO EvalSet values (100, 556, 1238)
-INSERT INTO EvalSet values (100, 556, 1239)
-INSERT INTO EvalSet values (100, 557, 1240)
-INSERT INTO EvalSet values (100, 558, 1241)
-INSERT INTO EvalSet values (102, 559, 1241)
-INSERT INTO EvalSet values (102, 560, 1241)
+INSERT INTO EvalSet values (101, 555, 1232)
+INSERT INTO EvalSet values (101, 555, 1233)
+INSERT INTO EvalSet values (101, 555, 1234)
+INSERT INTO EvalSet values (101, 555, 1235)
+INSERT INTO EvalSet values (101, 555, 1236)
+INSERT INTO EvalSet values (101, 556, 1237)
+INSERT INTO EvalSet values (101, 556, 1238)
+INSERT INTO EvalSet values (101, 556, 1239)
+INSERT INTO EvalSet values (101, 557, 1240)
+INSERT INTO EvalSet values (102, 557, 1241)
+INSERT INTO EvalSet values (102, 558, 1242)
+INSERT INTO EvalSet values (102, 568, 1243)
+INSERT INTO EvalSet values (102, 559, 1244)
+INSERT INTO EvalSet values (102, 559, 1245)
+INSERT INTO EvalSet values (102, 560, 1246)
+INSERT INTO EvalSet values (102, 560, 1247)
 
 
 

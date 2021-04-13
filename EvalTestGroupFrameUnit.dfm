@@ -17,9 +17,13 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
     Width = 1093
     Height = 281
     Align = alTop
+    BevelEdges = []
+    BevelOuter = bvNone
+    BorderWidth = 1
     Color = clActiveBorder
     ParentBackground = False
     TabOrder = 0
+    ExplicitTop = -6
     object IDLabel: TLabel
       Left = 13
       Top = 10
@@ -44,21 +48,23 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
       TabOrder = 0
       Text = 'IDBox'
     end
-    object LoadButton: TButton
+    object ParseTextButton: TButton
       Left = 296
       Top = 231
       Width = 77
       Height = 26
-      Caption = 'Load Existing'
+      Caption = 'Parse Text'
       TabOrder = 1
+      TabStop = False
     end
     object ParseButton: TButton
       Left = 211
       Top = 231
       Width = 79
       Height = 26
-      Caption = 'Parse'
+      Caption = 'S^3 Parse'
       TabOrder = 2
+      TabStop = False
     end
     object AddEvalTestButton: TButton
       Left = 11
@@ -67,19 +73,22 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
       Height = 27
       Caption = 'Add Eval Test'
       TabOrder = 3
+      TabStop = False
       OnClick = AddEvalTestButtonClick
     end
     object SetUpPanel: TPanel
-      Left = 471
-      Top = 53
-      Width = 498
-      Height = 160
+      Left = 407
+      Top = 72
+      Width = 360
+      Height = 152
+      BevelEdges = []
+      BorderStyle = bsSingle
       Color = clWhite
       ParentBackground = False
       TabOrder = 4
       object Label4: TLabel
-        Left = 7
-        Top = 75
+        Left = 15
+        Top = 99
         Width = 47
         Height = 13
         Alignment = taCenter
@@ -92,70 +101,45 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
         ParentFont = False
         Layout = tlCenter
       end
-      object Label2: TLabel
-        Left = 23
-        Top = 12
-        Width = 19
-        Height = 13
-        Alignment = taCenter
-        Caption = 'AOI'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = 13
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentFont = False
-        Layout = tlCenter
-      end
-      object Label5: TLabel
-        Left = 23
-        Top = 39
-        Width = 24
-        Height = 13
-        Alignment = taCenter
-        Caption = 'From'
-        Font.Charset = DEFAULT_CHARSET
-        Font.Color = clWindowText
-        Font.Height = 13
-        Font.Name = 'Tahoma'
-        Font.Style = []
-        ParentFont = False
-        Layout = tlCenter
-      end
-      object Label1: TLabel
-        Left = 133
-        Top = 39
-        Width = 12
-        Height = 13
-        Caption = 'To'
-      end
       object ComboBox1: TComboBox
-        Left = 60
-        Top = 70
-        Width = 149
+        Left = 68
+        Top = 97
+        Width = 125
         Height = 21
         DropDownCount = 10
         TabOrder = 0
       end
-      object Edit1: TEdit
-        Left = 59
-        Top = 9
-        Width = 60
+      object LabeledEdit1: TLabeledEdit
+        Left = 72
+        Top = 16
+        Width = 121
         Height = 21
+        EditLabel.Width = 19
+        EditLabel.Height = 13
+        EditLabel.Caption = 'AOI'
+        LabelPosition = lpLeft
         TabOrder = 1
       end
-      object Edit2: TEdit
-        Left = 59
-        Top = 36
-        Width = 60
+      object LabeledEdit2: TLabeledEdit
+        Left = 72
+        Top = 43
+        Width = 121
         Height = 21
+        EditLabel.Width = 24
+        EditLabel.Height = 13
+        EditLabel.Caption = 'From'
+        LabelPosition = lpLeft
         TabOrder = 2
       end
-      object Edit3: TEdit
-        Left = 151
-        Top = 36
-        Width = 58
+      object LabeledEdit3: TLabeledEdit
+        Left = 72
+        Top = 70
+        Width = 121
         Height = 21
+        EditLabel.Width = 12
+        EditLabel.Height = 13
+        EditLabel.Caption = 'To'
+        LabelPosition = lpLeft
         TabOrder = 3
       end
     end
@@ -166,6 +150,7 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
       Height = 27
       Caption = 'Add Setup Param'
       TabOrder = 5
+      TabStop = False
       OnClick = AddEvalTestButtonClick
     end
     object SpecTextMemo: TLabledMemo

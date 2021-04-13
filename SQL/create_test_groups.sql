@@ -20,6 +20,8 @@ INSERT INTO EvalTestGroups values (557, 3, 1)
 INSERT INTO EvalTestGroups values (558, 1, 2)
 INSERT INTO EvalTestGroups values (559, 2, 2)
 INSERT INTO EvalTestGroups values (560, 3, 2)
+INSERT INTO EvalTestGroups values (561, 3, 2)
+INSERT INTO EvalTestGroups values (562, 3, 2)
 
 
 select *

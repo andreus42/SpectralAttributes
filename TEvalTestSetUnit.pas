@@ -18,9 +18,13 @@ type
   public
     SetID: Integer;
     EvalTestGroupList: TObjectList<TEvalTestGroup>;
+//    EvalTestGroupIDList: TList<Integer>;
     constructor Create(ID: Integer);
     destructor Destroy;
   end;
+
+var
+  EvalTestGroup: TEvalTestGroup;
 
 implementation
 
@@ -29,11 +33,11 @@ implementation
 constructor TEvalTestSet.Create(ID: Integer);
 var
   Query : TADOQuery;
-  EvalTestGroup: TEvalTestGroup;
   GroupID: Integer;
 begin
   SetID := ID;
   EvalTestGroupList := TObjectList<TEvalTestGroup>.Create;
+//  EvalTestGroupIDList := TList<Integer>.Create;
   Query := TADOQuery.Create(Nil);
   with Query do
   begin
@@ -46,6 +50,7 @@ begin
         GroupID := Query.FieldByName('GroupID').Value;
         EvalTestGroup := TEvalTestGroup.Create(GroupID);
         EvalTestGroupList.Add(EvalTestGroup);
+//        EvalTestGroupIDList.Add(GroupID);
         Next;
     end;
     Close;
@@ -55,7 +60,7 @@ end;
 
 destructor TEvalTestSet.Destroy;
 begin
-  EvalTestGroupList.Free;
+//  EvalTestGroupIDList.Free;
   Destroy;
 end;
 
