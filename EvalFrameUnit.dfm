@@ -2,7 +2,7 @@ object EvalFrame: TEvalFrame
   Left = 0
   Top = 0
   Width = 1230
-  Height = 30
+  Height = 28
   Align = alClient
   TabOrder = 0
   object SpecLabel: TLabel
@@ -26,7 +26,7 @@ object EvalFrame: TEvalFrame
     Left = 1198
     Top = 0
     Width = 32
-    Height = 30
+    Height = 28
     Align = alRight
     Alignment = taCenter
     Caption = 'TestID'
@@ -94,9 +94,9 @@ object EvalFrame: TEvalFrame
     OnClick = RefOnlyCheckBoxClick
   end
   object FilepathEdit: TLabeledEdit
-    Left = 360
+    Left = 342
     Top = 3
-    Width = 38
+    Width = 417
     Height = 21
     EditLabel.Width = 38
     EditLabel.Height = 13
@@ -174,7 +174,6 @@ object EvalFrame: TEvalFrame
     RLabel.ExplicitHeight = 13
     LCaption = '      At'
     RCaption = 'nm'
-    OnExit = UpdateParameter
     TabOrder = 9
     TabStop = False
     Text = ''

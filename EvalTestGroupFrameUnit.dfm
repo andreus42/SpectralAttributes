@@ -23,13 +23,12 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
     Color = clActiveBorder
     ParentBackground = False
     TabOrder = 0
-    ExplicitTop = -6
     object IDLabel: TLabel
       Left = 13
       Top = 10
-      Width = 62
+      Width = 96
       Height = 13
-      Caption = 'Operation ID'
+      Caption = 'Group ID (Op Level)'
     end
     object Label6: TLabel
       Left = 140
@@ -56,6 +55,7 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
       Caption = 'Parse Text'
       TabOrder = 1
       TabStop = False
+      OnClick = ParseTextButtonClick
     end
     object ParseButton: TButton
       Left = 211
@@ -65,6 +65,7 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
       Caption = 'S^3 Parse'
       TabOrder = 2
       TabStop = False
+      OnClick = ParseButtonClick
     end
     object AddEvalTestButton: TButton
       Left = 11
@@ -77,9 +78,9 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
       OnClick = AddEvalTestButtonClick
     end
     object SetUpPanel: TPanel
-      Left = 407
+      Left = 579
       Top = 72
-      Width = 360
+      Width = 214
       Height = 152
       BevelEdges = []
       BorderStyle = bsSingle
@@ -156,17 +157,18 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
     object SpecTextMemo: TLabledMemo
       Left = 13
       Top = 56
-      Width = 360
+      Width = 277
       Height = 168
       AMemo.Left = 0
       AMemo.Top = 13
-      AMemo.Width = 360
+      AMemo.Width = 277
       AMemo.Height = 155
       AMemo.Align = alClient
       AMemo.TabOrder = 0
+      AMemo.ExplicitWidth = 360
       ALabel.Left = 0
       ALabel.Top = 0
-      ALabel.Width = 360
+      ALabel.Width = 277
       ALabel.Height = 13
       ALabel.Align = alTop
       ALabel.Caption = 'Spectral Text'
@@ -182,6 +184,39 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
       FieldWidth = 100
       LabelSpacing = 1
       TabOrder = 6
+      TabStop = False
+      Text = ''
+    end
+    object TextToParseMemo: TLabledMemo
+      Left = 296
+      Top = 57
+      Width = 277
+      Height = 168
+      AMemo.Left = 0
+      AMemo.Top = 13
+      AMemo.Width = 277
+      AMemo.Height = 155
+      AMemo.Align = alClient
+      AMemo.TabOrder = 0
+      AMemo.ExplicitWidth = 360
+      ALabel.Left = 0
+      ALabel.Top = 0
+      ALabel.Width = 277
+      ALabel.Height = 13
+      ALabel.Align = alTop
+      ALabel.Caption = 'Text to Parse'
+      ALabel.Font.Charset = DEFAULT_CHARSET
+      ALabel.Font.Color = clWindowText
+      ALabel.Font.Height = -11
+      ALabel.Font.Name = 'Tahoma'
+      ALabel.Font.Style = [fsBold]
+      ALabel.ParentFont = False
+      ALabel.Layout = tlCenter
+      ALabel.ExplicitWidth = 76
+      Caption = 'Spectral Text'
+      FieldWidth = 100
+      LabelSpacing = 1
+      TabOrder = 7
       TabStop = False
       Text = ''
     end

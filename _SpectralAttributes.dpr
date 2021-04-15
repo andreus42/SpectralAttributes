@@ -8,7 +8,8 @@ uses
   TEvalTestUnit in 'TEvalTestUnit.pas',
   TEvalTestGroupUnit in 'TEvalTestGroupUnit.pas',
   TEvalTestSetUnit in 'TEvalTestSetUnit.pas',
-  EvalFrameUnit in 'EvalFrameUnit.pas' {EvalFrame: TFrame};
+  EvalFrameUnit in 'EvalFrameUnit.pas' {EvalFrame: TFrame},
+  Logic in 'Logic.pas';
 
 {$R *.res}
 

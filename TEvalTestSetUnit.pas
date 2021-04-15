@@ -18,7 +18,7 @@ type
   public
     SetID: Integer;
     EvalTestGroupList: TObjectList<TEvalTestGroup>;
-//    EvalTestGroupIDList: TList<Integer>;
+    EvalTestGroupIDList: TList<Integer>;
     constructor Create(ID: Integer);
     destructor Destroy;
   end;
@@ -37,20 +37,21 @@ var
 begin
   SetID := ID;
   EvalTestGroupList := TObjectList<TEvalTestGroup>.Create;
-//  EvalTestGroupIDList := TList<Integer>.Create;
+  EvalTestGroupIDList := TList<Integer>.Create;
   Query := TADOQuery.Create(Nil);
   with Query do
   begin
     Connection := _ChromaDataModule.ChromaData;
-    SQL.Add('select GroupID');
-    SQL.Add('from EvalTestGroups where SetID = ' + SetID.ToString);
+    SQL.Add('SELECT GroupID');
+    SQL.Add('FROM EvalTestGroups WHERE SetID = ' + SetID.ToString);
+    SQL.Add('ORDER BY GroupNum');
     Open;
     while not eof do
     begin
         GroupID := Query.FieldByName('GroupID').Value;
         EvalTestGroup := TEvalTestGroup.Create(GroupID);
         EvalTestGroupList.Add(EvalTestGroup);
-//        EvalTestGroupIDList.Add(GroupID);
+        EvalTestGroupIDList.Add(GroupID);
         Next;
     end;
     Close;
@@ -60,8 +61,8 @@ end;
 
 destructor TEvalTestSet.Destroy;
 begin
-//  EvalTestGroupIDList.Free;
-  Destroy;
+  EvalTestGroupIDList.Destroy;
+  EvalTestGroupList.Destroy;
 end;
 
 end.

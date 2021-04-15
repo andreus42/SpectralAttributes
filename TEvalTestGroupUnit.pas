@@ -37,7 +37,6 @@ begin
 //  IDsList := TList<Integer>.Create;
   //
   Self.GroupID := GroupID;
-//  Self.SetID := SetID;
   Query := TADOQuery.Create(Nil);
   with Query do
   begin
@@ -98,8 +97,7 @@ end;
 
 destructor TEvalTestGroup.destroy;
 begin
-   TestList.Free;
-//  IDsList.Free;
+   TestList.Destroy;
   inherited destroy;
 end;
 

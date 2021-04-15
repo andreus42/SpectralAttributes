@@ -3,12 +3,12 @@ unit SpectalAttributesForm;
 interface
 
 uses
-  Winapi.Windows, Winapi.Messages,                                    // WinAPI
-  System.SysUtils, System.Variants, System.Classes,                   // System
+  Winapi.Windows, Winapi.Messages, // WinAPI
+  System.SysUtils, System.Variants, System.Classes, // System
   System.Generics.Collections,
-  Vcl.StdCtrls, Vcl.Controls, Vcl.ComCtrls, Vcl.Graphics, Vcl.Forms,  // VCL
+  Vcl.StdCtrls, Vcl.Controls, Vcl.ComCtrls, Vcl.Graphics, Vcl.Forms, // VCL
   Vcl.ToolWin, Vcl.ActnMan, Vcl.ActnCtrls, Vcl.ActnMenus,
-  Vcl.ExtCtrls, Dialogs,
+  Vcl.ExtCtrls, Dialogs, Vcl.DBCtrls, Vcl.Buttons,
 
   // DB
   Data.DB, Data.Win.ADODB,
@@ -18,19 +18,20 @@ uses
   ChromaDataModule,
   TEvalTestUnit,
   TEvalTestGroupUnit,
-  TEvalTestSetUnit, LabeledMemo, Vcl.DBCtrls;
+  TEvalTestSetUnit,
+  LabeledMemo;
 
-  type
-    T_SpectralAttributesForm = class(TForm)
-      PageControl1: TPageControl;
-      DeleteTestButton: TButton;
-      AddTestGroupButton: TButton;
-      SummaryTab: TTabSheet;
-      SummaryPanel: TPanel;
-    LabledMemo1: TLabledMemo;
-      procedure DeleteTestButtonClick(Sender: TObject);
-      procedure FormCreate(Sender: TObject);
-      procedure AddTestGroupButtonClick(Sender: TObject);
+type
+  T_SpectralAttributesForm = class(TForm)
+    PageControl1: TPageControl;
+    DeleteTestButton: TButton;
+    AddTestGroupButton: TButton;
+    PartRevLogEdit: TLabeledEdit;
+    SpeedButton1: TSpeedButton;
+    procedure DeleteTestButtonClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
+    procedure AddTestGroupButtonClick(Sender: TObject);
+    procedure SpeedButton1Click(Sender: TObject);
 
   type
     TMyTabSheet = class(TTabSheet)
@@ -41,24 +42,25 @@ uses
     end;
   private
     procedure AddTestGroupPage(EvalTestGroup: TEvalTestGroup);
+  published
+    EvalTestSet: TEvalTestSet;
   end;
-
-const SetID = 1;
 
 var
   _SpectralAttributesForm: T_SpectralAttributesForm;
-  EvalTestSet: TEvalTestSet;
+  SetID: Integer;
 
 implementation
 
 {$R *.dfm}
-
 { Form 1 }
 
 procedure T_SpectralAttributesForm.FormCreate(Sender: TObject);
 var
   EvalTestGroup: TEvalTestGroup;
+  // TempGroupID: Integer;
 begin
+  PartRevLogEdit.Text := SetID.ToString;
   EvalTestSet := TEvalTestSet.Create(SetID);
   for EvalTestGroup in EvalTestSet.EvalTestGroupList do
   begin
@@ -66,7 +68,28 @@ begin
   end;
 end;
 
-procedure T_SpectralAttributesForm.AddTestGroupPage(EvalTestGroup: TEvalTestGroup);
+procedure T_SpectralAttributesForm.SpeedButton1Click(Sender: TObject);
+// reload all forms with new set infromation
+var
+  EvalTestGroup: TEvalTestGroup;
+  I: Integer;
+begin
+  EvalTestSet.Destroy;
+  SetID := StrToInt(PartRevLogEdit.Text);
+
+  // delete all from PageControl1
+  for I := 0  to  pagecontrol1.PageCount-1 do
+    pagecontrol1.Pages[0].Free;
+
+  EvalTestSet := TEvalTestSet.Create(SetID);
+  for EvalTestGroup in EvalTestSet.EvalTestGroupList do
+  begin
+    AddTestGroupPage(EvalTestGroup);
+  end;
+end;
+
+procedure T_SpectralAttributesForm.AddTestGroupPage(EvalTestGroup
+  : TEvalTestGroup);
 var
   ATabSheet: TMyTabSheet;
   TempGroupID: Integer;
@@ -80,6 +103,7 @@ begin
     Tag := EvalTestGroup.GroupID;
     PageControl := PageControl1;
     MySpecSheet := TEvalTestGroupFrame.Create(ATabSheet, EvalTestGroup);
+    // MySpecSheet := TEvalTestGroupFrame.CreateByInt(ATabSheet, EvalTestGroup.GroupID);
     with MySpecSheet do
     begin
       Parent := ATabSheet;
@@ -102,20 +126,26 @@ var
   Query: TADOQuery;
 begin
   ActivePageName := PageControl1.ActivePage.Name;
-  If (PageControl1.ActivePage <> SummaryTab) then
+//  If (PageControl1.ActivePage <> SummaryTab) then
+  begin
+    Query := TADOQuery.Create(Nil);
+    with Query do
     begin
-      Query := TADOQuery.Create(Nil);
-      with Query do
-      begin
-        Connection := _ChromaDataModule.ChromaData;
-        SQL.Add('delete from EvalTestGroups where GroupID = ' + PageControl1.ActivePage.Tag.ToString);
-        ExecSQL;
-        SQL.Add('delete from EvalTests where GroupID = ' + PageControl1.ActivePage.Tag.ToString);
-        ExecSQL;
-        Free;
-      end;
-      PageControl1.ActivePage.Destroy;
+      Connection := _ChromaDataModule.ChromaData;
+      SQL.Add('delete from EvalTestGroups where GroupID = ' +
+        PageControl1.ActivePage.Tag.ToString);
+      ExecSQL;
+      SQL.Add('delete from EvalTests where GroupID = ' +
+        PageControl1.ActivePage.Tag.ToString);
+      ExecSQL;
+      Free;
     end;
+    PageControl1.ActivePage.Destroy;
+  end;
 end;
+
+Initialization
+
+SetID := 2;
 
 end.

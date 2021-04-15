@@ -12,7 +12,9 @@ uses
 
   // Mine
   ChromaDataModule,
-  TEvalTestUnit, DoubledLabeledEdit, DoubledLabeledEdit_v3;
+  TEvalTestUnit,
+  DoubledLabeledEdit,
+  DoubledLabeledEdit_v3;
 
 type
   TEvalFrame = class(TFrame)
@@ -50,10 +52,13 @@ type
     { Private declarations }
   public
     EvalTest: TEvalTest;
-//    FrameType: Integer;
+    FrameGroupID: Integer;
   end;
 
 implementation
+
+uses
+  EvalTestGroupFrameUnit;
 
 {$R *.dfm}
 
@@ -69,11 +74,13 @@ begin
   RankEdit.Text := EvalTest.Rank;
   ToLambdaEdit.Text := EvalTest.LambdaTo;
   FromLambdaEdit.Text := EvalTest.LambdaFrom;
+  AtLambdaEdit.Text := EvalTest.LambdaAt;
   PlusTolEdit.Text := EvalTest.TolPlus;
   MinusTolEdit.Text := EvalTest.TolMinus;
   SpecEdit.Text := EvalTest.Value;
   FilepathEdit.Text := EvalTest.FilePath;
   SymbolComboBox.ItemIndex := EvalTest.Symbol;
+  FrameGroupID := EvalTest.GroupID;
   ShowFrame;
 end;
 
@@ -102,11 +109,11 @@ begin
   HideAllElements;
   SpecEdit.Visible := True;
   SpecLabel.Visible := True;
-  // Show control fields based on test type
 
+  // Show control fields based on test type
   case EvalTest.FrameType of
     0:  HideAllElements;
-    1:  begin
+    1:  begin       //With Tol+, Tol-, CWL, FWHM, Cuton, Cutoff
             SpecLabel.Caption := 'nm';
             PlusTolEdit.Visible := True;
             MinusTolEdit.Visible := True;
@@ -118,25 +125,31 @@ begin
             FromLambdaEdit.Visible := True;
             ToLambdaEdit.Visible := True;
         end;
-    3:  begin
-            SpecLabel.Caption := 'OD';
+    3:  begin //To-From: T-Avg, R-Avg
+            SpecLabel.Caption := '%';
             SpecLabel.Left := P2 - 18;
             SymbolComboBox.Visible := True;
             FromLambdaEdit.Visible := True;
             ToLambdaEdit.Visible := True;
         end;
-    4:  begin
+    4:  begin //At %: T-Avg@, R-Avg@
             SpecLabel.Caption := '%';
             SymbolComboBox.Visible := True;
             AtLambdaEdit.Visible := True;
             RefOnlyCheckBox.Visible := True;
         end;
-    5:  begin
+    5:  begin //At OD: B-abs@
             SpecLabel.Caption := 'OD';
             SpecLabel.Left := P2 - 18;
             SymbolComboBox.Visible := True;
             AtLambdaEdit.Visible := True;
             RefOnlyCheckBox.Visible := True;
+        end;
+    7:  begin // Filepath
+          SpecLabel.Visible := False;
+          SpecEdit.Visible := False;
+          FilepathEdit.Left := P2;
+          FilepathEdit.Visible := True;
         end;
   end;
 end;
@@ -250,16 +263,14 @@ begin
     EvalTest.UpdateParameters(FromLambdaEdit.AEdit.Text, FromLambdaParam)
   else if (Sender = ToLambdaEdit.AEdit) and (ToLambdaEdit.AEdit.Text <> '') then
     EvalTest.UpdateParameters(ToLambdaEdit.AEdit.Text, ToLambdaParam)
-
-  //debug
   else if (Sender = AtLambdaEdit.AEdit) and (AtLambdaEdit.AEdit.Text <> '') then
     EvalTest.UpdateParameters(AtLambdaEdit.AEdit.Text, AtLambdaParam)
-  ///
-
   else if (Sender = PlusTolEdit.AEdit) and (PlusTolEdit.AEdit.Text <> '') then
     EvalTest.UpdateParameters(PlusTolEdit.AEdit.Text, PlusTolParam)
   else if (Sender = MinusTolEdit.AEdit) and (MinusTolEdit.AEdit.Text <> '') then
-    EvalTest.UpdateParameters(MinusTolEdit.AEdit.Text, MinusTolParam);
+    EvalTest.UpdateParameters(MinusTolEdit.AEdit.Text, MinusTolParam)
+  else if (Sender = FilepathEdit) and (FilepathEdit.Text <> '') then
+    EvalTest.UpdateParameters(FilepathEdit.Text, FilepathParam);
 end;
 
 end.

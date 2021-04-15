@@ -15,9 +15,11 @@ uses
 
   // Mine
   ChromaDataModule,
+  Logic,
   EvalFrameUnit,
   TEvalTestUnit,
-  TEvalTestGroupUnit, LabeledMemo;
+  TEvalTestSetUnit,
+  TEvalTestGroupUnit, LabeledMemo, Vcl.Buttons;
 
 type
   TEvalTestGroupFrame = class(TFrame)
@@ -39,14 +41,18 @@ type
     LabeledEdit1: TLabeledEdit;
     LabeledEdit2: TLabeledEdit;
     LabeledEdit3: TLabeledEdit;
+    TextToParseMemo: TLabledMemo;
     procedure AddEvalTestButtonClick(Sender: TObject);
+    procedure ParseButtonClick(Sender: TObject);
+    procedure ParseTextButtonClick(Sender: TObject);
   private
     procedure AddEvalTestFrame(EvalTest: TEvalTest); overload;
   public
     EvalTestGroup: TEvalTestGroup;
+    IntList: TList<Integer>;
     GroupID: Integer;
     SetID: Integer;
-//    constructor Create(AOwner: TComponent; GroupID: Integer); overload;
+    constructor CreateByInt(AOwner: TComponent; GroupID: Integer); overload;
     constructor Create(AOwner: TComponent;
       EvalTestGroup: TEvalTestGroup); overload;
   end;
@@ -56,6 +62,9 @@ const
 
 implementation
 
+uses
+  SpectalAttributesForm;
+
 {$R *.dfm}
 
 constructor TEvalTestGroupFrame.Create(AOwner: TComponent;
@@ -64,15 +73,15 @@ var
   EvalTest: TEvalTest;
 begin
   inherited Create(AOwner);
+  IntList := TList<Integer>.Create;
   Self.EvalTestGroup := EvalTestGroup;
   SpecTextMemo.AMemo.Clear;
   GroupDescEdit.Text := 'In-Process #' + EvalTestGroup.GroupID.ToString;
+  IDBox.Text := EvalTestGroup.GroupID.ToString;
   Name := 'EvalFrame' + EvalTestGroup.GroupID.ToString;
   for EvalTest in EvalTestGroup.TestList do
   begin
-//    SpecTextMemo.AMemo.Lines.Add(EvalTest.Stringify);
-    // debug
-//    TestListMemo.Lines.Add(EvalTestGroup.GroupID.ToString);
+    SpecTextMemo.AMemo.Lines.Add(EvalTest.Stringify);
     AddEvalTestFrame(EvalTest);
     Self.SetID := EvalTestGroup.SetID;
   end;
@@ -81,23 +90,55 @@ begin
 end;
 
 //// new constructor
-//constructor TEvalTestGroupFrame.Create(AOwner: TComponent; GroupID: Integer);
-//var
-//  EvalTest: TEvalTest;
-//begin
-//  inherited Create(AOwner);
-//  EvalTestGroup.Create(GroupID);
-//  SpecTextMemo.AMemo.Clear;
-//  GroupDescEdit.Text := 'In-Process #' + EvalTestGroup.GroupID.ToString;
-//  Name := 'EvalFrame' + EvalTestGroup.GroupID.ToString;
-//  for EvalTest in EvalTestGroup.TestList do
-//    begin
-//       SpecTextMemo.AMemo.Lines.Add(EvalTest.Stringify);
-//       AddEvalTestFrame(EvalTest);
-//    end;
-//  Self.GroupID := EvalTestGroup.GroupID;
-//  Self.SetID := EvalTestGroup.SetID;
-//end;
+constructor TEvalTestGroupFrame.CreateByInt(AOwner: TComponent; GroupID: Integer);
+var
+  EvalTest: TEvalTest;
+begin
+  inherited Create(AOwner);
+  EvalTestGroup.Create(GroupID);
+  SpecTextMemo.AMemo.Clear;
+  GroupDescEdit.Text := 'In-Process #' + EvalTestGroup.GroupID.ToString;
+  Name := 'EvalFrame' + EvalTestGroup.GroupID.ToString;
+  for EvalTest in EvalTestGroup.TestList do
+    begin
+       SpecTextMemo.AMemo.Lines.Add(EvalTest.Stringify);
+       AddEvalTestFrame(EvalTest);
+    end;
+  Self.GroupID := EvalTestGroup.GroupID;
+  Self.SetID := EvalTestGroup.SetID;
+end;
+
+procedure TEvalTestGroupFrame.ParseButtonClick(Sender: TObject);
+var
+  TempEvalTest: TEvalTest;
+  TempGroupID: Integer;
+begin
+  TempGroupID := EvalTestGroup.GroupID;
+  SpecTextMemo.AMemo.Clear;
+  Self.EvalTestGroup.Free;
+  Self.EvalTestGroup := TEvalTestGroup.Create(TempGroupID);
+  for TempEvalTest in Self.EvalTestGroup.TestList do
+  begin
+    SpecTextMemo.AMemo.Lines.Add(TempEvalTest.Stringify);
+  end;
+end;
+
+procedure TEvalTestGroupFrame.ParseTextButtonClick(Sender: TObject);
+var
+  TempString: String;
+begin
+  TempString := TextToParseMemo.AMemo.Text;
+  TempString := InitialRegex(TempString);
+  TempString := CommentNonSpecs(TempString);
+  TempString := FloatCommentsDown(TempString);
+  TempString := TestsToFront(TempString);
+  TempString := ShrinkWhiteSpace(TempString);
+
+//  TempString := ExpandSpecs(TempString);
+//  TempString := SplitPat(TempString);
+//  TempString := RemoveAvgAbs(TempString);
+  TextToParseMemo.AMemo.Text := TempString;
+end;
 
 procedure TEvalTestGroupFrame.AddEvalTestButtonClick(Sender: TObject);
 var
@@ -106,7 +147,6 @@ var
 begin
   temp := 0;
   NewEvalTEest := TEvalTest.CreateNew(EvalTestGroup.GroupID, EvalTestGroup.SetID);
-//  NewEvalTEest := TEvalTest.CreateNew(GroupID, SetID);
   AddEvalTestFrame(NewEvalTEest);
 end;
 

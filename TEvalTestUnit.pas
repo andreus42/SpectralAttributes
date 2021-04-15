@@ -48,8 +48,9 @@ const
   AtLambdaParam = 6;
   SpecParam = 7;
   FilepathParam = 8;
-  SymbolParam = 11;
   PlusTolParam = 9;
+  SymbolParam = 11;
+
   MinusTolParam = 10;
 
 implementation
@@ -215,7 +216,6 @@ begin
     SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @SpecParam, '''')');
     case FrameTypeID of
       1: begin  //With Tol+, Tol-, CWL, FWHM, Cuton, Cutoff
-          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @AtLambdaParam, '''')');
           SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @PlusTolParam, '''')');
           SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @MinusTolParam, '''')');
       end;
@@ -227,6 +227,9 @@ begin
       4,5: begin  //At: T-Avg@, R-Avg@, B-Avg@
           SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @AtLambdaParam, '''')');
           SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @SymbolParam, '''')');
+      end;
+      7: begin  //CIE
+          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @FilepathParam, '''')');
       end;
     end;
     ExecSQL;
