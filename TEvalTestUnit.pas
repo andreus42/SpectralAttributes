@@ -5,11 +5,14 @@ interface
 uses
   System.SysUtils,
   System.Generics.Collections,
+  System.RegularExpressions, // eventually to logic unit
+  System.RegularExpressionsCore, // eventually to logic unit
   Data.DB,
   Data.Win.ADODB,
   Datasnap.DBClient,
   ActiveX,
   ChromaDataModule;
+
 
 type
   TEvalTest = class(TObject)
@@ -33,6 +36,8 @@ type
     constructor Create(); overload;
     constructor Create(TestID: Integer); overload;
     constructor CreateNew(GroupID: Integer; SetID: Integer);
+//    constructor CreateFromList(ParamList: TStringList); //future constructor, can replace Create(TestID),
+//                    by first reading in SQL to String list? Dictionary!?!
     destructor destroy;
     function GetFrameType(): Integer;
     function Stringify(): String;
@@ -49,9 +54,8 @@ const
   SpecParam = 7;
   FilepathParam = 8;
   PlusTolParam = 9;
-  SymbolParam = 11;
-
   MinusTolParam = 10;
+  SymbolParam = 11;
 
 implementation
 
@@ -84,7 +88,7 @@ begin
   Query0.Close;
   Query0.Free;
 
-  // Read in test parameters
+  // Read in test parameters  // Possibly change into reading from stringlist or other list
   Query1 := TADOQuery.Create(Nil);
   Query1.Connection := _ChromaDataModule.ChromaData;
   Query1.SQL.Add('select ParamID, ParamValue');
@@ -237,22 +241,19 @@ begin
 end;
 
 function TEvalTest.Stringify: String;
+const
+  SymbolArray: array[0..4] of string = ('>=', '>', '=', '<=', '<');
 var
   TextSymbol: String;
 begin
-  case Self.Symbol of
-    0: TextSymbol := '>=';
-    1: TextSymbol := '>';
-    2: TextSymbol := '=';
-    3: TextSymbol := '<=';
-    4: TextSymbol := '<';
-  end;
-  case Self.FrameType of     // Perhaps do by frame type?
+  TextSymbol := SymbolArray[Self.Symbol];
+  case Self.FrameType of
     1: Result := Name + ': ' + Value + 'nm ' + '+' + TolPlus + '/' + '-' + TolMinus + 'nm';
     2: Result := Name + ': ' + TextSymbol + Value + '% ' + LambdaFrom + '-' + LambdaTo  + 'nm';
-    3: Result := Name + ': ' + TextSymbol +  Value + '% at ' + LambdaAt + 'nm';
-    4: Result := Name + ': ' + TextSymbol + ' OD' + Value + ' ' + LambdaFrom + '-' + LambdaTo + 'nm';
+    3: Result := Name + ': ' + TextSymbol + ' OD' + Value + ' ' + LambdaFrom + '-' + LambdaTo + 'nm';
+    4: Result := Name + ': ' + TextSymbol +  Value + '% at ' + LambdaAt + 'nm';
     5: Result := Name + ': ' + TextSymbol + ' OD' + Value + '@' + LambdaAt + 'nm';
+    7: Result := Name + ': ' + Filepath;
   end;
 end;
 

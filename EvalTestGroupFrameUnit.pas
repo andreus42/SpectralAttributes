@@ -7,7 +7,7 @@ uses
   System.Classes,
   Vcl.Graphics, Vcl.Controls, Vcl.Forms, Vcl.Dialogs, Vcl.StdCtrls, Vcl.Grids,
   Vcl.ExtCtrls, Vcl.DBGrids, Vcl.Mask, Vcl.DBCtrls,
-  System.Generics.Collections,
+  System.Generics.Collections, Vcl.Buttons,
 
   // Database
   Data.DB, Data.Win.ADODB, Datasnap.DBClient,
@@ -19,7 +19,12 @@ uses
   EvalFrameUnit,
   TEvalTestUnit,
   TEvalTestSetUnit,
-  TEvalTestGroupUnit, LabeledMemo, Vcl.Buttons;
+  TEvalTestGroupUnit,
+  LabeledMemo,
+
+  //Temp
+  System.RegularExpressions,
+  System.RegularExpressionsCore;
 
 type
   TEvalTestGroupFrame = class(TFrame)
@@ -42,9 +47,11 @@ type
     LabeledEdit2: TLabeledEdit;
     LabeledEdit3: TLabeledEdit;
     TextToParseMemo: TLabledMemo;
+    TransformButton: TButton;
     procedure AddEvalTestButtonClick(Sender: TObject);
     procedure ParseButtonClick(Sender: TObject);
     procedure ParseTextButtonClick(Sender: TObject);
+    procedure TransformButtonClick(Sender: TObject);
   private
     procedure AddEvalTestFrame(EvalTest: TEvalTest); overload;
   public
@@ -108,6 +115,31 @@ begin
   Self.SetID := EvalTestGroup.SetID;
 end;
 
+procedure TEvalTestGroupFrame.AddEvalTestButtonClick(Sender: TObject);
+var
+  NewEvalTEest: TEvalTest;
+  temp: integer;
+begin
+  temp := 0;
+  NewEvalTEest := TEvalTest.CreateNew(EvalTestGroup.GroupID, EvalTestGroup.SetID);
+  AddEvalTestFrame(NewEvalTEest);
+end;
+
+procedure TEvalTestGroupFrame.AddEvalTestFrame(EvalTest: TEvalTest);
+var
+  TestFrame: TEvalFrame;
+begin
+  TestFrame := TEvalFrame.Create(EvalScrollBox, EvalTest.TestID);
+  with TestFrame do
+  begin
+    Name := 'EvalFrame_' + EvalTest.TestID.ToString;
+    Parent := EvalScrollBox;
+    Align := alTop;
+    Height := FrameHeight;
+  end;
+end;
+
+
 procedure TEvalTestGroupFrame.ParseButtonClick(Sender: TObject);
 var
   TempEvalTest: TEvalTest;
@@ -140,28 +172,39 @@ begin
   TextToParseMemo.AMemo.Text := TempString;
 end;
 
-procedure TEvalTestGroupFrame.AddEvalTestButtonClick(Sender: TObject);
+procedure TEvalTestGroupFrame.TransformButtonClick(Sender: TObject);
 var
-  NewEvalTEest: TEvalTest;
-  temp: integer;
+  Temp: TStringList;
+  OutLine: String;
+  SpecToken: String;
+  SpecParamID: Integer;
+  SpecVal: String;
+  SymbolParam: Integer;
+  I: Integer;
+  RangeArray: TArray <string>;
 begin
-  temp := 0;
-  NewEvalTEest := TEvalTest.CreateNew(EvalTestGroup.GroupID, EvalTestGroup.SetID);
-  AddEvalTestFrame(NewEvalTEest);
+  Temp := TStringList.Create;
+  try
+    Temp.Assign(SpecTextMemo.AMemo.Lines);
+    for I := 0 to Temp.Count - 1 do
+    begin
+      RangeArray := FindRanges(Temp[I]);
+      SpecToken := FindSpecToken(Temp[I]);
+      SpecParamID := FindSpecParamID(SpecToken);
+      SymbolParam := FindSymbolParamID(Temp[I]);
+      SpecVal := FindSpecVal(Temp[I]);
+      Temp[I] := SpecToken + '; ' + SymbolParam.ToString + ' <- ' + SpecParamID.ToString;
+
+
+
+    end;
+    TextToParseMemo.AMemo.Lines.Assign(Temp);
+  finally
+    Temp.Free;
+  end;
+
+
 end;
 
-procedure TEvalTestGroupFrame.AddEvalTestFrame(EvalTest: TEvalTest);
-var
-  TestFrame: TEvalFrame;
-begin
-  TestFrame := TEvalFrame.Create(EvalScrollBox, EvalTest.TestID);
-  with TestFrame do
-  begin
-    Name := 'EvalFrame_' + EvalTest.TestID.ToString;
-    Parent := EvalScrollBox;
-    Align := alTop;
-    Height := FrameHeight;
-  end;
-end;
 
 end.

@@ -52,7 +52,7 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
       Top = 231
       Width = 77
       Height = 26
-      Caption = 'Parse Text'
+      Caption = 'Clean Text'
       TabOrder = 1
       TabStop = False
       OnClick = ParseTextButtonClick
@@ -219,6 +219,15 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
       TabOrder = 7
       TabStop = False
       Text = ''
+    end
+    object TransformButton: TButton
+      Left = 379
+      Top = 231
+      Width = 86
+      Height = 25
+      Caption = 'Text-to-table'
+      TabOrder = 8
+      OnClick = TransformButtonClick
     end
   end
   object EvalScrollBox: TScrollBox

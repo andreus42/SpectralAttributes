@@ -34,6 +34,7 @@ constructor TEvalTestSet.Create(ID: Integer);
 var
   Query : TADOQuery;
   GroupID: Integer;
+//  GroupNum: Integer; For future ordering of sets
 begin
   SetID := ID;
   EvalTestGroupList := TObjectList<TEvalTestGroup>.Create;
@@ -42,13 +43,14 @@ begin
   with Query do
   begin
     Connection := _ChromaDataModule.ChromaData;
-    SQL.Add('SELECT GroupID');
-    SQL.Add('FROM EvalTestGroups WHERE SetID = ' + SetID.ToString);
-    SQL.Add('ORDER BY GroupNum');
+    SQL.Add('SELECT GroupID, GroupNum');
+    SQL.Add('FROM EvalTestGroups WHERE SetID = ' + SetID.ToString);  // change to order by GroupNum for future revs
+    SQL.Add('ORDER BY GroupID');
     Open;
     while not eof do
     begin
         GroupID := Query.FieldByName('GroupID').Value;
+//        GroupNum := Query.FieldByName('GroupNum').Value;
         EvalTestGroup := TEvalTestGroup.Create(GroupID);
         EvalTestGroupList.Add(EvalTestGroup);
         EvalTestGroupIDList.Add(GroupID);
