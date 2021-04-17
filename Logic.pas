@@ -7,6 +7,7 @@ uses
   System.StrUtils,
   System.RegularExpressions,
   System.RegularExpressionsCore,
+  System.Generics.Collections,
 
   // Database
   Data.DB, Data.Win.ADODB, Datasnap.DBClient,
@@ -16,7 +17,8 @@ uses
 function FindSpecToken(AString: string): string;
 function FindSpecParamID(AString: string): Integer;
 function FindSymbolParamID(AString: string): Integer;
-function FindSpecVal(AString: string): string;
+function FindPecentSpecVal(AString: string): Real;
+function FindRangeVals(AString: string): TList<String>;
 
 // Old functions
 function CommentNonSpecs(AString: string): string;
@@ -378,17 +380,43 @@ begin
   result := ansiindexstr(SymbolToken, ['>=', '>', '=', '<=', '<']);
 end;
 
-function FindSpecVal(AString: string): string;
+function FindPecentSpecVal(AString: string): Real;
 const
-pattern = '(?:OD)?\d{1,2}(\.\d{1,2})?(?:%)?';
+pattern = '(\d{1,2})%';
 var
+  Regex: TRegex;
   Matches: TMatchCollection;
-  OutString: String;
-  I: Integer;
+  Groups: TGroupCollection;
+  StringVal: String;
 begin
-  Matches := TRegEx.Matches(AString, pattern, [roExplicitCapture]);
-  OutString := OutString + Matches.Item[I].Groups.Item[0].Value;
-  Result := OutString;
+  Regex :=  TRegEx.Create(pattern);
+  Matches:= regex.Matches(AString);
+  Groups := Matches.Item[0].Groups;
+  StringVal := Groups.Item[1].Value;
+  Result := StrToFloat(StringVal);
+end;
+
+function FindRangeVals(AString: string): TList<String>;
+const
+  pattern = '(\d{3,4}\.?\d?)-(\d{3,4}\.?\d?)';
+var
+  Regex: TRegex;
+  Matches: TMatchCollection;
+  Groups: TGroupCollection;
+  RangeList: TList<String>;
+  I, J: Integer;
+begin
+  RangeList := TList<String>.Create;
+  Regex := TRegEx.Create(pattern);
+  Matches:= regex.Matches(AString);
+  for I := 0 to Matches.Count-1 do
+  begin
+    Groups := Matches.Item[i].Groups;
+    for J := 0 to Groups.Count-1 do
+      // Add each match pair (low, high) to IntList
+      RangeList.Add(Groups.Item[J].Value);
+  end;
+  Result := RangeList;
 end;
 
 end.

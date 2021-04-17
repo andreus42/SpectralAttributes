@@ -178,27 +178,43 @@ var
   OutLine: String;
   SpecToken: String;
   SpecParamID: Integer;
-  SpecVal: String;
-  SymbolParam: Integer;
-  I: Integer;
-  RangeArray: TArray <string>;
+  SpecVal: Real;
+  SymbolParamID: Integer;
+  I, J: Integer;
+  RangeList: TList<String>;
+  FromLambda: String;
+  ToLambda: String;
+  FromLambdaVal: Real;
+  ToLambdaVal: Real;
 begin
   Temp := TStringList.Create;
   try
     Temp.Assign(SpecTextMemo.AMemo.Lines);
     for I := 0 to Temp.Count - 1 do
     begin
-      RangeArray := FindRanges(Temp[I]);
       SpecToken := FindSpecToken(Temp[I]);
       SpecParamID := FindSpecParamID(SpecToken);
-      SymbolParam := FindSymbolParamID(Temp[I]);
-      SpecVal := FindSpecVal(Temp[I]);
-      Temp[I] := SpecToken + '; ' + SymbolParam.ToString + ' <- ' + SpecParamID.ToString;
-
-
-
+      SymbolParamID := FindSymbolParamID(Temp[I]);
+      SpecVal := FindPecentSpecVal(Temp[I]);
+      RangeList := FindRangeVals(Temp[I]);
+      J:=0;
+      while J <= RangeList.Count-1 do
+      begin
+        FromLambda := RangeList[I];
+        ToLambda := RangeList[I+1];
+        FromLambdaVal := StrToFloat(FromLambda);
+        ToLambdaVal := StrToFloat(ToLambda);
+        Inc(J, 2);
+      end;
+      Temp[I] := 'SpecVal: ' + FloatToStr(SpecVal)
+      + 'SymbolParam: ' + SymbolParam.ToString
+      + 'SpecParam:' + SpecParamID.ToString
+      + 'RangeLow:' + FromLambda
+      + 'RangeHigh:' + ToLambda;
     end;
     TextToParseMemo.AMemo.Lines.Assign(Temp);
+    TEvalTest.CreateWithParams(SetID, GroupID, SpecParamID, SymbolParamID,
+      SpecVal, FromLambdaVal, ToLambdaVal);
   finally
     Temp.Free;
   end;

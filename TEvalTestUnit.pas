@@ -36,6 +36,8 @@ type
     constructor Create(); overload;
     constructor Create(TestID: Integer); overload;
     constructor CreateNew(GroupID: Integer; SetID: Integer);
+    constructor CreateWithParams(SetID, GroupID, SpecParamID, SymbolParamID: Integer;
+            SpecVal, FromLambda, ToLambda: Real);
 //    constructor CreateFromList(ParamList: TStringList); //future constructor, can replace Create(TestID),
 //                    by first reading in SQL to String list? Dictionary!?!
     destructor destroy;
@@ -43,6 +45,7 @@ type
     function Stringify(): String;
     procedure ResetParameters;
     procedure UpdateParameters(ParamValue: String; ParamID: Integer);
+
   end;
 
 const
@@ -169,6 +172,40 @@ begin
     Self.TestID := NextTestID;
     Self.GroupID := GroupID;
     Self.SetID := SetID;
+end;
+
+constructor TEvalTest.CreateWithParams(SetID, GroupID, SpecParamID, SymbolParamID: Integer;
+            SpecVal, FromLambda, ToLambda: Real);
+var
+  Query: TADOQuery;
+  Query2: TADOQuery;
+  NextTestID: Integer;
+begin
+  Query := TADOQuery.Create(Nil);
+  with query do
+  begin
+    Connection := _ChromaDataModule.ChromaData;
+    SQL.Add('select max(TestID) last_id from EvalTests');
+    Open;
+    // need Try/Except Blocks
+    if (FieldByName('last_id').IsNull) then
+      NextTestID := 1
+    else
+      NextTestID := FieldByName('last_id').Value + 1;
+    Close;
+  end;
+  Query2 := TADOQuery.Create(Nil);
+  with query2 do
+  begin
+    SQL.Add('Declare @TestID = '+ NextTestID.ToString);
+    SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @FromLambdaParam, '''')');
+    SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @ToLambdaParam, '''')');
+    SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @AtLambdaParam, '''')');
+    SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @SymbolParam, '''')');
+    SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @SpecParam, '''')');
+    ExecSQL
+  end;
+
 end;
 
 destructor TEvalTest.destroy;

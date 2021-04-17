@@ -165,7 +165,6 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
       AMemo.Height = 155
       AMemo.Align = alClient
       AMemo.TabOrder = 0
-      AMemo.ExplicitWidth = 360
       ALabel.Left = 0
       ALabel.Top = 0
       ALabel.Width = 277
@@ -198,13 +197,12 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
       AMemo.Height = 155
       AMemo.Align = alClient
       AMemo.TabOrder = 0
-      AMemo.ExplicitWidth = 360
       ALabel.Left = 0
       ALabel.Top = 0
       ALabel.Width = 277
       ALabel.Height = 13
       ALabel.Align = alTop
-      ALabel.Caption = 'Text to Parse'
+      ALabel.Caption = 'Spectral Text'
       ALabel.Font.Charset = DEFAULT_CHARSET
       ALabel.Font.Color = clWindowText
       ALabel.Font.Height = -11
