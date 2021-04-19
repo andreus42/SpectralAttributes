@@ -11,7 +11,8 @@ uses
   Data.Win.ADODB,
   Datasnap.DBClient,
   ActiveX,
-  ChromaDataModule;
+  ChromaDataModule,
+  Logic;
 
 
 type
@@ -45,7 +46,7 @@ type
     function Stringify(): String;
     procedure ResetParameters;
     procedure UpdateParameters(ParamValue: String; ParamID: Integer);
-
+    procedure Write;
   end;
 
 const
@@ -276,6 +277,57 @@ begin
     ExecSQL;
   end;
 end;
+
+procedure TEvalTest.Write;
+var
+  Query: TADOQuery;
+begin
+  // Currently moving from EvalFrame
+  Query := TADOQuery.Create(Nil);
+  with query do
+  begin
+    Connection := _ChromaDataModule.ChromaData;
+    SQL.Add('Declare @TestID int =' + TestID.ToString);
+    SQL.Add('Declare @GroupID int =' + GroupID.ToString);
+    SQL.Add('Declare @SetID int =' + SetID.ToString);
+    SQL.Add('Declare @RankParam int =' + RankParam.ToString);
+    SQL.Add('Declare @TestTypeParam int =' + TestTypeParam.ToString);
+    SQL.Add('Declare @FromLambdaParam int =' + FromLambdaParam.ToString);
+    SQL.Add('Declare @ToLambdaParam int =' + ToLambdaParam.ToString);
+    SQL.Add('Declare @AtLambdaParam int =' + AtLambdaParam.ToString);
+    SQL.Add('Declare @SpecParam int =' + SpecParam.ToString);
+    SQL.Add('Declare @FilepathParam int =' + FilepathParam.ToString);
+    SQL.Add('Declare @SymbolParam int =' + SymbolParam.ToString );
+    SQL.Add('Declare @PlusTolParam int =' + PlusTolParam.ToString);
+    SQL.Add('Declare @MinusTolParam int =' + MinusTolParam.ToString);
+
+    // Inserts for all
+    SQL.Add('update EvalTests set ParamValue = '''+TestType+''' where TestID = '+TestID.ToString+' and ParamID = @TestTypeParam');
+    SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @SpecParam, '''+Value+''')');
+    SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @RankParam, '''+Rank+''')');
+//
+    case FrameType of
+      1: begin  //With Tol+, Tol-, CWL, FWHM, Cuton, Cutoff
+          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @PlusTolParam, '''+TolPlus+''')');
+          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @MinusTolParam, '''+TolMinus+''')');
+      end;
+      2,3: begin  //To-From: T-Avg, R-Avg, B-Avg
+          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @FromLambdaParam, '''+LambdaFrom+''')');
+          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @ToLambdaParam, '''+LambdaTo+''')');
+          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @SymbolParam, '''+Symbol.ToString+''')');
+      end;
+      4,5: begin  //At: T-Avg@, R-Avg@, B-Avg@
+          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @AtLambdaParam, '''+LambdaAt+''')');
+          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @SymbolParam, '''+Symbol.ToString+''')');
+      end;
+      7: begin  //CIE
+          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @FilepathParam, '''+Filepath+''')');
+      end;
+    end;
+    ExecSQL;
+  end;
+end;
+
 
 function TEvalTest.Stringify: String;
 const

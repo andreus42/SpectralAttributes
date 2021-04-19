@@ -13,14 +13,35 @@ uses
   Data.DB, Data.Win.ADODB, Datasnap.DBClient,
   ActiveX, ChromaDataModule;
 
-// new functions
+type
+  TSpecParams = record
+    ParamName: String;
+    TypeID: Integer;
+    FrameTypeID: Integer;
+  end;
+
+  TLambdaRange = record
+    ToLambda: Real;
+    FromLambda: Real;
+  end;
+
+  TTolerance = record
+    PlusTol: Real;
+    MinusTol: Real;
+  end;
+
+// Translate S^3 Text to Parameters
 function FindSpecToken(AString: string): string;
+function FindSpecParams(AString: string): TSpecParams;
 function FindSpecParamID(AString: string): Integer;
 function FindSymbolParamID(AString: string): Integer;
 function FindPecentSpecVal(AString: string): Real;
 function FindRangeVals(AString: string): TList<String>;
+function ReturnRangeList(AString: String): TList<TLambdaRange>;
+function ReturnTolerance(AString: String): TTolerance;
+function ReturnTransmissionValueList(AString: String): TList<Real>;
 
-// Old functions
+// Unformatted Text Cleaning
 function CommentNonSpecs(AString: string): string;
 function ExpandSpecs(AString: string): string;
 function FloatCommentsDown(AString: string): string;
@@ -29,12 +50,60 @@ function TestsToFront(AString: string): string;
 function SplitPat(AString: string): string;
 function ShrinkWhiteSpace(AString: string): string;
 function RemoveAvgAbs(AString: string): string;
-function FindRanges(AString: string): TArray<string>;
 function ConcatStr(sArray: TArray<string>): string;
 
-// function ___(aString: string): string;
+// Output S^3 Text
+// function WriteSpecFromParams(ParamsList: List): String;
+
+const
+  SpecTokenRegexString = '(.*):';
+  TolerancedSpedRegexString = '(\d{2,4})nm';
+  TransSpecValueRegexString = '(\d{1,2}(?:\.\d{1,2})?)(?:%)';
+  BSpecValueRegexString = '(?:OD)(\d{1,2}(?:\.\d{1,2})?)';
+  SymbolRegexString = '>=|>|=|<|<=';
+  LambdaRangesRegexString = '(\d{3,4}\.?\d?)-(\d{3,4}\.?\d?)';
+  TolerancesRegexString = '(?:\+(\d?(?:\.\d)?)\/\-(\d?(?:\.\d)?)nm)';
 
 implementation
+
+function ReturnTransmissionValueList(AString: String): TList<Real>;
+var
+  TransmissionValueList: TList<Real>;
+  Regex: TRegex;
+  Matches: TMatchCollection;
+  Group: TGroupCollection;
+  I: Integer;
+begin
+  TransmissionValueList := TList<Real>.Create;
+  Regex := TRegEx.Create(TransSpecValueRegexString);
+  Matches:= Regex.Matches(AString);
+  for I := 0 to Matches.Count-1 do
+  begin
+    Group := Matches.Item[I].Groups;
+    TransmissionValueList.Add(StrToFloat(Group.Item[1].Value));
+  end;
+  Result := TransmissionValueList;
+end;
+
+
+function ReturnTolerance(AString: String): TTolerance;
+var
+  Tolerance: TTolerance;
+  Regex: TRegex;
+  Matches: TMatchCollection;
+  Group: TGroupCollection;
+  I: Integer;
+begin
+  Regex := TRegEx.Create(TolerancesRegexString);
+  Matches:= Regex.Matches(AString);
+  for I := 0 to Matches.Count-1 do
+  begin
+    Group := Matches.Item[I].Groups;
+    Tolerance.PlusTol := StrToFloat(Group.Item[1].Value);
+    Tolerance.MinusTol := StrToFloat(Group.Item[2].Value);
+  end;
+  Result := Tolerance;
+end;
 
 function ConcatStr(sArray: TArray<string>): string;
 var
@@ -46,24 +115,28 @@ begin
   ConcatStr := rString;
 end;
 
-function FindRanges(AString: string): TArray<string>;
+function ReturnRangeList(AString: String): TList<TLambdaRange>;
 var
+  LambdaRangeList: TList<TLambdaRange>;
+  LambdaRange: TLambdaRange;
+  Regex: TRegex;
   Matches: TMatchCollection;
-  I, MatchCount: Integer;
-  sItem: string;
-  sArray: TArray<string>;
-  rangeArray: TArray<string>;
-const
-  pattern = '(\d{3,4}\.?\d?-\d{3,4}\.?\d?)';
+  Group: TGroupCollection;
+  I: Integer;
 begin
-  sItem := '';
-  Matches := TRegEx.Matches(AString, pattern);
-  MatchCount := Matches.Count;
-  SetLength(rangeArray, MatchCount);
-  for I := 0 to MatchCount - 1 do
-    rangeArray[I] := Matches.Item[I].Groups.Item[0].Value;
-  FindRanges := rangeArray;
+  LambdaRangeList := TList<TLambdaRange>.Create;
+  Regex := TRegEx.Create(LambdaRangesRegexString);
+  Matches:= Regex.Matches(AString);
+  for I := 0 to Matches.Count-1 do
+  begin
+    Group := Matches.Item[I].Groups;
+    LambdaRange.FromLambda := StrToFloat(Group.Item[1].Value);
+    LambdaRange.ToLambda := StrToFloat(Group.Item[2].Value);
+    LambdaRangeList.Add(LambdaRange);
+  end;
+  Result := LambdaRangeList;
 end;
+
 
 function RemoveAvgAbs(AString: string): string;
 var
@@ -108,24 +181,20 @@ begin
 end;
 
 function ExpandSpecs(AString: string): string;
-
 var
-  s: String;
   output: String;
   line: String;
   lines: TArray<String>;
   Range: String;
   Ranges: TArray<String>;
-
 begin
   lines := TRegEx.Split(AString, '\R');
-  for line in lines do
+//  Ranges := FindRanges(line);  Update to new function
+  for Range in Ranges do
   begin
-    Ranges := FindRanges(line);
-    for Range in Ranges do
-      output := output + line + ' ' + Range + sLineBreak;
+    output := output + line + ' ' + Range + sLineBreak;
   end;
-  ExpandSpecs := output;
+  Result := output;
 end;
 
 function FloatCommentsDown(AString: string): string;
@@ -242,87 +311,89 @@ begin
   BAvgRegex := TRegEx.Create('B[-:>].*avg', [roIgnoreCase]);
   BAbsRegex := TRegEx.Create('B[-:>].*abs', [roIgnoreCase]);
 
-  // Split lines
-  lines := TRegEx.Split(AString, '\R');
-  for line in lines do
-  begin
-    if TAvgRegex.IsMatch(line) and TAbsRegex.IsMatch(line) then
-    begin
-      Ranges := FindRanges(line);
-      for Range in Ranges do
-      begin
-        OutString := RemoveAvgAbs(line);
-        OutString := 'T-avg: ' + OutString + ' ' + Range + sLineBreak;
-        OutString := 'T-abs: ' + OutString + ' ' + Range;
-      end;
-    end
-    else if TAvgRegex.IsMatch(line) then
-    begin
-      Ranges := FindRanges(line);
-      for Range in Ranges do
-      begin
-        OutString := RemoveAvgAbs(line);
-        OutString := 'T-avg: ' + OutString + ' ' + Range;
-      end;
-    end
-    else if TAbsRegex.IsMatch(line) then
-    begin
-      Ranges := FindRanges(line);
-      for Range in Ranges do
-      begin
-        OutString := RemoveAvgAbs(line);
-        OutString := 'T-abs: ' + OutString + ' ' + Range + sLineBreak;;
-      end;
-    end
-    else if RAvgRegex.IsMatch(line) and RAbsRegex.IsMatch(line) then
-    begin
-      OutString := RemoveAvgAbs(line);
-      OutString := 'R-avg: ' + OutString + sLineBreak + 'R-abs:' + OutString;
-    end
-    else if RAvgRegex.IsMatch(line) then
-    begin
-      OutString := RemoveAvgAbs(line);
-      OutString := 'R-avg: ' + OutString;
-    end
-    else if RAbsRegex.IsMatch(line) then
-    begin
-      OutString := RemoveAvgAbs(line);
-      OutString := 'R-abs: ' + OutString;
-    end
-    else if BAvgRegex.IsMatch(line) and BAbsRegex.IsMatch(line) then
-    begin
-      Ranges := FindRanges(line);
-      for Range in Ranges do
-      begin
-        OutString := RemoveAvgAbs(line);
-        OutString := 'B-avg: ' + OutString + ' ' + Range + sLineBreak;
-        OutString := 'B-abs: ' + OutString + ' ' + Range;
-      end;
-    end
-    else if BAvgRegex.IsMatch(line) then
-    begin
-      Ranges := FindRanges(line);
-      for Range in Ranges do
-      begin
-        OutString := RemoveAvgAbs(line);
-        OutString := 'B-avg: ' + OutString + ' ' + Range;
-      end;
-    end
-    else if BAbsRegex.IsMatch(line) then
-    begin
-      Ranges := FindRanges(line);
-      for Range in Ranges do
-      begin
-        OutString := RemoveAvgAbs(line);
-        OutString := 'B-abs: ' + OutString + ' ' + Range;
-      end;
-    end
-    else
-      OutString := line;
+  Result := 'Commented out test result';
 
-    CompleteString := CompleteString + OutString + sLineBreak;
-  end;
-  TestsToFront := ShrinkWhiteSpace(CompleteString);
+  // Split lines ****REDO With Find Ranges, probably break up
+//  lines := TRegEx.Split(AString, '\R');
+//  for line in lines do
+//  begin
+//    if TAvgRegex.IsMatch(line) and TAbsRegex.IsMatch(line) then
+//    begin
+//      Ranges := FindRanges(line);
+//      for Range in Ranges do
+//      begin
+//        OutString := RemoveAvgAbs(line);
+//        OutString := 'T-avg: ' + OutString + ' ' + Range + sLineBreak;
+//        OutString := 'T-abs: ' + OutString + ' ' + Range;
+//      end;
+//    end
+//    else if TAvgRegex.IsMatch(line) then
+//    begin
+//      Ranges := FindRanges(line);
+//      for Range in Ranges do
+//      begin
+//        OutString := RemoveAvgAbs(line);
+//        OutString := 'T-avg: ' + OutString + ' ' + Range;
+//      end;
+//    end
+//    else if TAbsRegex.IsMatch(line) then
+//    begin
+//      Ranges := FindRanges(line);
+//      for Range in Ranges do
+//      begin
+//        OutString := RemoveAvgAbs(line);
+//        OutString := 'T-abs: ' + OutString + ' ' + Range + sLineBreak;;
+//      end;
+//    end
+//    else if RAvgRegex.IsMatch(line) and RAbsRegex.IsMatch(line) then
+//    begin
+//      OutString := RemoveAvgAbs(line);
+//      OutString := 'R-avg: ' + OutString + sLineBreak + 'R-abs:' + OutString;
+//    end
+//    else if RAvgRegex.IsMatch(line) then
+//    begin
+//      OutString := RemoveAvgAbs(line);
+//      OutString := 'R-avg: ' + OutString;
+//    end
+//    else if RAbsRegex.IsMatch(line) then
+//    begin
+//      OutString := RemoveAvgAbs(line);
+//      OutString := 'R-abs: ' + OutString;
+//    end
+//    else if BAvgRegex.IsMatch(line) and BAbsRegex.IsMatch(line) then
+//    begin
+//      Ranges := FindRanges(line);
+//      for Range in Ranges do
+//      begin
+//        OutString := RemoveAvgAbs(line);
+//        OutString := 'B-avg: ' + OutString + ' ' + Range + sLineBreak;
+//        OutString := 'B-abs: ' + OutString + ' ' + Range;
+//      end;
+//    end
+//    else if BAvgRegex.IsMatch(line) then
+//    begin
+//      Ranges := FindRanges(line);
+//      for Range in Ranges do
+//      begin
+//        OutString := RemoveAvgAbs(line);
+//        OutString := 'B-avg: ' + OutString + ' ' + Range;
+//      end;
+//    end
+//    else if BAbsRegex.IsMatch(line) then
+//    begin
+//      Ranges := FindRanges(line);
+//      for Range in Ranges do
+//      begin
+//        OutString := RemoveAvgAbs(line);
+//        OutString := 'B-abs: ' + OutString + ' ' + Range;
+//      end;
+//    end
+//    else
+//      OutString := line;
+//
+//    CompleteString := CompleteString + OutString + sLineBreak;
+//  end;
+//  TestsToFront := ShrinkWhiteSpace(CompleteString);
 end;
 
 function SplitPat(AString: string): string;
@@ -341,12 +412,31 @@ end;
 
 function FindSpecToken(AString: string): string;
 const
-  pattern = '[^:]*';
-var
-  Matches: TMatchCollection;
+  pattern = SpecTokenRegexString;
 begin
-  Matches := TRegEx.Matches(AString, pattern);
-  Result := Matches.Item[0].Groups.Item[0].Value;
+  Result := TRegEx.Matches(AString, pattern).Item[0].Groups.Item[1].Value;
+end;
+
+function FindSpecParams(AString: string): TSpecParams;
+var
+  Query: TADOQuery;
+  SpecToken: String;
+  SpecParam: TSpecParams;
+begin
+  SpecToken := FindSpecToken(AString);
+  Query := TADOQuery.Create(Nil);
+  with Query do
+  begin
+    Connection := _ChromaDataModule.ChromaData;
+    SQL.Add('select TypeID, FrameTypeID from TestTypes where ParamName = ''' + SpecToken + '''');
+    Open;
+    SpecParam.TypeID := FieldByName('TypeID').Value;
+    SpecParam.FrameTypeID := FieldByName('FrameTypeID').Value;
+    Close;
+    Free;
+  end;
+  SpecParam.ParamName := SpecToken;
+  Result := SpecParam;
 end;
 
 function FindSpecParamID(AString: string): Integer;
@@ -387,13 +477,11 @@ var
   Regex: TRegex;
   Matches: TMatchCollection;
   Groups: TGroupCollection;
-  StringVal: String;
 begin
   Regex :=  TRegEx.Create(pattern);
-  Matches:= regex.Matches(AString);
+  Matches:= Regex.Matches(AString);
   Groups := Matches.Item[0].Groups;
-  StringVal := Groups.Item[1].Value;
-  Result := StrToFloat(StringVal);
+  Result := StrToFloat(Groups.Item[1].Value);
 end;
 
 function FindRangeVals(AString: string): TList<String>;
@@ -407,7 +495,7 @@ var
   I, J: Integer;
 begin
   RangeList := TList<String>.Create;
-  Regex := TRegEx.Create(pattern);
+  Regex := TRegEx.Create(pattern, [roIgnoreCase]);
   Matches:= regex.Matches(AString);
   for I := 0 to Matches.Count-1 do
   begin
