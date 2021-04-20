@@ -51,6 +51,8 @@ type
     Button1: TButton;
     ParseButton: TButton;
     GroupBox2: TGroupBox;
+    LabledMemo1: TLabledMemo;
+    LabledMemo2: TLabledMemo;
     procedure AddEvalTestButtonClick(Sender: TObject);
     procedure ParseButtonClick(Sender: TObject);
     procedure ParseTextButtonClick(Sender: TObject);
@@ -177,52 +179,52 @@ end;
 
 procedure TEvalTestGroupFrame.TransformButtonClick(Sender: TObject);
 var
-  Temp: TStringList;
-  OutLine: String;
-  SpecToken: String;
-  SpecParamID: Integer;
-  SpecVal: Real;
-  SymbolParamID: Integer;
-  I, J: Integer;
-  RangeList: TList<String>;
-  FromLambda: String;
-  ToLambda: String;
-  FromLambdaVal: Real;
-  ToLambdaVal: Real;
+  EvalTest: TEvalTest;
+  StringList: TStringList;
+  AString: String;
+  SpecParams: TSpecParams;
+  LambdaRangeList: TList<TLambdaRange>;
+  LambdaRange: TLambdaRange;
+  TransmissionValueList: TList<Real>;
+  TransmissionValue: Real;
+  SymbolParam: Integer;
+  Tolerance: TTolerance;
 begin
-  Temp := TStringList.Create;
-  try
-    Temp.Assign(SpecTextMemo.AMemo.Lines);
-    for I := 0 to Temp.Count - 1 do
-    begin
-      SpecToken := FindSpecToken(Temp[I]);
-      SpecParamID := FindSpecParamID(SpecToken);
-      SymbolParamID := FindSymbolParamID(Temp[I]);
-      SpecVal := FindPecentSpecVal(Temp[I]);
-      RangeList := FindRangeVals(Temp[I]);
-      J:=0;
-      while J <= RangeList.Count-1 do
-      begin
-        FromLambda := RangeList[I];
-        ToLambda := RangeList[I+1];
-        FromLambdaVal := StrToFloat(FromLambda);
-        ToLambdaVal := StrToFloat(ToLambda);
-        Inc(J, 2);
-      end;
-      Temp[I] := 'SpecVal: ' + FloatToStr(SpecVal)
-      + 'SymbolParam: ' + SymbolParam.ToString
-      + 'SpecParam:' + SpecParamID.ToString
-      + 'RangeLow:' + FromLambda
-      + 'RangeHigh:' + ToLambda;
-    end;
-    TextToParseMemo.AMemo.Lines.Assign(Temp);
-    TEvalTest.CreateWithParams(SetID, GroupID, SpecParamID, SymbolParamID,
-      SpecVal, FromLambdaVal, ToLambdaVal);
-  finally
-    Temp.Free;
+  EvalTestGroup.DeleteTestGroupTests;
+  StringList := TStringList.Create;
+  StringList.Assign(SpecTextMemo.AMemo.Lines);
+  for AString in StringList do
+  begin
+    SpecParams := FindSpecParams(AString);
+    LambdaRangeList := ReturnRangeList(AString);
+    TransmissionValueList := ReturnTransmissionValueList(AString);
+//    for TransmissionValue in TransmissionValueList do
+//    begin
+//      TransmissionValueList FloatToStr(TransmissionValue));
+//    end
+    TransmissionValue := TransmissionValueList[0]; //temp until full loop is written
+    SymbolParam := FindSymbolParamID(AString);
+    Tolerance := ReturnTolerance(AString);
+
+    //With EvalTest
+    EvalTest := TEvalTest.CreateNew(GroupID, SetID);
+    EvalTest.FrameType := SpecParams.FrameTypeID;
+    EvalTest.Name := SpecParams.ParamName;
+    EvalTest.Rank := '0';
+    EvalTest.TestType := SpecParams.TypeID.ToString;
+    EvalTest.LambdaFrom := FloatToStr(LambdaRangeList[0].FromLambda);
+    EvalTest.LambdaTo := FloatToStr(LambdaRangeList[0].ToLambda);
+    EvalTest.LambdaAt :=  '';
+    EvalTest.Value :=  FloatToStr(TransmissionValue);
+    EvalTest.Symbol := SymbolParam;
+    EvalTest.FilePath := '';
+    EvalTest.TolPlus := FloatToStr(Tolerance.PlusTol);
+    EvalTest.TolMinus := FloatToStr(Tolerance.MinusTol);
+    SpecTextMemo.AMemo.Lines.Add(EvalTest.Stringify);
+    EvalTest.Write;
+    EvalTest.Free;
   end;
-
-
+  _SpectralAttributesForm.ResetSet;
 end;
 
 

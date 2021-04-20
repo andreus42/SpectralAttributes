@@ -27,11 +27,13 @@ type
     DeleteTestButton: TButton;
     AddTestGroupButton: TButton;
     PartRevLogEdit: TLabeledEdit;
-    SpeedButton1: TSpeedButton;
+    ReloadSet: TSpeedButton;
+    Panel1: TPanel;
     procedure DeleteTestButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure AddTestGroupButtonClick(Sender: TObject);
-    procedure SpeedButton1Click(Sender: TObject);
+    procedure ReloadSetClick(Sender: TObject);
+    procedure ResetSet;
 
   type
     TMyTabSheet = class(TTabSheet)
@@ -68,8 +70,7 @@ begin
   end;
 end;
 
-procedure T_SpectralAttributesForm.SpeedButton1Click(Sender: TObject);
-// reload all forms with new set infromation
+procedure T_SpectralAttributesForm.ResetSet;
 var
   EvalTestGroup: TEvalTestGroup;
   I: Integer;
@@ -86,6 +87,11 @@ begin
   begin
     AddTestGroupPage(EvalTestGroup);
   end;
+end;
+
+procedure T_SpectralAttributesForm.ReloadSetClick(Sender: TObject);
+begin
+  ResetSet;
 end;
 
 procedure T_SpectralAttributesForm.AddTestGroupPage(EvalTestGroup

@@ -1,8 +1,8 @@
 object EvalTestGroupFrame: TEvalTestGroupFrame
   Left = 0
   Top = 0
-  Width = 1160
-  Height = 770
+  Width = 980
+  Height = 793
   TabOrder = 0
   object Label3: TLabel
     Left = 13
@@ -14,8 +14,8 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
   object Panel1: TPanel
     Left = 0
     Top = 0
-    Width = 1160
-    Height = 273
+    Width = 980
+    Height = 361
     Align = alTop
     BevelEdges = []
     BevelOuter = bvNone
@@ -23,7 +23,8 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
     Color = clActiveBorder
     ParentBackground = False
     TabOrder = 0
-    ExplicitWidth = 939
+    ExplicitLeft = 3
+    ExplicitTop = -3
     object IDLabel: TLabel
       Left = 13
       Top = 10
@@ -49,8 +50,8 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
       Text = 'IDBox'
     end
     object ParseTextButton: TButton
-      Left = 342
-      Top = 231
+      Left = 286
+      Top = 167
       Width = 77
       Height = 26
       Caption = 'Clean Text'
@@ -59,10 +60,10 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
       OnClick = ParseTextButtonClick
     end
     object SetUpPanel: TPanel
-      Left = 587
-      Top = 72
-      Width = 278
-      Height = 152
+      Left = 670
+      Top = 71
+      Width = 283
+      Height = 153
       BevelEdges = []
       BorderStyle = bsSingle
       Color = clWhite
@@ -93,7 +94,7 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
       end
       object LabeledEdit1: TLabeledEdit
         Left = 72
-        Top = 16
+        Top = 8
         Width = 121
         Height = 21
         EditLabel.Width = 19
@@ -158,8 +159,8 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
       Text = ''
     end
     object TextToParseMemo: TLabledMemo
-      Left = 303
-      Top = 57
+      Left = 369
+      Top = 56
       Width = 258
       Height = 168
       AMemo.Left = 0
@@ -173,7 +174,7 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
       ALabel.Width = 258
       ALabel.Height = 13
       ALabel.Align = alTop
-      ALabel.Caption = 'Spectral Text'
+      ALabel.Caption = 'Unformatted Text'
       ALabel.Font.Charset = DEFAULT_CHARSET
       ALabel.Font.Color = clWindowText
       ALabel.Font.Height = -11
@@ -181,8 +182,8 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
       ALabel.Font.Style = [fsBold]
       ALabel.ParentFont = False
       ALabel.Layout = tlCenter
-      ALabel.ExplicitWidth = 76
-      Caption = 'Spectral Text'
+      ALabel.ExplicitWidth = 102
+      Caption = 'Unformatted Text'
       FieldWidth = 100
       LabelSpacing = 1
       TabOrder = 4
@@ -191,7 +192,7 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
     end
     object TransformButton: TButton
       Left = 13
-      Top = 230
+      Top = 333
       Width = 94
       Height = 25
       Caption = 'Text-to-table'
@@ -199,14 +200,70 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
       OnClick = TransformButtonClick
     end
     object Button2: TButton
-      Left = 303
-      Top = 231
+      Left = 311
+      Top = 135
       Width = 33
       Height = 26
       Caption = '<<'
       TabOrder = 6
       TabStop = False
       OnClick = ParseTextButtonClick
+    end
+    object LabledMemo1: TLabledMemo
+      Left = 13
+      Top = 230
+      Width = 260
+      Height = 89
+      AMemo.Left = 0
+      AMemo.Top = 13
+      AMemo.Width = 260
+      AMemo.Height = 76
+      AMemo.Align = alClient
+      AMemo.TabOrder = 0
+      AMemo.ExplicitWidth = 100
+      AMemo.ExplicitHeight = 90
+      ALabel.Left = 0
+      ALabel.Top = 0
+      ALabel.Width = 260
+      ALabel.Height = 13
+      ALabel.Align = alTop
+      ALabel.Caption = 'LabeledMemo'
+      ALabel.Layout = tlCenter
+      ALabel.ExplicitWidth = 65
+      Caption = ''
+      FieldWidth = 100
+      LabelSpacing = 1
+      TabOrder = 7
+      TabStop = False
+      Text = ''
+    end
+    object LabledMemo2: TLabledMemo
+      Left = 369
+      Top = 230
+      Width = 260
+      Height = 89
+      AMemo.Left = 0
+      AMemo.Top = 13
+      AMemo.Width = 260
+      AMemo.Height = 76
+      AMemo.Align = alClient
+      AMemo.TabOrder = 0
+      AMemo.ExplicitWidth = 100
+      AMemo.ExplicitHeight = 90
+      ALabel.Left = 0
+      ALabel.Top = 0
+      ALabel.Width = 260
+      ALabel.Height = 13
+      ALabel.Align = alTop
+      ALabel.Caption = 'LabeledMemo'
+      ALabel.Layout = tlCenter
+      ALabel.ExplicitWidth = 65
+      Caption = ''
+      FieldWidth = 100
+      LabelSpacing = 1
+      TabOrder = 8
+      TabStop = False
+      Text = ''
     end
   end
   object GroupDescEdit: TEdit
@@ -221,35 +278,39 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
   end
   object GroupBox1: TGroupBox
     Left = 0
-    Top = 273
-    Width = 1160
-    Height = 497
+    Top = 361
+    Width = 980
+    Height = 432
     Margins.Left = 0
     Margins.Top = 0
     Margins.Right = 0
     Margins.Bottom = 0
     Align = alClient
     TabOrder = 2
+    ExplicitTop = 273
     ExplicitWidth = 939
+    ExplicitHeight = 497
     object EvalScrollBox: TScrollBox
       Left = 111
       Top = 15
-      Width = 1047
-      Height = 480
+      Width = 867
+      Height = 415
       Align = alClient
       BevelEdges = []
       Color = clBtnFace
       ParentColor = False
       TabOrder = 0
       ExplicitWidth = 825
+      ExplicitHeight = 480
     end
     object GroupBox2: TGroupBox
       Left = 2
       Top = 15
       Width = 109
-      Height = 480
+      Height = 415
       Align = alLeft
       TabOrder = 1
+      ExplicitHeight = 480
       object ParseButton: TButton
         Left = 3
         Top = 9

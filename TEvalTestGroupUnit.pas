@@ -23,6 +23,7 @@ type
     constructor Create(GroupID: Integer);
     constructor CreateNew(SetID: Integer);      // needs to genearte new ID and pass back to EvalSet
     destructor destroy;
+    procedure DeleteTestGroupTests;
   end;
 
 implementation
@@ -93,6 +94,20 @@ begin
   Self.GroupID := NextGroupID;
   Self.GroupNum := 1;
   Self.SetID := SetID;
+end;
+
+procedure TEvalTestGroup.DeleteTestGroupTests;
+var
+  Query: TADOQuery;
+begin
+  Query := TADOQuery.Create(Nil);
+  with Query do
+  begin
+    Connection := _ChromaDataModule.ChromaData;
+    SQL.Add('delete from EvalTests where GroupID = ' + GroupID.ToString);
+    ExecSQL;
+    Free;
+  end;
 end;
 
 destructor TEvalTestGroup.destroy;

@@ -40,6 +40,7 @@ function FindRangeVals(AString: string): TList<String>;
 function ReturnRangeList(AString: String): TList<TLambdaRange>;
 function ReturnTolerance(AString: String): TTolerance;
 function ReturnTransmissionValueList(AString: String): TList<Real>;
+function ReturnSpecValueList(AString: String): TList<Real>;
 
 // Unformatted Text Cleaning
 function CommentNonSpecs(AString: string): string;
@@ -58,13 +59,49 @@ function ConcatStr(sArray: TArray<string>): string;
 const
   SpecTokenRegexString = '(.*):';
   TolerancedSpedRegexString = '(\d{2,4})nm';
-  TransSpecValueRegexString = '(\d{1,2}(?:\.\d{1,2})?)(?:%)';
-  BSpecValueRegexString = '(?:OD)(\d{1,2}(?:\.\d{1,2})?)';
   SymbolRegexString = '>=|>|=|<|<=';
   LambdaRangesRegexString = '(\d{3,4}\.?\d?)-(\d{3,4}\.?\d?)';
   TolerancesRegexString = '(?:\+(\d?(?:\.\d)?)\/\-(\d?(?:\.\d)?)nm)';
+  BSpecValueRegexString = '(?:OD)(\d{1,2}(?:\.\d{1,2})?)';
+
+  //Spec Value Regexs
+  TransSpecValueRegexString = '(\d{1,2}(?:\.\d{1,2})?)(?:%)';
+  ToleranceValueRegexString = '(\d{2,4}(?:\.\d{1,2})?)nm';
+  PercentValueRegexString = '(\d{1,2}(?:\.\d{1,2})?)(?:%)';
+  ODValueRegexString = '(?:OD)(\d{1,2}(?:\.\d{1,2})?)';
+  FilepathRegexString = '(e:\\.*)';
 
 implementation
+
+function ReturnSpecValueList(AString: String): TList<Real>;
+var
+  SpecParams: TSpecParams;
+  TestString: String;
+  Regex: TRegex;
+  Matches: TMatchCollection;
+  Group: TGroupCollection;
+  I: Integer;
+  ValueList: TList<Real>;
+  Value: Real;
+begin
+  SpecParams := FindSpecParams(AString);
+  case SpecParams.FrameTypeID of
+    1:   Regex := ToleranceValueRegexString;
+    2,4: Regex := PercentValueRegexString;
+    3:   Regex := ODValueRegexString;
+    5:   Regex := FilepathRegexString;
+  end;
+  ValueList := TList<Real>.Create;
+  Regex := TRegEx.Create(Regex);
+  Matches:= Regex.Matches(AString);
+  for I := 0 to Matches.Count-1 do
+  begin
+    Group := Matches.Item[I].Groups;
+    ValueList.Add(StrToFloat(Group.Item[1].Value));
+  end;
+  Result := ValueList;
+end;
+
 
 function ReturnTransmissionValueList(AString: String): TList<Real>;
 var
