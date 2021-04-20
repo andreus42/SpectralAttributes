@@ -1,4 +1,4 @@
-unit EvalTestGroupFrameUnit;
+unit SpectralAttributes.EvalGroupFrame;
 
 interface
 
@@ -13,18 +13,19 @@ uses
   Data.DB, Data.Win.ADODB, Datasnap.DBClient,
   ActiveX,
 
+  // Regex
+  System.RegularExpressions,
+  System.RegularExpressionsCore,
+
   // Mine
   ChromaDataModule,
-  Logic,
-  EvalFrameUnit,
-  TEvalTestUnit,
-  TEvalTestSetUnit,
-  TEvalTestGroupUnit,
-  LabeledMemo,
+  SpectralAttributes.EvalGroup,
+  SpectralAttributes.EvalTestFrame,
+  SpectralAttributes.EvalTest,
+  SpectralAttributes.EvalSet,
+  SpectralAttributes.ParsingLogic,
+  LabeledMemo;
 
-  //Temp
-  System.RegularExpressions,
-  System.RegularExpressionsCore;
 
 type
   TEvalTestGroupFrame = class(TFrame)
@@ -32,16 +33,10 @@ type
     IDBox: TEdit;
     ParseTextButton: TButton;
     IDLabel: TLabel;
-    SetUpPanel: TPanel;
-    Label4: TLabel;
-    ComboBox1: TComboBox;
     GroupDescEdit: TEdit;
-    Label3: TLabel;
+    GroupLabel: TLabel;
     Label6: TLabel;
     SpecTextMemo: TLabledMemo;
-    LabeledEdit1: TLabeledEdit;
-    LabeledEdit2: TLabeledEdit;
-    LabeledEdit3: TLabeledEdit;
     TextToParseMemo: TLabledMemo;
     TransformButton: TButton;
     Button2: TButton;
@@ -51,8 +46,8 @@ type
     Button1: TButton;
     ParseButton: TButton;
     GroupBox2: TGroupBox;
-    LabledMemo1: TLabledMemo;
-    LabledMemo2: TLabledMemo;
+    CommentsMemo: TLabledMemo;
+    TestCommentsMemo: TLabledMemo;
     procedure AddEvalTestButtonClick(Sender: TObject);
     procedure ParseButtonClick(Sender: TObject);
     procedure ParseTextButtonClick(Sender: TObject);
@@ -75,7 +70,7 @@ const
 implementation
 
 uses
-  SpectalAttributesForm;
+  SpectalAttributes.MainForm;
 
 {$R *.dfm}
 
@@ -195,16 +190,15 @@ begin
   StringList.Assign(SpecTextMemo.AMemo.Lines);
   for AString in StringList do
   begin
-    SpecParams := FindSpecParams(AString);
-    LambdaRangeList := ReturnRangeList(AString);
-    TransmissionValueList := ReturnTransmissionValueList(AString);
+    SpecParams := GetSpecParams(AString);
+    LambdaRangeList := GetRangeList(AString);
 //    for TransmissionValue in TransmissionValueList do
 //    begin
 //      TransmissionValueList FloatToStr(TransmissionValue));
 //    end
     TransmissionValue := TransmissionValueList[0]; //temp until full loop is written
-    SymbolParam := FindSymbolParamID(AString);
-    Tolerance := ReturnTolerance(AString);
+    SymbolParam := GetSymbolParamID(AString);
+    Tolerance := GetTolerance(AString);
 
     //With EvalTest
     EvalTest := TEvalTest.CreateNew(GroupID, SetID);

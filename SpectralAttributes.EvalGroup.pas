@@ -1,4 +1,4 @@
-unit TEvalTestGroupUnit;
+unit SpectralAttributes.EvalGroup;
 
 interface
 
@@ -10,7 +10,7 @@ uses
   Datasnap.DBClient,
   ActiveX,
   ChromaDataModule,
-  TEvalTestUnit;
+  SpectralAttributes.EvalTest;
 
 type
   TEvalTestGroup = class(TObject)
@@ -19,7 +19,6 @@ type
     GroupNum: Integer;
     SetID: Integer;
     TestList: TObjectList<TEvalTest>;
-//    IDsList: TList<Integer>;
     constructor Create(GroupID: Integer);
     constructor CreateNew(SetID: Integer);      // needs to genearte new ID and pass back to EvalSet
     destructor destroy;

@@ -1,4 +1,4 @@
-unit EvalFrameUnit;
+unit SpectralAttributes.EvalTestFrame;
 
 interface
 
@@ -12,7 +12,7 @@ uses
 
   // Mine
   ChromaDataModule,
-  TEvalTestUnit,
+  SpectralAttributes.EvalTest,
   DoubledLabeledEdit,
   DoubledLabeledEdit_v3;
 
@@ -58,7 +58,7 @@ type
 implementation
 
 uses
-  EvalTestGroupFrameUnit;
+  SpectralAttributes.EvalGroupFrame;
 
 {$R *.dfm}
 
@@ -218,6 +218,7 @@ begin
 end;
 
 procedure TEvalFrame.SpeedButton1Click(Sender: TObject);
+// move whole DestroyEvalTest into EvalTest
 var
   Query: TADOQuery;
 begin

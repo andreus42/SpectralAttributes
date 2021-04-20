@@ -1,17 +1,21 @@
-unit TEvalTestSetUnit;
+unit SpectralAttributes.EvalSet;
 
 interface
 
 uses
   System.SysUtils,
   System.Generics.Collections,
+
+  // Database
   Data.DB,
   Data.Win.ADODB,
   Datasnap.DBClient,
   ActiveX,
   ChromaDataModule,
-  TEvalTestUnit,
-  TEvalTestGroupUnit;
+
+  // Project
+  SpectralAttributes.EvalTest,
+  SpectralAttributes.EvalGroup;
 
 type
   TEvalTestSet = class(TObject)

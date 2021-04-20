@@ -22,10 +22,6 @@ object _SpectralAttributesForm: T_SpectralAttributesForm
     Height = 842
     Align = alClient
     TabOrder = 0
-    ExplicitLeft = 33
-    ExplicitTop = 264
-    ExplicitWidth = 1021
-    ExplicitHeight = 609
   end
   object Panel1: TPanel
     Left = 0
@@ -34,8 +30,6 @@ object _SpectralAttributesForm: T_SpectralAttributesForm
     Height = 41
     Align = alTop
     TabOrder = 1
-    ExplicitLeft = 384
-    ExplicitTop = -3
     object ReloadSet: TSpeedButton
       Left = 543
       Top = 6

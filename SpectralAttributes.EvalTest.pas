@@ -1,4 +1,4 @@
-unit TEvalTestUnit;
+unit SpectralAttributes.EvalTest;
 
 interface
 
@@ -12,7 +12,7 @@ uses
   Datasnap.DBClient,
   ActiveX,
   ChromaDataModule,
-  Logic;
+  SpectralAttributes.ParsingLogic;
 
 
 type
@@ -234,9 +234,13 @@ var
   Query: TADOQuery;
   FrameTypeID: Integer;
 begin
+
   // Currently moving from EvalFrame
   Query := TADOQuery.Create(Nil);
   FrameTypeID := GetFrameType;
+
+
+  // Move whole block to TEvalTest.Write
   with query do
   begin
     Connection := _ChromaDataModule.ChromaData;
@@ -256,6 +260,7 @@ begin
 
     SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @RankParam, ''0'')');
     SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @SpecParam, '''')');
+
     case FrameTypeID of
       1: begin  //With Tol+, Tol-, CWL, FWHM, Cuton, Cutoff
           SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @PlusTolParam, '''')');
@@ -282,7 +287,8 @@ procedure TEvalTest.Write;
 var
   Query: TADOQuery;
 begin
-  // Currently moving from EvalFrame
+  // Need to establish New TestID here rather than at TEvalTest Creation
+
   Query := TADOQuery.Create(Nil);
   with query do
   begin

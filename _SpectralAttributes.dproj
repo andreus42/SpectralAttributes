@@ -96,11 +96,11 @@
         <DelphiCompile Include="$(MainSource)">
             <MainSource>MainSource</MainSource>
         </DelphiCompile>
-        <DCCReference Include="EvalTestGroupFrameUnit.pas">
+        <DCCReference Include="SpectralAttributes.EvalGroupFrame.pas">
             <Form>EvalTestGroupFrame</Form>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
-        <DCCReference Include="SpectalAttributesForm.pas">
+        <DCCReference Include="SpectalAttributes.MainForm.pas">
             <Form>_SpectralAttributesForm</Form>
             <FormType>dfm</FormType>
         </DCCReference>
@@ -109,15 +109,15 @@
             <FormType>dfm</FormType>
             <DesignClass>TDataModule</DesignClass>
         </DCCReference>
-        <DCCReference Include="TEvalTestUnit.pas"/>
-        <DCCReference Include="TEvalTestGroupUnit.pas"/>
-        <DCCReference Include="TEvalTestSetUnit.pas"/>
-        <DCCReference Include="EvalFrameUnit.pas">
+        <DCCReference Include="SpectralAttributes.EvalGroup.pas"/>
+        <DCCReference Include="SpectralAttributes.EvalSet.pas"/>
+        <DCCReference Include="SpectralAttributes.EvalTestFrame.pas">
             <Form>EvalFrame</Form>
             <FormType>dfm</FormType>
             <DesignClass>TFrame</DesignClass>
         </DCCReference>
-        <DCCReference Include="Logic.pas"/>
+        <DCCReference Include="SpectralAttributes.ParsingLogic.pas"/>
+        <DCCReference Include="SpectralAttributes.EvalTest.pas"/>
         <BuildConfiguration Include="Release">
             <Key>Cfg_2</Key>
             <CfgParent>Base</CfgParent>

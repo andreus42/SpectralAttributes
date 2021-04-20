@@ -1,4 +1,4 @@
-unit SpectalAttributesForm;
+unit SpectalAttributes.MainForm;
 
 interface
 
@@ -12,13 +12,13 @@ uses
 
   // DB
   Data.DB, Data.Win.ADODB,
-
-  // Proj
-  EvalTestGroupFrameUnit,
   ChromaDataModule,
-  TEvalTestUnit,
-  TEvalTestGroupUnit,
-  TEvalTestSetUnit,
+
+  // Project
+  SpectralAttributes.EvalGroupFrame,
+  SpectralAttributes.EvalTest,
+  SpectralAttributes.EvalGroup,
+  SpectralAttributes.EvalSet,
   LabeledMemo;
 
 type
