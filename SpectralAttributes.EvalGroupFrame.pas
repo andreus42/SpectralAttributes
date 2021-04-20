@@ -29,7 +29,7 @@ uses
 
 type
   TEvalTestGroupFrame = class(TFrame)
-    Panel1: TPanel;
+    GroupPanel: TPanel;
     IDBox: TEdit;
     ParseTextButton: TButton;
     IDLabel: TLabel;
@@ -39,8 +39,6 @@ type
     SpecTextMemo: TLabledMemo;
     TextToParseMemo: TLabledMemo;
     TransformButton: TButton;
-    Button2: TButton;
-    GroupBox1: TGroupBox;
     EvalScrollBox: TScrollBox;
     AddEvalTestButton: TButton;
     Button1: TButton;
@@ -48,6 +46,7 @@ type
     GroupBox2: TGroupBox;
     CommentsMemo: TLabledMemo;
     TestCommentsMemo: TLabledMemo;
+    Panel1: TPanel;
     procedure AddEvalTestButtonClick(Sender: TObject);
     procedure ParseButtonClick(Sender: TObject);
     procedure ParseTextButtonClick(Sender: TObject);
