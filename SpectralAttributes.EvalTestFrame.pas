@@ -48,7 +48,7 @@ type
     procedure DBLookupComboBox1CloseUp(Sender: TObject);
     procedure UpdateParameter(Sender: TObject);
     procedure SpeedButton2Click(Sender: TObject);
-    procedure RefOnlyCheckBoxClick(Sender: TObject);
+    procedure NolTolCheckBoxClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -63,11 +63,12 @@ uses
 
 {$R *.dfm}
 
-constructor TEvalFrame.Create(AOwner: TComponent; TestID: Integer);   // refactor to have eval test parameter
+constructor TEvalFrame.Create(AOwner: TComponent; TestID: Integer);   // refactor to have eval test as parameter
 var
   Query: TADOQuery;
 begin
   inherited Create(AOwner);
+  ///want to refactor out ADODataSets
   ADODataSet2.Parameters.ParamByName('TestID').Value := TestID;
   ADODataSet2.Requery();
   TestIDLabel.Caption := 'TestID: ' + TestID.ToString;
@@ -95,6 +96,7 @@ const
   P3 = ControlOffSet + Spacing*1;
   P4 = ControlOffSet + Spacing*2;
   P5 = ControlOffSet + Spacing*3 + 15;
+  P6 = ControlOffSet + Spacing*4;
 begin
   // Set locations of controls
   SpecEdit.Left := P2;
@@ -107,6 +109,7 @@ begin
   PlusTolEdit.Left := P3;
   MinusTolEdit.Left := P4;
   RefOnlyCheckBox.Left := P5;
+  NoTolCheckBox.Left := P6;
   HideAllElements;
   SpecEdit.Visible := True;
   SpecLabel.Visible := True;
@@ -119,12 +122,14 @@ begin
             PlusTolEdit.Visible := True;
             MinusTolEdit.Visible := True;
             RefOnlyCheckBox.Visible := True;
+            NoTolCheckBox.Visible := True;
         end;
     2:  begin
             SpecLabel.Caption := '%';
             SymbolComboBox.Visible := True;
             FromLambdaEdit.Visible := True;
             ToLambdaEdit.Visible := True;
+            RefOnlyCheckBox.Visible := True;
         end;
     3:  begin //To-From: T-Avg, R-Avg
             SpecLabel.Caption := '%';
@@ -132,6 +137,7 @@ begin
             SymbolComboBox.Visible := True;
             FromLambdaEdit.Visible := True;
             ToLambdaEdit.Visible := True;
+            RefOnlyCheckBox.Visible := True;
         end;
     4:  begin //At %: T-Avg@, R-Avg@
             SpecLabel.Caption := '%';
@@ -229,14 +235,14 @@ begin
   Self.ShowFrame;
 end;
 
-procedure TEvalFrame.RefOnlyCheckBoxClick(Sender: TObject);
+procedure TEvalFrame.NolTolCheckBoxClick(Sender: TObject);
 begin
-  if (RefOnlyCheckBox.Checked = True) and (EvalTest.FrameType = 1)then
+  if (RefOnlyCheckBox.Checked = True) then //and (EvalTest.FrameType = 1)then
   begin
     PlusTolEdit.Visible :=  False;
     MinusTolEdit.Visible :=  False;
   end
-  else if (RefOnlyCheckBox.Checked = False) and (EvalTest.FrameType = 1) then
+  else if (RefOnlyCheckBox.Checked = False) then // and (EvalTest.FrameType = 1) then
   begin
     PlusTolEdit.Visible :=  True;
     MinusTolEdit.Visible :=  True;

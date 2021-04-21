@@ -40,7 +40,7 @@ type
     function Stringify(): String;
     procedure ResetParameters;
     procedure UpdateParameters(ParamValue: String; ParamID: Integer);
-    procedure Write;
+    procedure WriteToDB;
   end;
 
 const
@@ -62,20 +62,20 @@ constructor TEvalTest.Create(GroupID: Integer; SetID: Integer);
 begin
     Self.SetID := SetID;
     Self.GroupID := GroupID;
-    TestID := GetNextTestID;
-    TestType := '0';
-    FrameType := 0;
-    Name := '';
-    Rank := '0'; // need logic to determine next rank somewhere
-    LambdaTo := '';
-    LambdaFrom := '';
-    LambdaAt := '';
-    Value := '';
-    Symbol := 0;
-    FilePath := '';
-    TolPlus := '';
-    TolMinus := '';
-    Write;
+    Self.TestID := GetNextTestID;
+    Self.TestType := '0';
+    Self.FrameType := 0;
+    Self.Name := '';
+    Self.Rank := '0'; // need logic to determine next rank somewhere
+    Self.LambdaTo := '';
+    Self.LambdaFrom := '';
+    Self.LambdaAt := '';
+    Self.Value := '';
+    Self.Symbol := 0;
+    Self.FilePath := '';
+    Self.TolPlus := '';
+    Self.TolMinus := '';
+    Self.WriteToDB;
 end;
 
 // Create Given Existing ID
@@ -147,38 +147,40 @@ var
 begin
     Self.GroupID := GroupID;
     Self.SetID := SetID;
+    Self.TestID := GetNextTestID;
     SpecParams := GetSpecParams(AString);
+    ///SOMETHING funny with getting spec value
+    SpecValueList:= TList<Real>.Create;
     SpecValueList := GetSpecValuesList(AString);
-    Name := SpecParams.ParamName;
-    TestType := SpecParams.TypeID.ToString;
-    FrameType := SpecParams.FrameTypeID;
-    Rank := '0'; // needs logic
-
+    Self.Name := SpecParams.ParamName;
+    Self.TestType := SpecParams.TypeID.ToString;
+    Self.FrameType := SpecParams.FrameTypeID;
+    Self.Rank := '0'; // needs logic
+    Self.Value :=  FloatToStr(SpecValueList[0]); //temp until looping for vals/ranges
 
     case FrameType of
       1: begin  //With Tol+, Tol-, CWL, FWHM, Cuton, Cutoff
         Tolerance := GetTolerance(AString);
-        TolPlus := FloatToStr(Tolerance.PlusTol);
-        TolMinus := FloatToStr(Tolerance.MinusTol);
+        Self.TolPlus := FloatToStr(Tolerance.PlusTol);
+        Self.TolMinus := FloatToStr(Tolerance.MinusTol);
       end;
       2,3: begin  //To-From: T-Avg, R-Avg, B-Avg
         LambdaRangeList := GetRangeList(AString);
-        LambdaFrom := FloatToStr(LambdaRangeList[0].FromLambda);
-        LambdaTo := FloatToStr(LambdaRangeList[0].ToLambda);
-        SymbolParam := GetSymbolParamID(AString);
-        Symbol := SymbolParam;
+        Self.LambdaFrom := FloatToStr(LambdaRangeList[0].FromLambda);
+        Self.LambdaTo := FloatToStr(LambdaRangeList[0].ToLambda);
+        Self.Symbol := GetSymbolParamID(AString);
       end;
       4,5: begin  //At: T-Avg@, R-Avg@, B-Avg@
-        LambdaAt :=  '';
-        SymbolParam := GetSymbolParamID(AString);
+        Self.LambdaAt :=  '';
+        Self.Symbol:= GetSymbolParamID(AString);
       end;
       7: begin  //CIE
           //get filepath
-          FilePath := '';
+        Self.FilePath := '';
       end;
     end;
-    Value :=  SpecValueList[0]; //temp until looping for vals/ranges
-    Write;
+
+    WriteToDB; //WriteOutEvalTest
 end;
 
 function TEvalTest.GetFrameType: Integer;
@@ -256,12 +258,12 @@ begin
     SQL.Add('delete from EvalTests');
     SQL.Add('where ParamID != 3 and TestID = @TestID');
     ExecSQL;
-    Write;
+    WriteToDB;
     Free;
   end;
 end;
 
-procedure TEvalTest.Write;
+procedure TEvalTest.WriteToDB;
 var
   Query: TADOQuery;
 begin
@@ -325,7 +327,7 @@ begin
     2: Result := Name + ': ' + TextSymbol + Value + '% ' + LambdaFrom + '-' + LambdaTo  + 'nm';
     3: Result := Name + ': ' + TextSymbol + ' OD' + Value + ' ' + LambdaFrom + '-' + LambdaTo + 'nm';
     4: Result := Name + ': ' + TextSymbol +  Value + '% at ' + LambdaAt + 'nm';
-    5: Result := Name + ': ' + TextSymbol + ' OD' + Value + '@' + LambdaAt + 'nm';
+    5: Result := Name + ': ' + TextSymbol + ' OD' + Value + ' @' + LambdaAt + 'nm';
     7: Result := Name + ': ' + Filepath;
   end;
 end;

@@ -92,7 +92,6 @@ object EvalFrame: TEvalFrame
     Caption = 'Ref Only'
     TabOrder = 10
     Visible = False
-    OnClick = RefOnlyCheckBoxClick
   end
   object FilepathEdit: TLabeledEdit
     Left = 342
@@ -296,7 +295,7 @@ object EvalFrame: TEvalFrame
     Caption = 'No Tol'
     TabOrder = 11
     Visible = False
-    OnClick = RefOnlyCheckBoxClick
+    OnClick = NolTolCheckBoxClick
   end
   object ADODataSet1: TADODataSet
     Active = True

@@ -222,7 +222,9 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
       Height = 808
       Align = alLeft
       TabOrder = 1
-      object ParseButton: TButton
+      ExplicitLeft = 33
+      ExplicitTop = -127
+      object S3ParseButton: TButton
         Left = 9
         Top = 160
         Width = 94
@@ -230,7 +232,7 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
         Caption = 'S^3 Parse'
         TabOrder = 0
         TabStop = False
-        OnClick = ParseButtonClick
+        OnClick = S3ParseButtonClick
       end
       object Button1: TButton
         Left = 9
@@ -263,7 +265,7 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
       end
       object GroupFrameSetIDEDit: TEdit
         Left = 17
-        Top = 297
+        Top = 28
         Width = 89
         Height = 21
         TabOrder = 4

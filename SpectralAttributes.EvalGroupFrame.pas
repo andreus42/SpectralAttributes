@@ -42,14 +42,14 @@ type
     EvalScrollBox: TScrollBox;
     AddEvalTestButton: TButton;
     Button1: TButton;
-    ParseButton: TButton;
+    S3ParseButton: TButton;
     GroupBox2: TGroupBox;
     CommentsMemo: TLabledMemo;
     TestCommentsMemo: TLabledMemo;
     Panel1: TPanel;
     GroupFrameSetIDEDit: TEdit;
     procedure AddEvalTestButtonClick(Sender: TObject);
-    procedure ParseButtonClick(Sender: TObject);
+    procedure S3ParseButtonClick(Sender: TObject);
     procedure ParseTextButtonClick(Sender: TObject);
     procedure TransformButtonClick(Sender: TObject);
   private
@@ -79,9 +79,8 @@ begin
   IntList := TList<Integer>.Create;
 
   //Create EvalGroup Obj with Frame
-  EvalGroup := TempEvalGroup;
-//  EvalGroup := TEvalGroup.Create(TempEvalGroup.GroupID);
-//  EvalGroup.SetID := TempEvalGroup.SetID;
+  EvalGroup := TempEvalGroup; // Currently just a copy of the object passed to it
+
 
   GroupFrameSetIDEDit.Text := EvalGroup.SetID.ToString;
 
@@ -103,7 +102,8 @@ var
   I: Integer;
 begin
   EvalTest := TEvalTest.Create(EvalGroup.GroupID, EvalGroup.SetID);
-  EvalTest.Write;
+  EvalGroup.TestList.Add(EvalTest);
+  EvalTest.WriteToDB;
   AddEvalTestFrame(EvalTest);
 end;
 
@@ -121,14 +121,17 @@ begin
   end;
 end;
 
-procedure TEvalTestGroupFrame.ParseButtonClick(Sender: TObject);
+procedure TEvalTestGroupFrame.S3ParseButtonClick(Sender: TObject);
 var
   EvalTest: TEvalTest;
-  GroupID: Integer;
+  GroupID, SetID: Integer;
 begin
-  GroupID := EvalGroup.GroupID;
   SpecTextMemo.AMemo.Clear;
-  EvalGroup := TEvalGroup.Create(GroupID);
+  //consider a better update to EvalGroup by Updating EvalTest in Group
+  GroupID := EvalGroup.GroupID;
+  SetID := EvalGroup.SetID;
+  EvalGroup.Free;
+  EvalGroup := TEvalGroup.Create(GroupID, SetID);
   for EvalTest in Self.EvalGroup.TestList do
   begin
     SpecTextMemo.AMemo.Lines.Add(EvalTest.Stringify);
@@ -149,6 +152,8 @@ var
   EvalTest: TEvalTest;
   StringList: TStringList;
   AString: String;
+  //testing
+  TestFrame: TEvalFrame;
 begin
   EvalGroup.DeleteTestGroupTests;
   StringList := TStringList.Create;
@@ -158,11 +163,30 @@ begin
     if AString <> '' then
     begin
       EvalTest := TEvalTest.Create(EvalGroup.GroupID, EvalGroup.SetID, AString);
-      EvalTest.Write;
+      EvalTest.WriteToDB;
       EvalTest.Free;
     end;
   end;
-  _SpectralAttributesForm.ResetSet;
+  //_SpectralAttributesForm.ResetPageControl;
+
+  // TESTING
+  // Try recreating scroll box
+  EvalScrollBox.Destroy;
+  EvalScrollBox := TScrollBox.Create(Self);
+  EvalScrollBox.Parent := Panel1;
+  EvalScrollBox.Align := alClient;
+  for EvalTest in EvalGroup.TestList do
+  begin
+    TestFrame := TEvalFrame.Create(EvalScrollBox, EvalTest);     /// needs to pass groupID, setID
+    with TestFrame do
+    begin
+      Name := 'EvalFrame_' + EvalTest.TestID.ToString;
+      Parent := EvalScrollBox;
+      Align := alTop;
+      Height := FrameHeight;
+    end;
+  end;
+
 end;
 
 end.

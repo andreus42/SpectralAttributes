@@ -29,11 +29,12 @@ type
     PartRevLogEdit: TLabeledEdit;
     ReloadSet: TSpeedButton;
     Panel1: TPanel;
+    procedure CreateGroupFrames(SetID: Integer);
     procedure DeleteTestGroupButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure AddTestGroupButtonClick(Sender: TObject);
     procedure ReloadSetClick(Sender: TObject);
-    procedure ResetSet;
+    procedure ResetPageControl;
 
   type
     TMyTabSheet = class(TTabSheet)
@@ -58,29 +59,15 @@ implementation
 { Form 1 }
 
 procedure T_SpectralAttributesForm.FormCreate(Sender: TObject);
-var
-  EvalTestGroup: TEvalGroup;
 begin
   PartRevLogEdit.Text := SetID.ToString;
-  EvalTestSet := TEvalSet.Create(SetID);
-  for EvalTestGroup in EvalTestSet.EvalTestGroupList do
-  begin
-    AddTestGroupPage(EvalTestGroup);
-  end;
+  CreateGroupFrames(SetID);
 end;
 
-procedure T_SpectralAttributesForm.ResetSet;
+procedure T_SpectralAttributesForm.CreateGroupFrames(SetID: Integer);
 var
   EvalTestGroup: TEvalGroup;
-  I: Integer;
 begin
-  EvalTestSet.Destroy;
-  SetID := StrToInt(PartRevLogEdit.Text);
-  // delete all from PageControl1
-  for I := 0  to  pagecontrol1.PageCount-1 do
-    pagecontrol1.Pages[0].Free;
-
-  ///duplicate from above...needs refactor
   EvalTestSet := TEvalSet.Create(SetID);
   for EvalTestGroup in EvalTestSet.EvalTestGroupList do
   begin
@@ -90,7 +77,20 @@ end;
 
 procedure T_SpectralAttributesForm.ReloadSetClick(Sender: TObject);
 begin
-  ResetSet;
+  ResetPageControl;
+end;
+
+procedure T_SpectralAttributesForm.ResetPageControl;
+var
+  EvalTestGroup: TEvalGroup;
+  I: Integer;
+begin
+  EvalTestSet.Destroy;
+  SetID := StrToInt(PartRevLogEdit.Text);
+  // Remove pages from page control
+  for I := 0  to  pagecontrol1.PageCount-1 do
+    pagecontrol1.Pages[0].Free;
+  CreateGroupFrames(SetID);
 end;
 
 procedure T_SpectralAttributesForm.AddTestGroupPage(EvalTestGroup
@@ -113,6 +113,7 @@ begin
     end;
   end;
 end;
+
 
 procedure T_SpectralAttributesForm.AddTestGroupButtonClick(Sender: TObject);
 var
