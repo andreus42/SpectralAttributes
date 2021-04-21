@@ -76,11 +76,11 @@ var
 begin
   EvalTestSet.Destroy;
   SetID := StrToInt(PartRevLogEdit.Text);
-
   // delete all from PageControl1
   for I := 0  to  pagecontrol1.PageCount-1 do
     pagecontrol1.Pages[0].Free;
 
+  ///duplicate from above...needs refactor
   EvalTestSet := TEvalSet.Create(SetID);
   for EvalTestGroup in EvalTestSet.EvalTestGroupList do
   begin
@@ -118,7 +118,7 @@ procedure T_SpectralAttributesForm.AddTestGroupButtonClick(Sender: TObject);
 var
   NewEvalTestGroup: TEvalGroup;
 begin
-  NewEvalTestGroup := TEvalGroup.CreateNew(SetID);
+  NewEvalTestGroup := TEvalGroup.Create(SetID);
   AddTestGroupPage(NewEvalTestGroup);
 end;
 

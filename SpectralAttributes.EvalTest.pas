@@ -145,23 +145,39 @@ var
   SymbolParam: Integer;
   Tolerance: TTolerance;
 begin
+    Self.GroupID := GroupID;
+    Self.SetID := SetID;
     SpecParams := GetSpecParams(AString);
-    LambdaRangeList := GetRangeList(AString);
-    SymbolParam := GetSymbolParamID(AString);
-    Tolerance := GetTolerance(AString);
     SpecValueList := GetSpecValuesList(AString);
-    FrameType := SpecParams.FrameTypeID;
     Name := SpecParams.ParamName;
-    Rank := '0';
     TestType := SpecParams.TypeID.ToString;
-    LambdaFrom := FloatToStr(LambdaRangeList[0].FromLambda);
-    LambdaTo := FloatToStr(LambdaRangeList[0].ToLambda);
-    LambdaAt :=  '';
+    FrameType := SpecParams.FrameTypeID;
+    Rank := '0'; // needs logic
+
+
+    case FrameType of
+      1: begin  //With Tol+, Tol-, CWL, FWHM, Cuton, Cutoff
+        Tolerance := GetTolerance(AString);
+        TolPlus := FloatToStr(Tolerance.PlusTol);
+        TolMinus := FloatToStr(Tolerance.MinusTol);
+      end;
+      2,3: begin  //To-From: T-Avg, R-Avg, B-Avg
+        LambdaRangeList := GetRangeList(AString);
+        LambdaFrom := FloatToStr(LambdaRangeList[0].FromLambda);
+        LambdaTo := FloatToStr(LambdaRangeList[0].ToLambda);
+        SymbolParam := GetSymbolParamID(AString);
+        Symbol := SymbolParam;
+      end;
+      4,5: begin  //At: T-Avg@, R-Avg@, B-Avg@
+        LambdaAt :=  '';
+        SymbolParam := GetSymbolParamID(AString);
+      end;
+      7: begin  //CIE
+          //get filepath
+          FilePath := '';
+      end;
+    end;
     Value :=  SpecValueList[0]; //temp until looping for vals/ranges
-    Symbol := SymbolParam;
-    FilePath := '';
-    TolPlus := FloatToStr(Tolerance.PlusTol);
-    TolMinus := FloatToStr(Tolerance.MinusTol);
     Write;
 end;
 
@@ -271,7 +287,7 @@ begin
     SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @RankParam, '''+Rank+''')');
 
     // Write Value if exists
-    If (Value <> '') then
+//    If (Value <> '') then
       SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @SpecParam, '''+Value+''')');
 
     case FrameType of

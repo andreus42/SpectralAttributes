@@ -19,15 +19,15 @@ type
     GroupNum: Integer;
     SetID: Integer;
     TestList: TObjectList<TEvalTest>;
-    constructor Create(GroupID: Integer);
-    constructor CreateNew(SetID: Integer);      // needs to genearte new ID and pass back to EvalSet
+    constructor Create(SetID: Integer); overload;
+    constructor Create(GroupID: Integer; SetID: Integer); overload;
     procedure DeleteTestGroupTests;
     procedure DeleteGroup(GroupID: Integer);
   end;
 
 implementation
 
-constructor TEvalGroup.Create(GroupID: Integer);
+constructor TEvalGroup.Create(GroupID: Integer; SetID: Integer);
 var
   Query: TADOQuery;
   TestID: Integer;
@@ -35,6 +35,7 @@ var
 begin
   TestList := TObjectList<TEvalTest>.Create;
   Self.GroupID := GroupID;
+  Self.SetID := SetID;
   Query := TADOQuery.Create(Nil);
   with Query do
   begin
@@ -56,7 +57,7 @@ begin
 end;
 
 
-constructor TEvalGroup.CreateNew(SetID: Integer);
+constructor TEvalGroup.Create(SetID: Integer);
 // Replace by genearting groupID from Set...perhaps??
 // Add CreateDateTime to EvalTestGroups
 var

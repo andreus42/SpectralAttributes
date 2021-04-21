@@ -55,7 +55,7 @@ begin
     begin
         GroupID := Query.FieldByName('GroupID').Value;
 //        GroupNum := Query.FieldByName('GroupNum').Value; // Eventually need this as In-Process#1,#2,etc.
-        EvalTestGroup := TEvalGroup.Create(GroupID);
+        EvalTestGroup := TEvalGroup.Create(GroupID, SetID);
         EvalTestGroupList.Add(EvalTestGroup);
         EvalTestGroupIDList.Add(GroupID);
         Next;

@@ -261,6 +261,13 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
         TabOrder = 3
         OnClick = TransformButtonClick
       end
+      object GroupFrameSetIDEDit: TEdit
+        Left = 17
+        Top = 297
+        Width = 89
+        Height = 21
+        TabOrder = 4
+      end
     end
   end
 end

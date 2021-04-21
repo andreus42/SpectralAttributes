@@ -47,6 +47,7 @@ type
     CommentsMemo: TLabledMemo;
     TestCommentsMemo: TLabledMemo;
     Panel1: TPanel;
+    GroupFrameSetIDEDit: TEdit;
     procedure AddEvalTestButtonClick(Sender: TObject);
     procedure ParseButtonClick(Sender: TObject);
     procedure ParseTextButtonClick(Sender: TObject);
@@ -56,7 +57,7 @@ type
   public
     EvalGroup: TEvalGroup;
     IntList: TList<Integer>;
-    constructor Create(AOwner: TComponent; EvalGroup: TEvalGroup);
+    constructor Create(AOwner: TComponent; TempEvalGroup: TEvalGroup);
   end;
 
 const
@@ -70,12 +71,20 @@ uses
 {$R *.dfm}
 
 constructor TEvalTestGroupFrame.Create(AOwner: TComponent;
-  EvalGroup: TEvalGroup);
+  TempEvalGroup: TEvalGroup);
 var
   EvalTest: TEvalTest;
 begin
   inherited Create(AOwner);
   IntList := TList<Integer>.Create;
+
+  //Create EvalGroup Obj with Frame
+  EvalGroup := TempEvalGroup;
+//  EvalGroup := TEvalGroup.Create(TempEvalGroup.GroupID);
+//  EvalGroup.SetID := TempEvalGroup.SetID;
+
+  GroupFrameSetIDEDit.Text := EvalGroup.SetID.ToString;
+
   SpecTextMemo.AMemo.Clear;
   GroupDescEdit.Text := 'In-Process #' + EvalGroup.GroupID.ToString; // use group num in future
   IDBox.Text := EvalGroup.GroupID.ToString;
@@ -85,6 +94,7 @@ begin
     SpecTextMemo.AMemo.Lines.Add(EvalTest.Stringify);
     AddEvalTestFrame(EvalTest);
   end;
+
 end;
 
 procedure TEvalTestGroupFrame.AddEvalTestButtonClick(Sender: TObject);
@@ -92,7 +102,6 @@ var
   EvalTest: TEvalTest;
   I: Integer;
 begin
-  i := 0;
   EvalTest := TEvalTest.Create(EvalGroup.GroupID, EvalGroup.SetID);
   EvalTest.Write;
   AddEvalTestFrame(EvalTest);
@@ -146,9 +155,12 @@ begin
   StringList.Assign(SpecTextMemo.AMemo.Lines);
   for AString in StringList do
   begin
-    EvalTest := TEvalTest.Create(GroupID, SetID, AString);
-    EvalTest.Write;
-    EvalTest.Free;
+    if AString <> '' then
+    begin
+      EvalTest := TEvalTest.Create(EvalGroup.GroupID, EvalGroup.SetID, AString);
+      EvalTest.Write;
+      EvalTest.Free;
+    end;
   end;
   _SpectralAttributesForm.ResetSet;
 end;
