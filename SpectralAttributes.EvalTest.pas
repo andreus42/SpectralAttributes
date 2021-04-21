@@ -34,6 +34,7 @@ type
     TolMinus: String;
     constructor Create(TestID: Integer); overload;
     constructor Create(GroupID: Integer; SetID: Integer) overload;
+    constructor Create(GroupID: Integer; SetID: Integer; AString: String) overload;
     function GetNextTestID(): Integer;
     function GetFrameType(): Integer;
     function Stringify(): String;
@@ -65,7 +66,7 @@ begin
     TestType := '0';
     FrameType := 0;
     Name := '';
-    Rank := '0';
+    Rank := '0'; // need logic to determine next rank somewhere
     LambdaTo := '';
     LambdaFrom := '';
     LambdaAt := '';
@@ -74,6 +75,7 @@ begin
     FilePath := '';
     TolPlus := '';
     TolMinus := '';
+    Write;
 end;
 
 // Create Given Existing ID
@@ -88,7 +90,7 @@ begin
   // Initialize Params
   Self.TestID := TestID;
 
-  // Read in test associations
+  // Read in test associations  // We should already know GroupID & SetID
   Query0 := TADOQuery.Create(Nil);
   with Query0 do
   begin
@@ -131,6 +133,36 @@ begin
     Free;
   end;
   FrameType := GetFrameType;
+end;
+
+constructor TEvalTest.Create(GroupID, SetID: Integer; AString: String);
+var
+  SpecParams: TSpecParams;
+  LambdaRangeList: TList<TLambdaRange>;
+  LambdaRange: TLambdaRange;
+  SpecValueList: TList<Real>;
+  Value: Real;
+  SymbolParam: Integer;
+  Tolerance: TTolerance;
+begin
+    SpecParams := GetSpecParams(AString);
+    LambdaRangeList := GetRangeList(AString);
+    SymbolParam := GetSymbolParamID(AString);
+    Tolerance := GetTolerance(AString);
+    SpecValueList := GetSpecValuesList(AString);
+    FrameType := SpecParams.FrameTypeID;
+    Name := SpecParams.ParamName;
+    Rank := '0';
+    TestType := SpecParams.TypeID.ToString;
+    LambdaFrom := FloatToStr(LambdaRangeList[0].FromLambda);
+    LambdaTo := FloatToStr(LambdaRangeList[0].ToLambda);
+    LambdaAt :=  '';
+    Value :=  SpecValueList[0]; //temp until looping for vals/ranges
+    Symbol := SymbolParam;
+    FilePath := '';
+    TolPlus := FloatToStr(Tolerance.PlusTol);
+    TolMinus := FloatToStr(Tolerance.MinusTol);
+    Write;
 end;
 
 function TEvalTest.GetFrameType: Integer;
@@ -196,8 +228,6 @@ begin
   Result := NextTestID;
 end;
 
-
-// On close-up event of DBComboBox either delete old params and add insert new blanks
 procedure TEvalTest.ResetParameters;
 var
   Query: TADOQuery;
@@ -288,7 +318,6 @@ procedure TEvalTest.UpdateParameters(ParamValue: String; ParamID: Integer);
 var
   Query: TADOQuery;
 begin
-  // Moving from EvalFrame
   Query := TADOQuery.Create(Nil);
   with Query do
   begin

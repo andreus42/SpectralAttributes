@@ -58,9 +58,7 @@ type
     IntList: TList<Integer>;
     GroupID: Integer;
     SetID: Integer;
-    constructor CreateByInt(AOwner: TComponent; GroupID: Integer); overload;
-    constructor Create(AOwner: TComponent;
-      EvalTestGroup: TEvalTestGroup); overload;
+    constructor Create(AOwner: TComponent; EvalTestGroup: TEvalTestGroup);
   end;
 
 const
@@ -80,7 +78,6 @@ var
 begin
   inherited Create(AOwner);
   IntList := TList<Integer>.Create;
-  Self.EvalTestGroup := EvalTestGroup;
   SpecTextMemo.AMemo.Clear;
   GroupDescEdit.Text := 'In-Process #' + EvalTestGroup.GroupID.ToString;
   IDBox.Text := EvalTestGroup.GroupID.ToString;
@@ -89,40 +86,14 @@ begin
   begin
     SpecTextMemo.AMemo.Lines.Add(EvalTest.Stringify);
     AddEvalTestFrame(EvalTest);
-    Self.SetID := EvalTestGroup.SetID;
   end;
-  Self.GroupID := EvalTestGroup.GroupID;
-
-end;
-
-//// new constructor
-constructor TEvalTestGroupFrame.CreateByInt(AOwner: TComponent; GroupID: Integer);
-var
-  EvalTest: TEvalTest;
-begin
-  inherited Create(AOwner);
-  EvalTestGroup.Create(GroupID);
-  SpecTextMemo.AMemo.Clear;
-  GroupDescEdit.Text := 'In-Process #' + EvalTestGroup.GroupID.ToString;
-  Name := 'EvalFrame' + EvalTestGroup.GroupID.ToString;
-  for EvalTest in EvalTestGroup.TestList do
-    begin
-       SpecTextMemo.AMemo.Lines.Add(EvalTest.Stringify);
-       AddEvalTestFrame(EvalTest);
-    end;
-  Self.GroupID := EvalTestGroup.GroupID;
-  Self.SetID := EvalTestGroup.SetID;
 end;
 
 procedure TEvalTestGroupFrame.AddEvalTestButtonClick(Sender: TObject);
 var
   EvalTest: TEvalTest;
-  i: integer;
 begin
-  i := 0;
-//  EvalTest := TEvalTest.Create(EvalTestGroup.GroupID, EvalTestGroup.SetID);
   EvalTest := TEvalTest.Create(GroupID, SetID);
-  EvalTest.Write; // Need to get an updated TestID to add new group frame
   AddEvalTestFrame(EvalTest);
 end;
 
@@ -140,18 +111,17 @@ begin
   end;
 end;
 
-
 procedure TEvalTestGroupFrame.ParseButtonClick(Sender: TObject);
 var
-  TempEvalTest: TEvalTest;
-  TempGroupID: Integer;
+  EvalTest: TEvalTest;
+  GroupID: Integer;
 begin
-  TempGroupID := EvalTestGroup.GroupID;
+  GroupID := EvalTestGroup.GroupID;
   SpecTextMemo.AMemo.Clear;
-  EvalTestGroup := TEvalTestGroup.Create(TempGroupID);
-  for TempEvalTest in Self.EvalTestGroup.TestList do
+  EvalTestGroup := TEvalTestGroup.Create(GroupID);
+  for EvalTest in Self.EvalTestGroup.TestList do
   begin
-    SpecTextMemo.AMemo.Lines.Add(TempEvalTest.Stringify);
+    SpecTextMemo.AMemo.Lines.Add(EvalTest.Stringify);
   end;
 end;
 
@@ -159,7 +129,7 @@ procedure TEvalTestGroupFrame.ParseTextButtonClick(Sender: TObject);
 var
   TempString: String;
 begin
-  // Clean text
+  // Clean text functions needed
   TempString := TextToParseMemo.AMemo.Text;
   TextToParseMemo.AMemo.Text := TempString;
 end;
@@ -169,45 +139,17 @@ var
   EvalTest: TEvalTest;
   StringList: TStringList;
   AString: String;
-  SpecParams: TSpecParams;
-  LambdaRangeList: TList<TLambdaRange>;
-  LambdaRange: TLambdaRange;
-  SpecValueList: TList<Real>;
-  Value: Real;
-  SymbolParam: Integer;
-  Tolerance: TTolerance;
 begin
   EvalTestGroup.DeleteTestGroupTests;
   StringList := TStringList.Create;
   StringList.Assign(SpecTextMemo.AMemo.Lines);
   for AString in StringList do
   begin
-    SpecParams := GetSpecParams(AString);
-    LambdaRangeList := GetRangeList(AString);
-    SymbolParam := GetSymbolParamID(AString);
-    Tolerance := GetTolerance(AString);
-    SpecValueList := GetSpecValuesList(AString);
-
-    //With EvalTest
-    EvalTest := TEvalTest.Create(GroupID, SetID);
-    EvalTest.FrameType := SpecParams.FrameTypeID;
-    EvalTest.Name := SpecParams.ParamName;
-    EvalTest.Rank := '0';
-    EvalTest.TestType := SpecParams.TypeID.ToString;
-    EvalTest.LambdaFrom := FloatToStr(LambdaRangeList[0].FromLambda);
-    EvalTest.LambdaTo := FloatToStr(LambdaRangeList[0].ToLambda);
-    EvalTest.LambdaAt :=  '';
-    EvalTest.Value :=  FloatToStr(SpecValueList[0]); //temp until looping for vals/ranges
-    EvalTest.Symbol := SymbolParam;
-    EvalTest.FilePath := '';
-    EvalTest.TolPlus := FloatToStr(Tolerance.PlusTol);
-    EvalTest.TolMinus := FloatToStr(Tolerance.MinusTol);
-    SpecTextMemo.AMemo.Lines.Add(EvalTest.Stringify);
+    EvalTest := TEvalTest.Create(GroupID, SetID, AString);
     EvalTest.Write;
     EvalTest.Free;
   end;
   _SpectralAttributesForm.ResetSet;
 end;
-
 
 end.

@@ -125,12 +125,9 @@ end;
 
 procedure T_SpectralAttributesForm.DeleteTestButtonClick(Sender: TObject);
 var
-  ActivePageName: String;
   Query: TADOQuery;
 begin
-  ActivePageName := PageControl1.ActivePage.Name;
-//  If (PageControl1.ActivePage <> SummaryTab) then
-  begin
+//  DeleteGroup(ActivePage.Tag);
     Query := TADOQuery.Create(Nil);
     with Query do
     begin
@@ -144,7 +141,6 @@ begin
       Free;
     end;
     PageControl1.ActivePage.Destroy;
-  end;
 end;
 
 Initialization
