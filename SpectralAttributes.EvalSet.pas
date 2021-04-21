@@ -18,30 +18,30 @@ uses
   SpectralAttributes.EvalGroup;
 
 type
-  TEvalTestSet = class(TObject)
+  TEvalSet = class(TObject)
   public
     SetID: Integer;
-    EvalTestGroupList: TObjectList<TEvalTestGroup>;
+    EvalTestGroupList: TObjectList<TEvalGroup>;
     EvalTestGroupIDList: TList<Integer>;
     constructor Create(ID: Integer);
     destructor Destroy;
   end;
 
 var
-  EvalTestGroup: TEvalTestGroup;
+  EvalTestGroup: TEvalGroup;
 
 implementation
 
 { TEvalTestSet }
 
-constructor TEvalTestSet.Create(ID: Integer);
+constructor TEvalSet.Create(ID: Integer);
 var
   Query : TADOQuery;
   GroupID: Integer;
 //  GroupNum: Integer; For future ordering of sets
 begin
   SetID := ID;
-  EvalTestGroupList := TObjectList<TEvalTestGroup>.Create;
+  EvalTestGroupList := TObjectList<TEvalGroup>.Create;
   EvalTestGroupIDList := TList<Integer>.Create;
   Query := TADOQuery.Create(Nil);
   with Query do
@@ -55,7 +55,7 @@ begin
     begin
         GroupID := Query.FieldByName('GroupID').Value;
 //        GroupNum := Query.FieldByName('GroupNum').Value; // Eventually need this as In-Process#1,#2,etc.
-        EvalTestGroup := TEvalTestGroup.Create(GroupID);
+        EvalTestGroup := TEvalGroup.Create(GroupID);
         EvalTestGroupList.Add(EvalTestGroup);
         EvalTestGroupIDList.Add(GroupID);
         Next;
@@ -65,7 +65,7 @@ begin
   end;
 end;
 
-destructor TEvalTestSet.Destroy;
+destructor TEvalSet.Destroy;
 begin
   EvalTestGroupIDList.Destroy;
   EvalTestGroupList.Destroy;

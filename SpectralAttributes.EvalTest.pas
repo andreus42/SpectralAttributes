@@ -240,6 +240,7 @@ begin
     SQL.Add('delete from EvalTests');
     SQL.Add('where ParamID != 3 and TestID = @TestID');
     ExecSQL;
+    Write;
     Free;
   end;
 end;
@@ -247,7 +248,6 @@ end;
 procedure TEvalTest.Write;
 var
   Query: TADOQuery;
-  TestID: Integer;
 begin
   Query := TADOQuery.Create(Nil);
   with query do

@@ -13,7 +13,7 @@ uses
   SpectralAttributes.EvalTest;
 
 type
-  TEvalTestGroup = class(TObject)
+  TEvalGroup = class(TObject)
   public
     GroupID: Integer;
     GroupNum: Integer;
@@ -27,7 +27,7 @@ type
 
 implementation
 
-constructor TEvalTestGroup.Create(GroupID: Integer);
+constructor TEvalGroup.Create(GroupID: Integer);
 var
   Query: TADOQuery;
   TestID: Integer;
@@ -56,8 +56,9 @@ begin
 end;
 
 
-constructor TEvalTestGroup.CreateNew(SetID: Integer);
-// Replace by genearting groupID from Set
+constructor TEvalGroup.CreateNew(SetID: Integer);
+// Replace by genearting groupID from Set...perhaps??
+// Add CreateDateTime to EvalTestGroups
 var
   Query: TADOQuery;
   NextGroupID: Integer;
@@ -74,26 +75,32 @@ begin
     else
       NextGroupID := FieldByName('last_id').Value + 1;
     Close;
+    Free;
   end;
+
+  TestList := TObjectList<TEvalTest>.Create;
+  GroupID := NextGroupID;
+  GroupNum := 1;
+  Self.SetID := SetID;
+
+  Query := TADOQuery.Create(Nil);
   with Query do
   begin
+    Connection := _ChromaDataModule.ChromaData;
     SQL.Add('begin tran');
     SQL.Add('Declare @SetID int = ' + SetID.ToString);
-    SQL.Add('Declare @GroupID int = ' + NextGroupID.ToString);
+    SQL.Add('Declare @GroupID int = ' + GroupID.ToString);
     SQL.Add('Declare @NextGroupNum int = 1'); // Need to enumerate group nums
-    SQL.Add('insert into EvalTestGroups values (@GroupID, @SetID, @NextGroupNum)');
+    SQL.Add('insert into EvalTestGroups values (@GroupID, @NextGroupNum, @SetID)');
     SQL.Add('commit tran');
     ExecSQL;
     Close;
     Free;
   end;
-  TestList := TObjectList<TEvalTest>.Create;
-  Self.GroupID := NextGroupID;
-  Self.GroupNum := 1;
-  Self.SetID := SetID;
+
 end;
 
-procedure TEvalTestGroup.DeleteGroup(GroupID: Integer);
+procedure TEvalGroup.DeleteGroup(GroupID: Integer);
 var
   Query: TADOQuery;
 begin
@@ -109,7 +116,7 @@ begin
   end;
 end;
 
-procedure TEvalTestGroup.DeleteTestGroupTests;
+procedure TEvalGroup.DeleteTestGroupTests;
 var
   Query: TADOQuery;
 begin

@@ -185,8 +185,8 @@ begin
     SQL.Add('where ParamID = 3 and TestID = @TestID');
     ExecSQL;
   end;
-  EvalTest.ResetParameters;
   EvalTest.FrameType := EvalTest.GetFrameType;
+  EvalTest.ResetParameters;
   ClearVisualElements; // Clear visual elements in text boxes
   ShowFrame;
 end;

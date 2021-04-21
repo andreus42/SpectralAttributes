@@ -35,7 +35,7 @@ object _SpectralAttributesForm: T_SpectralAttributesForm
       Top = 8
       Width = 121
       Height = 23
-      Caption = 'Loat Set'
+      Caption = '&Loat Set'
       OnClick = ReloadSetClick
     end
     object AddTestGroupButton: TButton
@@ -48,15 +48,15 @@ object _SpectralAttributesForm: T_SpectralAttributesForm
       TabStop = False
       OnClick = AddTestGroupButtonClick
     end
-    object DeleteTestButton: TButton
+    object DeleteTestGroupButton: TButton
       Left = 99
       Top = 8
-      Width = 82
+      Width = 102
       Height = 25
-      Caption = '&Delete Test'
+      Caption = '&Delete Test Group'
       TabOrder = 1
       TabStop = False
-      OnClick = DeleteTestButtonClick
+      OnClick = DeleteTestGroupButtonClick
     end
     object PartRevLogEdit: TLabeledEdit
       Left = 438

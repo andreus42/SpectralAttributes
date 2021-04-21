@@ -54,11 +54,9 @@ type
   private
     procedure AddEvalTestFrame(EvalTest: TEvalTest); overload;
   public
-    EvalTestGroup: TEvalTestGroup;
+    EvalGroup: TEvalGroup;
     IntList: TList<Integer>;
-    GroupID: Integer;
-    SetID: Integer;
-    constructor Create(AOwner: TComponent; EvalTestGroup: TEvalTestGroup);
+    constructor Create(AOwner: TComponent; EvalGroup: TEvalGroup);
   end;
 
 const
@@ -72,17 +70,17 @@ uses
 {$R *.dfm}
 
 constructor TEvalTestGroupFrame.Create(AOwner: TComponent;
-  EvalTestGroup: TEvalTestGroup);
+  EvalGroup: TEvalGroup);
 var
   EvalTest: TEvalTest;
 begin
   inherited Create(AOwner);
   IntList := TList<Integer>.Create;
   SpecTextMemo.AMemo.Clear;
-  GroupDescEdit.Text := 'In-Process #' + EvalTestGroup.GroupID.ToString;
-  IDBox.Text := EvalTestGroup.GroupID.ToString;
-  Name := 'EvalFrame' + EvalTestGroup.GroupID.ToString;
-  for EvalTest in EvalTestGroup.TestList do
+  GroupDescEdit.Text := 'In-Process #' + EvalGroup.GroupID.ToString; // use group num in future
+  IDBox.Text := EvalGroup.GroupID.ToString;
+  Name := 'EvalFrame' + EvalGroup.GroupID.ToString;
+  for EvalTest in EvalGroup.TestList do
   begin
     SpecTextMemo.AMemo.Lines.Add(EvalTest.Stringify);
     AddEvalTestFrame(EvalTest);
@@ -92,8 +90,11 @@ end;
 procedure TEvalTestGroupFrame.AddEvalTestButtonClick(Sender: TObject);
 var
   EvalTest: TEvalTest;
+  I: Integer;
 begin
-  EvalTest := TEvalTest.Create(GroupID, SetID);
+  i := 0;
+  EvalTest := TEvalTest.Create(EvalGroup.GroupID, EvalGroup.SetID);
+  EvalTest.Write;
   AddEvalTestFrame(EvalTest);
 end;
 
@@ -116,10 +117,10 @@ var
   EvalTest: TEvalTest;
   GroupID: Integer;
 begin
-  GroupID := EvalTestGroup.GroupID;
+  GroupID := EvalGroup.GroupID;
   SpecTextMemo.AMemo.Clear;
-  EvalTestGroup := TEvalTestGroup.Create(GroupID);
-  for EvalTest in Self.EvalTestGroup.TestList do
+  EvalGroup := TEvalGroup.Create(GroupID);
+  for EvalTest in Self.EvalGroup.TestList do
   begin
     SpecTextMemo.AMemo.Lines.Add(EvalTest.Stringify);
   end;
@@ -140,7 +141,7 @@ var
   StringList: TStringList;
   AString: String;
 begin
-  EvalTestGroup.DeleteTestGroupTests;
+  EvalGroup.DeleteTestGroupTests;
   StringList := TStringList.Create;
   StringList.Assign(SpecTextMemo.AMemo.Lines);
   for AString in StringList do
