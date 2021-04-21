@@ -43,7 +43,7 @@ type
     constructor Create (AOwner: TComponent; TestID: Integer);
     procedure SpeedButton1Click(Sender: TObject);
     procedure HideAllElements;
-    procedure ClearAllElements;
+    procedure ClearVisualElements;
     procedure ShowFrame;
     procedure DBLookupComboBox1CloseUp(Sender: TObject);
     procedure UpdateParameter(Sender: TObject);
@@ -155,7 +155,7 @@ begin
   end;
 end;
 
-procedure TEvalFrame.ClearAllElements;
+procedure TEvalFrame.ClearVisualElements;
 begin
   SpecEdit.Text := '';
   ToLambdaEdit.Text :=  '';
@@ -185,19 +185,9 @@ begin
     SQL.Add('where ParamID = 3 and TestID = @TestID');
     ExecSQL;
   end;
-  Query2 := TADOQuery.Create(Nil);
-  with query2 do
-  begin
-    Connection := _ChromaDataModule.ChromaData;
-    SQL.Add('Declare @TestID int =' + EvalTest.TestID.ToString);
-    SQL.Add('delete from EvalTests');
-    SQL.Add('where ParamID != 3 and TestID = @TestID');
-    ExecSQL;
-    Free;
-  end;
-  EvalTest.FrameType := 0;
-  ClearAllElements; // Clear visual elements in text boxes
   EvalTest.ResetParameters;
+  EvalTest.FrameType := EvalTest.GetFrameType;
+  ClearVisualElements; // Clear visual elements in text boxes
   ShowFrame;
 end;
 

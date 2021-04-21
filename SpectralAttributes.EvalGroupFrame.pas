@@ -117,8 +117,11 @@ end;
 procedure TEvalTestGroupFrame.AddEvalTestButtonClick(Sender: TObject);
 var
   EvalTest: TEvalTest;
+  i: integer;
 begin
-  EvalTest := TEvalTest.Create(EvalTestGroup.GroupID, EvalTestGroup.SetID);
+  i := 0;
+//  EvalTest := TEvalTest.Create(EvalTestGroup.GroupID, EvalTestGroup.SetID);
+  EvalTest := TEvalTest.Create(GroupID, SetID);
   EvalTest.Write; // Need to get an updated TestID to add new group frame
   AddEvalTestFrame(EvalTest);
 end;

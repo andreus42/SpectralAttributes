@@ -5,8 +5,6 @@ interface
 uses
   System.SysUtils,
   System.Generics.Collections,
-  System.RegularExpressions, // eventually to logic unit
-  System.RegularExpressionsCore, // eventually to logic unit
   Data.DB,
   Data.Win.ADODB,
   Datasnap.DBClient,
@@ -34,7 +32,6 @@ type
     FilePath: String;
     TolPlus: String;
     TolMinus: String;
-    constructor Create(); overload;
     constructor Create(TestID: Integer); overload;
     constructor Create(GroupID: Integer; SetID: Integer) overload;
     function GetNextTestID(): Integer;
@@ -59,34 +56,12 @@ const
 
 implementation
 
-// Create Given Existing ID
-constructor TEvalTest.Create;
-begin
-    TestID := 0;
-    GroupID := 0;
-    SetID := 0;
-    FrameType := 0;
-    Name := '';
-    Rank := '0';
-    TestType := '0';
-    LambdaTo := '';
-    LambdaFrom := '';
-    LambdaAt := '';
-    Value := '';
-    Symbol := 0;
-    FilePath := '';
-    TolPlus := '';
-    TolMinus := '';
-    inherited;
-end;
-
 // Create new with Existing Set, Group
 constructor TEvalTest.Create(GroupID: Integer; SetID: Integer);
 begin
-//    inherited;
-    TestID := 0;
-    Self.GroupID := GroupID;
     Self.SetID := SetID;
+    Self.GroupID := GroupID;
+    TestID := GetNextTestID;
     TestType := '0';
     FrameType := 0;
     Name := '';
@@ -155,7 +130,7 @@ begin
     Close;
     Free;
   end;
-  FrameType := GetFrameType; // Should make into function
+  FrameType := GetFrameType;
 end;
 
 function TEvalTest.GetFrameType: Integer;
@@ -191,75 +166,14 @@ begin
     else
       NextTestID := FieldByName('LastID').Value + 1;
     Close;
+    Free;
   end;
-end;
-
-procedure TEvalTest.ResetParameters;
-var
-  Query: TADOQuery;
-  FrameTypeID: Integer;
-begin
-
-  // Currently moving from EvalFrame
   Query := TADOQuery.Create(Nil);
-  FrameTypeID := GetFrameType;
-
-  // Move whole block to TEvalTest.Write
-  with query do
-  begin
-    Connection := _ChromaDataModule.ChromaData;
-    SQL.Add('Declare @TestID int =' + TestID.ToString);
-    SQL.Add('Declare @GroupID int =' + GroupID.ToString);
-    SQL.Add('Declare @SetID int =' + SetID.ToString);
-    SQL.Add('Declare @RankParam int =' + RankParam.ToString);
-    SQL.Add('Declare @TestTypeParam int =' + TestTypeParam.ToString);
-    SQL.Add('Declare @FromLambdaParam int =' + FromLambdaParam.ToString);
-    SQL.Add('Declare @ToLambdaParam int =' + ToLambdaParam.ToString);
-    SQL.Add('Declare @AtLambdaParam int =' + AtLambdaParam.ToString);
-    SQL.Add('Declare @SpecParam int =' + SpecParam.ToString);
-    SQL.Add('Declare @FilepathParam int =' + FilepathParam.ToString);
-    SQL.Add('Declare @SymbolParam int =' + SymbolParam.ToString );
-    SQL.Add('Declare @PlusTolParam int =' + PlusTolParam.ToString);
-    SQL.Add('Declare @MinusTolParam int =' + MinusTolParam.ToString);
-
-    SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @RankParam, ''0'')');
-    SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @SpecParam, '''')');
-
-    case FrameTypeID of
-      1: begin  //With Tol+, Tol-, CWL, FWHM, Cuton, Cutoff
-          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @PlusTolParam, '''')');
-          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @MinusTolParam, '''')');
-      end;
-      2,3: begin  //To-From: T-Avg, R-Avg, B-Avg
-          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @FromLambdaParam, '''')');
-          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @ToLambdaParam, '''')');
-          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @SymbolParam, '''')');
-      end;
-      4,5: begin  //At: T-Avg@, R-Avg@, B-Avg@
-          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @AtLambdaParam, '''')');
-          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @SymbolParam, '''')');
-      end;
-      7: begin  //CIE
-          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @FilepathParam, '''')');
-      end;
-    end;
-    ExecSQL;
-  end;
-end;
-
-procedure TEvalTest.Write;
-var
-  Query: TADOQuery;
-  TestID: Integer;
-begin
-  // Need to establish New TestID here rather than at TEvalTest Creation
-  Query := TADOQuery.Create(Nil);
-  TestID := GetNextTestID;
   with query do
   begin
     Connection := _ChromaDataModule.ChromaData;
     SQL.Add('begin tran');
-    SQL.Add('Declare @TestID int = ' + TestID.ToString);
+    SQL.Add('Declare @TestID int = ' + NextTestID.ToString);
     SQL.Add('Declare @GroupID int = ' + GroupID.ToString);
     SQL.Add('Declare @SetID int = ' + SetID.ToString);
     SQL.Add('Declare @TestParam int =' + TestID.ToString);
@@ -279,6 +193,32 @@ begin
     Close;
     Free;
   end;
+  Result := NextTestID;
+end;
+
+
+// On close-up event of DBComboBox either delete old params and add insert new blanks
+procedure TEvalTest.ResetParameters;
+var
+  Query: TADOQuery;
+begin
+  Query := TADOQuery.Create(Nil);
+  with Query do
+  begin
+    Connection := _ChromaDataModule.ChromaData;
+    SQL.Add('Declare @TestID int =' + TestID.ToString);
+    SQL.Add('delete from EvalTests');
+    SQL.Add('where ParamID != 3 and TestID = @TestID');
+    ExecSQL;
+    Free;
+  end;
+end;
+
+procedure TEvalTest.Write;
+var
+  Query: TADOQuery;
+  TestID: Integer;
+begin
   Query := TADOQuery.Create(Nil);
   with query do
   begin

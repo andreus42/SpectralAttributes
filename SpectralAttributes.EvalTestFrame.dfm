@@ -31,7 +31,7 @@ object EvalFrame: TEvalFrame
     Alignment = taCenter
     Caption = 'TestID'
     Layout = tlCenter
-    ExplicitTop = -1
+    ExplicitHeight = 13
   end
   object DBLookupComboBox1: TDBLookupComboBox
     Left = 59
