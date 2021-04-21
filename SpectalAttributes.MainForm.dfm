@@ -4,7 +4,7 @@ object _SpectralAttributesForm: T_SpectralAttributesForm
   ActiveControl = PageControl1
   Caption = 'Spectral Attributes'
   ClientHeight = 883
-  ClientWidth = 1062
+  ClientWidth = 1346
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -18,7 +18,7 @@ object _SpectralAttributesForm: T_SpectralAttributesForm
   object PageControl1: TPageControl
     Left = 0
     Top = 41
-    Width = 1062
+    Width = 1346
     Height = 842
     Align = alClient
     TabOrder = 0
@@ -26,21 +26,21 @@ object _SpectralAttributesForm: T_SpectralAttributesForm
   object Panel1: TPanel
     Left = 0
     Top = 0
-    Width = 1062
+    Width = 1346
     Height = 41
     Align = alTop
     TabOrder = 1
     object ReloadSet: TSpeedButton
-      Left = 543
-      Top = 6
+      Left = 311
+      Top = 8
       Width = 121
       Height = 23
       Caption = 'Loat Set'
       OnClick = ReloadSetClick
     end
     object AddTestGroupButton: TButton
-      Left = 24
-      Top = 6
+      Left = 0
+      Top = 8
       Width = 93
       Height = 25
       Caption = '&Add Test Group'
@@ -49,8 +49,8 @@ object _SpectralAttributesForm: T_SpectralAttributesForm
       OnClick = AddTestGroupButtonClick
     end
     object DeleteTestButton: TButton
-      Left = 120
-      Top = 6
+      Left = 99
+      Top = 8
       Width = 82
       Height = 25
       Caption = '&Delete Test'
@@ -59,7 +59,7 @@ object _SpectralAttributesForm: T_SpectralAttributesForm
       OnClick = DeleteTestButtonClick
     end
     object PartRevLogEdit: TLabeledEdit
-      Left = 460
+      Left = 438
       Top = 8
       Width = 77
       Height = 21
@@ -77,7 +77,7 @@ object _SpectralAttributesForm: T_SpectralAttributesForm
       Font.Height = -11
       Font.Name = 'Tahoma'
       Font.Style = [fsBold]
-      LabelPosition = lpLeft
+      LabelPosition = lpRight
       ParentFont = False
       TabOrder = 2
     end

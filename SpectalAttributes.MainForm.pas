@@ -60,7 +60,6 @@ implementation
 procedure T_SpectralAttributesForm.FormCreate(Sender: TObject);
 var
   EvalTestGroup: TEvalTestGroup;
-  // TempGroupID: Integer;
 begin
   PartRevLogEdit.Text := SetID.ToString;
   EvalTestSet := TEvalTestSet.Create(SetID);
@@ -101,7 +100,6 @@ var
   TempGroupID: Integer;
 begin
   ATabSheet := TMyTabSheet.Create(PageControl1);
-  TempGroupID := EvalTestGroup.GroupID;
   with ATabSheet do
   begin
     Caption := 'In-Process #' + EvalTestGroup.GroupID.ToString;
@@ -109,7 +107,6 @@ begin
     Tag := EvalTestGroup.GroupID;
     PageControl := PageControl1;
     MySpecSheet := TEvalTestGroupFrame.Create(ATabSheet, EvalTestGroup);
-    // MySpecSheet := TEvalTestGroupFrame.CreateByInt(ATabSheet, EvalTestGroup.GroupID);
     with MySpecSheet do
     begin
       Parent := ATabSheet;
@@ -151,7 +148,7 @@ begin
 end;
 
 Initialization
+  SetID :=  2;
 
-SetID := 2;
 
 end.

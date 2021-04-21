@@ -1,4 +1,4 @@
-﻿unit SpectralAttributes.ParsingLogic;
+unit SpectralAttributes.ParsingLogic;
 
 interface
 
@@ -37,7 +37,7 @@ function GetSymbolParamID(AString: string): Integer;
 function GetRangeList(AString: String): TList<TLambdaRange>;
 function GetTolerance(AString: String): TTolerance;
 function GetSpecValuesList(AString: String): TList<Real>;
-function ReturnLambdaAtList(AString: String): TList<Real>;
+function GetLambdaAtList(AString: String): TList<Real>;
 
 // Unformatted Text Cleaning
 function CommentNonSpecs(AString: string): string;
@@ -154,7 +154,7 @@ begin
 end;
 
 //// Current work
-function ReturnLambdaAtList(AString: String): TList<Real>;
+function GetLambdaAtList(AString: String): TList<Real>;
 var
   LambdaAtList: TList<Real>;
   LambdaAt: Real;

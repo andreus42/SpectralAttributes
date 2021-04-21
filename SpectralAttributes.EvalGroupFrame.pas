@@ -116,12 +116,11 @@ end;
 
 procedure TEvalTestGroupFrame.AddEvalTestButtonClick(Sender: TObject);
 var
-  NewEvalTEest: TEvalTest;
-  temp: integer;
+  EvalTest: TEvalTest;
 begin
-  temp := 0;
-  NewEvalTEest := TEvalTest.CreateNew(EvalTestGroup.GroupID, EvalTestGroup.SetID);
-  AddEvalTestFrame(NewEvalTEest);
+  EvalTest := TEvalTest.Create(EvalTestGroup.GroupID, EvalTestGroup.SetID);
+  EvalTest.Write; // Need to get an updated TestID to add new group frame
+  AddEvalTestFrame(EvalTest);
 end;
 
 procedure TEvalTestGroupFrame.AddEvalTestFrame(EvalTest: TEvalTest);
@@ -146,8 +145,7 @@ var
 begin
   TempGroupID := EvalTestGroup.GroupID;
   SpecTextMemo.AMemo.Clear;
-  Self.EvalTestGroup.Free;
-  Self.EvalTestGroup := TEvalTestGroup.Create(TempGroupID);
+  EvalTestGroup := TEvalTestGroup.Create(TempGroupID);
   for TempEvalTest in Self.EvalTestGroup.TestList do
   begin
     SpecTextMemo.AMemo.Lines.Add(TempEvalTest.Stringify);
@@ -158,16 +156,8 @@ procedure TEvalTestGroupFrame.ParseTextButtonClick(Sender: TObject);
 var
   TempString: String;
 begin
+  // Clean text
   TempString := TextToParseMemo.AMemo.Text;
-  TempString := InitialRegex(TempString);
-  TempString := CommentNonSpecs(TempString);
-  TempString := FloatCommentsDown(TempString);
-  TempString := TestsToFront(TempString);
-  TempString := ShrinkWhiteSpace(TempString);
-
-//  TempString := ExpandSpecs(TempString);
-//  TempString := SplitPat(TempString);
-//  TempString := RemoveAvgAbs(TempString);
   TextToParseMemo.AMemo.Text := TempString;
 end;
 
@@ -179,8 +169,8 @@ var
   SpecParams: TSpecParams;
   LambdaRangeList: TList<TLambdaRange>;
   LambdaRange: TLambdaRange;
-  TransmissionValueList: TList<Real>;
-  TransmissionValue: Real;
+  SpecValueList: TList<Real>;
+  Value: Real;
   SymbolParam: Integer;
   Tolerance: TTolerance;
 begin
@@ -191,16 +181,12 @@ begin
   begin
     SpecParams := GetSpecParams(AString);
     LambdaRangeList := GetRangeList(AString);
-//    for TransmissionValue in TransmissionValueList do
-//    begin
-//      TransmissionValueList FloatToStr(TransmissionValue));
-//    end
-    TransmissionValue := TransmissionValueList[0]; //temp until full loop is written
     SymbolParam := GetSymbolParamID(AString);
     Tolerance := GetTolerance(AString);
+    SpecValueList := GetSpecValuesList(AString);
 
     //With EvalTest
-    EvalTest := TEvalTest.CreateNew(GroupID, SetID);
+    EvalTest := TEvalTest.Create(GroupID, SetID);
     EvalTest.FrameType := SpecParams.FrameTypeID;
     EvalTest.Name := SpecParams.ParamName;
     EvalTest.Rank := '0';
@@ -208,7 +194,7 @@ begin
     EvalTest.LambdaFrom := FloatToStr(LambdaRangeList[0].FromLambda);
     EvalTest.LambdaTo := FloatToStr(LambdaRangeList[0].ToLambda);
     EvalTest.LambdaAt :=  '';
-    EvalTest.Value :=  FloatToStr(TransmissionValue);
+    EvalTest.Value :=  FloatToStr(SpecValueList[0]); //temp until looping for vals/ranges
     EvalTest.Symbol := SymbolParam;
     EvalTest.FilePath := '';
     EvalTest.TolPlus := FloatToStr(Tolerance.PlusTol);

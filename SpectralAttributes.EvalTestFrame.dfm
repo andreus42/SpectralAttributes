@@ -7,7 +7,7 @@ object EvalFrame: TEvalFrame
   TabOrder = 0
   object SpecLabel: TLabel
     Left = 244
-    Top = 3
+    Top = 7
     Width = 11
     Height = 13
     Caption = '%'
@@ -31,7 +31,7 @@ object EvalFrame: TEvalFrame
     Alignment = taCenter
     Caption = 'TestID'
     Layout = tlCenter
-    ExplicitHeight = 13
+    ExplicitTop = -1
   end
   object DBLookupComboBox1: TDBLookupComboBox
     Left = 59
@@ -63,6 +63,7 @@ object EvalFrame: TEvalFrame
     Top = 3
     Width = 24
     Height = 21
+    Alignment = taCenter
     TabOrder = 0
     OnChange = UpdateParameter
   end
@@ -83,8 +84,8 @@ object EvalFrame: TEvalFrame
       '<')
   end
   object RefOnlyCheckBox: TCheckBox
-    Left = 864
-    Top = 3
+    Left = 904
+    Top = 5
     Width = 73
     Height = 17
     TabStop = False
@@ -286,13 +287,24 @@ object EvalFrame: TEvalFrame
     TabStop = False
     Text = ''
   end
+  object NoTolCheckBox: TCheckBox
+    Left = 983
+    Top = 5
+    Width = 73
+    Height = 17
+    TabStop = False
+    Caption = 'No Tol'
+    TabOrder = 11
+    Visible = False
+    OnClick = RefOnlyCheckBoxClick
+  end
   object ADODataSet1: TADODataSet
     Active = True
     Connection = _ChromaDataModule.ChromaData
     CursorType = ctStatic
     CommandText = 'select * from TestTypes'
     Parameters = <>
-    Left = 944
+    Left = 1080
     object ADODataSet1TypeID: TStringField
       FieldName = 'TypeID'
       Size = 32
@@ -304,7 +316,7 @@ object EvalFrame: TEvalFrame
   end
   object DataSource1: TDataSource
     DataSet = ADODataSet1
-    Left = 992
+    Left = 1128
   end
   object ADODataSet2: TADODataSet
     Active = True
@@ -322,7 +334,7 @@ object EvalFrame: TEvalFrame
         Size = 4
         Value = 1233
       end>
-    Left = 968
+    Left = 1104
     object ADODataSet2ParamValue: TStringField
       DisplayWidth = 15
       FieldName = 'ParamValue'
@@ -331,6 +343,6 @@ object EvalFrame: TEvalFrame
   end
   object DataSource2: TDataSource
     DataSet = ADODataSet2
-    Left = 1016
+    Left = 1152
   end
 end

@@ -39,6 +39,7 @@ type
     ToLambdaEdit: DoulbedLabeledEdit_v3;
     PlusTolEdit: DoulbedLabeledEdit_v3;
     MinusTolEdit: DoulbedLabeledEdit_v3;
+    NoTolCheckBox: TCheckBox;
     constructor Create (AOwner: TComponent; TestID: Integer);
     procedure SpeedButton1Click(Sender: TObject);
     procedure HideAllElements;

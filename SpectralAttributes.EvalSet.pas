@@ -54,7 +54,7 @@ begin
     while not eof do
     begin
         GroupID := Query.FieldByName('GroupID').Value;
-//        GroupNum := Query.FieldByName('GroupNum').Value;
+//        GroupNum := Query.FieldByName('GroupNum').Value; // Eventually need this as In-Process#1,#2,etc.
         EvalTestGroup := TEvalTestGroup.Create(GroupID);
         EvalTestGroupList.Add(EvalTestGroup);
         EvalTestGroupIDList.Add(GroupID);

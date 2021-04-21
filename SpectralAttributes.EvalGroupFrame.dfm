@@ -1,7 +1,7 @@
 object EvalTestGroupFrame: TEvalTestGroupFrame
   Left = 0
   Top = 0
-  Width = 1442
+  Width = 1402
   Height = 810
   TabOrder = 0
   object GroupLabel: TLabel
@@ -14,7 +14,7 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
   object GroupPanel: TPanel
     Left = 0
     Top = 0
-    Width = 297
+    Width = 281
     Height = 810
     Align = alLeft
     BevelEdges = []
@@ -197,41 +197,31 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
     Text = 'IDBox'
   end
   object Panel1: TPanel
-    Left = 297
+    Left = 281
     Top = 0
-    Width = 1145
+    Width = 1121
     Height = 810
     Align = alClient
     Caption = 'Panel1'
     TabOrder = 2
-    ExplicitLeft = 408
-    ExplicitTop = 376
-    ExplicitWidth = 185
-    ExplicitHeight = 41
     object EvalScrollBox: TScrollBox
-      Left = 110
+      Left = 113
       Top = 1
-      Width = 1034
+      Width = 1007
       Height = 808
       Align = alClient
       BevelEdges = []
       Color = clBtnFace
       ParentColor = False
       TabOrder = 0
-      ExplicitLeft = 111
-      ExplicitTop = 15
-      ExplicitWidth = 992
-      ExplicitHeight = 793
     end
     object GroupBox2: TGroupBox
       Left = 1
       Top = 1
-      Width = 109
+      Width = 112
       Height = 808
       Align = alLeft
       TabOrder = 1
-      ExplicitLeft = -16
-      ExplicitTop = -207
       object ParseButton: TButton
         Left = 9
         Top = 160

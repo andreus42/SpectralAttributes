@@ -36,12 +36,8 @@ type
     TolMinus: String;
     constructor Create(); overload;
     constructor Create(TestID: Integer); overload;
-    constructor CreateNew(GroupID: Integer; SetID: Integer);
-    constructor CreateWithParams(SetID, GroupID, SpecParamID, SymbolParamID: Integer;
-            SpecVal, FromLambda, ToLambda: Real);
-//    constructor CreateFromList(ParamList: TStringList); //future constructor, can replace Create(TestID),
-//                    by first reading in SQL to String list? Dictionary!?!
-    destructor destroy;
+    constructor Create(GroupID: Integer; SetID: Integer) overload;
+    function GetNextTestID(): Integer;
     function GetFrameType(): Integer;
     function Stringify(): String;
     procedure ResetParameters;
@@ -66,7 +62,43 @@ implementation
 // Create Given Existing ID
 constructor TEvalTest.Create;
 begin
+    TestID := 0;
+    GroupID := 0;
+    SetID := 0;
+    FrameType := 0;
+    Name := '';
+    Rank := '0';
+    TestType := '0';
+    LambdaTo := '';
+    LambdaFrom := '';
+    LambdaAt := '';
+    Value := '';
+    Symbol := 0;
+    FilePath := '';
+    TolPlus := '';
+    TolMinus := '';
     inherited;
+end;
+
+// Create new with Existing Set, Group
+constructor TEvalTest.Create(GroupID: Integer; SetID: Integer);
+begin
+//    inherited;
+    TestID := 0;
+    Self.GroupID := GroupID;
+    Self.SetID := SetID;
+    TestType := '0';
+    FrameType := 0;
+    Name := '';
+    Rank := '0';
+    LambdaTo := '';
+    LambdaFrom := '';
+    LambdaAt := '';
+    Value := '';
+    Symbol := 0;
+    FilePath := '';
+    TolPlus := '';
+    TolMinus := '';
 end;
 
 // Create Given Existing ID
@@ -83,135 +115,47 @@ begin
 
   // Read in test associations
   Query0 := TADOQuery.Create(Nil);
-  Query0.Connection := _ChromaDataModule.ChromaData;
-  Query0.SQL.Add('select GroupID, SetID');       // Explore using EvalSets Table
-  Query0.SQL.Add('from EvalTests where TestID = ' + TestID.ToString);
-  Query0.Open;
-  GroupID := Query0.FieldByName('GroupID').Value;
-  SetID := Query0.FieldByName('SetID').Value;
-  Query0.Close;
-  Query0.Free;
-
-  // Read in test parameters  // Possibly change into reading from stringlist or other list
-  Query1 := TADOQuery.Create(Nil);
-  Query1.Connection := _ChromaDataModule.ChromaData;
-  Query1.SQL.Add('select ParamID, ParamValue');
-  Query1.SQL.Add('from EvalTests where TestID = ' + TestID.ToString);
-  Query1.Open;
-  while not Query1.eof do
-  begin
-    ParamID := Query1.FieldByName('ParamID').Value;
-    ParamValue := Query1.FieldByName('ParamValue').Value;
-    Case ParamID of
-      RankParam: Rank := ParamValue;
-      TestTypeParam: TestType := ParamValue;
-      FromLambdaParam: LambdaFrom := ParamValue;
-      ToLambdaParam: LambdaTo := ParamValue;
-      AtLambdaParam: LambdaAt := ParamValue;
-      SpecParam: Value := ParamValue;
-      FilepathParam: Filepath := ParamValue;
-      SymbolParam: Symbol := ParamValue.ToInteger;
-      PlusTolParam: TolPlus := ParamValue;
-      MinusTolParam: TolMinus := ParamValue;
-    End;
-    Query1.Next;
-  end;
-  Query1.Close;
-  Query1.Free;
-  Query2 := TADOQuery.Create(Nil);
-  Query2.Connection := _ChromaDataModule.ChromaData;
-  Query2.SQL.Add('select ParamName from TestTypes where TypeID = ' + TestType);
-  Query2.Open;
-  Name := Query2.FieldByName('ParamName').Value;
-  Query2.Close;
-  Query2.Free;
-  FrameType := GetFrameType; // Should make into function
-end;
-
-
-constructor TEvalTest.CreateNew(GroupID: Integer; SetID: Integer);
-var
-  Query: TADOQuery;
-  NextTestID: Integer;
-begin
-  Query := TADOQuery.Create(Nil);
-  with query do
+  with Query0 do
   begin
     Connection := _ChromaDataModule.ChromaData;
-    SQL.Add('select max(TestID) last_id from EvalTests');
+    SQL.Add('select GroupID, SetID');       // Explore using EvalSets Table
+    SQL.Add('from EvalTests where TestID = ' + TestID.ToString);
     Open;
-    // need Try/Except Blocks
-    if (FieldByName('last_id').IsNull) then
-      NextTestID := 1
-    else
-      NextTestID := FieldByName('last_id').Value + 1;
-    Close;
-  end;
-  with query do
-  begin
-    SQL.Add('begin tran');
-    SQL.Add('Declare @TestID int = ' + NextTestID.ToString);
-    SQL.Add('Declare @GroupID int = ' + GroupID.ToString);
-    SQL.Add('Declare @SetID int = ' + SetID.ToString);
-    SQL.Add('Declare @TestParam int =' + TestID.ToString);
-    SQL.Add('Declare @TestTypeParam int =' + TestTypeParam.ToString);
-    SQL.Add('if exists (select * from EvalTests with (updlock,serializable) where TestID = @TestID) ');
-    SQL.Add('begin');
-    SQL.Add('update EvalTests set ParamValue = 0 ');
-    SQL.Add('where TestID = @TestID and ParamID = @TestParam ');
-    SQL.Add('end');
-    SQL.Add('else');
-    SQL.Add('begin');
-    SQL.Add('insert EvalTests (TestID, GroupID, SetID, ParamID, ParamValue)');
-    SQL.Add('values (@TestID, @GroupID, @SetID, @TestTypeParam, 0)');
-    SQL.Add('end');
-    SQL.Add('commit tran');
-    ExecSQL;
+    GroupID := Query0.FieldByName('GroupID').Value;
+    SetID := Query0.FieldByName('SetID').Value;
     Close;
     Free;
   end;
-    Self.TestID := NextTestID;
-    Self.GroupID := GroupID;
-    Self.SetID := SetID;
-end;
-
-constructor TEvalTest.CreateWithParams(SetID, GroupID, SpecParamID, SymbolParamID: Integer;
-            SpecVal, FromLambda, ToLambda: Real);
-var
-  Query: TADOQuery;
-  Query2: TADOQuery;
-  NextTestID: Integer;
-begin
-  Query := TADOQuery.Create(Nil);
-  with query do
+  // Read in test parameters  // Possibly change into reading from stringlist or other list
+  Query1 := TADOQuery.Create(Nil);
+  with Query1 do
   begin
     Connection := _ChromaDataModule.ChromaData;
-    SQL.Add('select max(TestID) last_id from EvalTests');
+    SQL.Add('select ParamID, ParamValue');
+    SQL.Add('from EvalTests where TestID = ' + TestID.ToString);
     Open;
-    // need Try/Except Blocks
-    if (FieldByName('last_id').IsNull) then
-      NextTestID := 1
-    else
-      NextTestID := FieldByName('last_id').Value + 1;
+    while not eof do
+    begin
+      ParamID := Query1.FieldByName('ParamID').Value;
+      ParamValue := Query1.FieldByName('ParamValue').Value;
+      Case ParamID of
+        RankParam: Rank := ParamValue;
+        TestTypeParam: TestType := ParamValue;
+        FromLambdaParam: LambdaFrom := ParamValue;
+        ToLambdaParam: LambdaTo := ParamValue;
+        AtLambdaParam: LambdaAt := ParamValue;
+        SpecParam: Value := ParamValue;
+        FilepathParam: Filepath := ParamValue;
+        SymbolParam: Symbol := ParamValue.ToInteger;
+        PlusTolParam: TolPlus := ParamValue;
+        MinusTolParam: TolMinus := ParamValue;
+      End;
+      Next;
+    end;
     Close;
+    Free;
   end;
-  Query2 := TADOQuery.Create(Nil);
-  with query2 do
-  begin
-    SQL.Add('Declare @TestID = '+ NextTestID.ToString);
-    SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @FromLambdaParam, '''')');
-    SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @ToLambdaParam, '''')');
-    SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @AtLambdaParam, '''')');
-    SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @SymbolParam, '''')');
-    SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @SpecParam, '''')');
-    ExecSQL
-  end;
-
-end;
-
-destructor TEvalTest.destroy;
-begin
-  inherited destroy;
+  FrameType := GetFrameType; // Should make into function
 end;
 
 function TEvalTest.GetFrameType: Integer;
@@ -221,12 +165,33 @@ begin
   // Use TestType to LookUp Frame Type
   Query := TADOQuery.Create(Nil);
   Query.Connection := _ChromaDataModule.ChromaData;
-  Query.SQL.Add('select FrameTypeID from TestTypes where TypeID = ' + TestType);
+  Query.SQL.Add('select FrameTypeID, ParamName from TestTypes where TypeID = ' + TestType);
   Query.Open;
   FrameType := Query.FieldByName('FrameTypeID').Value;
+  Name := Query.FieldByName('ParamName').Value;
   Query.Close;
   Query.Free;
   Result := FrameType;
+end;
+
+function TEvalTest.GetNextTestID: Integer;
+var
+  Query: TADOQuery;
+  NextTestID: Integer;
+begin
+  Query := TADOQuery.Create(Nil);
+  with query do
+  begin
+    // need Try/Except Blocks
+    Connection := _ChromaDataModule.ChromaData;
+    SQL.Add('SELECT MAX(TestID) LastID FROM EvalTests');
+    Open;
+    if (FieldByName('LastID').IsNull) then
+      NextTestID := 1
+    else
+      NextTestID := FieldByName('LastID').Value + 1;
+    Close;
+  end;
 end;
 
 procedure TEvalTest.ResetParameters;
@@ -238,7 +203,6 @@ begin
   // Currently moving from EvalFrame
   Query := TADOQuery.Create(Nil);
   FrameTypeID := GetFrameType;
-
 
   // Move whole block to TEvalTest.Write
   with query do
@@ -286,9 +250,35 @@ end;
 procedure TEvalTest.Write;
 var
   Query: TADOQuery;
+  TestID: Integer;
 begin
   // Need to establish New TestID here rather than at TEvalTest Creation
-
+  Query := TADOQuery.Create(Nil);
+  TestID := GetNextTestID;
+  with query do
+  begin
+    Connection := _ChromaDataModule.ChromaData;
+    SQL.Add('begin tran');
+    SQL.Add('Declare @TestID int = ' + TestID.ToString);
+    SQL.Add('Declare @GroupID int = ' + GroupID.ToString);
+    SQL.Add('Declare @SetID int = ' + SetID.ToString);
+    SQL.Add('Declare @TestParam int =' + TestID.ToString);
+    SQL.Add('Declare @TestTypeParam int =' + TestTypeParam.ToString);
+    SQL.Add('if exists (select * from EvalTests with (updlock,serializable) where TestID = @TestID) ');
+    SQL.Add('begin');
+    SQL.Add('update EvalTests set ParamValue = 0 ');
+    SQL.Add('where TestID = @TestID and ParamID = @TestParam ');
+    SQL.Add('end');
+    SQL.Add('else');
+    SQL.Add('begin');
+    SQL.Add('insert EvalTests (TestID, GroupID, SetID, ParamID, ParamValue)');
+    SQL.Add('values (@TestID, @GroupID, @SetID, @TestTypeParam, 0)');
+    SQL.Add('end');
+    SQL.Add('commit tran');
+    ExecSQL;
+    Close;
+    Free;
+  end;
   Query := TADOQuery.Create(Nil);
   with query do
   begin
@@ -306,12 +296,14 @@ begin
     SQL.Add('Declare @SymbolParam int =' + SymbolParam.ToString );
     SQL.Add('Declare @PlusTolParam int =' + PlusTolParam.ToString);
     SQL.Add('Declare @MinusTolParam int =' + MinusTolParam.ToString);
-
     // Inserts for all
     SQL.Add('update EvalTests set ParamValue = '''+TestType+''' where TestID = '+TestID.ToString+' and ParamID = @TestTypeParam');
-    SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @SpecParam, '''+Value+''')');
     SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @RankParam, '''+Rank+''')');
-//
+
+    // Write Value if exists
+    If (Value <> '') then
+      SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @SpecParam, '''+Value+''')');
+
     case FrameType of
       1: begin  //With Tol+, Tol-, CWL, FWHM, Cuton, Cutoff
           SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @PlusTolParam, '''+TolPlus+''')');

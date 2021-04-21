@@ -21,7 +21,6 @@ type
     TestList: TObjectList<TEvalTest>;
     constructor Create(GroupID: Integer);
     constructor CreateNew(SetID: Integer);      // needs to genearte new ID and pass back to EvalSet
-    destructor destroy;
     procedure DeleteTestGroupTests;
   end;
 
@@ -31,11 +30,9 @@ constructor TEvalTestGroup.Create(GroupID: Integer);
 var
   Query: TADOQuery;
   TestID: Integer;
-  AEvalTest: TEvalTest;
+  EvalTest: TEvalTest;
 begin
   TestList := TObjectList<TEvalTest>.Create;
-//  IDsList := TList<Integer>.Create;
-  //
   Self.GroupID := GroupID;
   Query := TADOQuery.Create(Nil);
   with Query do
@@ -47,8 +44,8 @@ begin
     while not eof do
     begin
       TestID := Query.FieldByName('TestID').Value;
-      AEvalTest := TEvalTest.Create(TestID);
-      TestList.Add(AEvalTest);
+      EvalTest := TEvalTest.Create(TestID);
+      TestList.Add(EvalTest);
       Query.Next;
     end;
     Close;
@@ -107,12 +104,6 @@ begin
     ExecSQL;
     Free;
   end;
-end;
-
-destructor TEvalTestGroup.destroy;
-begin
-   TestList.Destroy;
-  inherited destroy;
 end;
 
 end.
