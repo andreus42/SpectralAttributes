@@ -74,11 +74,10 @@ begin
   ///want to refactor out ADODataSets
   ADODataSet2.Parameters.ParamByName('TestID').Value := TempEvalTest.TestID;
   ADODataSet2.Requery();
-  TestIDLabel.Caption := 'TestID: ' + TempEvalTest.TestID.ToString;
 
-//  EvalTest := TEvalTest.Create(TempEvalTest.TestID);
+
   EvalTest := TempEvalTest;
-
+  TestIDLabel.Caption := 'TestID: ' + EvalTest.TestID.ToString;
   RankEdit.Text := EvalTest.Rank;
   ToLambdaEdit.Text := EvalTest.LambdaTo;
   FromLambdaEdit.Text := EvalTest.LambdaFrom;
@@ -90,10 +89,6 @@ begin
   SymbolComboBox.ItemIndex := EvalTest.Symbol;
   FrameGroupID := EvalTest.GroupID;
   ShowFrame;
-
-  if DarkMode then
-    color := clBlack;
-
 end;
 
 procedure TEvalFrame.ShowFrame;
@@ -223,9 +218,9 @@ begin
 end;
 
 procedure TEvalFrame.SpeedButton1Click(Sender: TObject);
-// move whole DestroyEvalTest into EvalTest
+begin
   EvalTest.Delete;
-  Destroy;
+  Self.Destroy;
 end;
 
 procedure TEvalFrame.SpeedButton2Click(Sender: TObject);
