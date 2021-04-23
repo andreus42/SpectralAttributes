@@ -2,7 +2,7 @@ object EvalFrame: TEvalFrame
   Left = 0
   Top = 0
   Width = 1230
-  Height = 28
+  Height = 26
   Align = alClient
   TabOrder = 0
   object SpecLabel: TLabel
@@ -26,7 +26,7 @@ object EvalFrame: TEvalFrame
     Left = 1198
     Top = 0
     Width = 32
-    Height = 28
+    Height = 26
     Align = alRight
     Alignment = taCenter
     Caption = 'TestID'
@@ -156,13 +156,15 @@ object EvalFrame: TEvalFrame
     AEdit.OnExit = UpdateParameter
     LLabel.Left = 0
     LLabel.Top = 0
-    LLabel.Width = 29
+    LLabel.Width = 24
     LLabel.Height = 21
     LLabel.Align = alLeft
     LLabel.Alignment = taRightJustify
     LLabel.Anchors = [akLeft, akTop, akRight, akBottom]
-    LLabel.Caption = '      At'
+    LLabel.Caption = '   At'
     LLabel.Layout = tlCenter
+    LLabel.ExplicitLeft = -4
+    LLabel.ExplicitWidth = 20
     LLabel.ExplicitHeight = 13
     RLabel.Left = 111
     RLabel.Top = 0

@@ -31,7 +31,7 @@ type
   TEvalTestGroupFrame = class(TFrame)
     GroupPanel: TPanel;
     IDBox: TEdit;
-    ParseTextButton: TButton;
+    CleanTextButton: TButton;
     IDLabel: TLabel;
     GroupDescEdit: TEdit;
     GroupLabel: TLabel;
@@ -39,25 +39,30 @@ type
     SpecTextMemo: TLabledMemo;
     TextToParseMemo: TLabledMemo;
     TransformButton: TButton;
-    EvalScrollBox: TScrollBox;
     AddEvalTestButton: TButton;
-    Button1: TButton;
+    AddSetupParamButton: TButton;
     S3ParseButton: TButton;
-    GroupBox2: TGroupBox;
     CommentsMemo: TLabledMemo;
     TestCommentsMemo: TLabledMemo;
-    Panel1: TPanel;
+    ScrollBoxPanel: TPanel;
+    ControlsPanel: TPanel;
     GroupFrameSetIDEDit: TEdit;
+    GroupSetLabel: TLabel;
+    EvalScrollBox: TScrollBox;
+
+    //testing scrollbox
+//    EvalScrollBox: TScrollBox;
+
     procedure AddEvalTestButtonClick(Sender: TObject);
     procedure S3ParseButtonClick(Sender: TObject);
-    procedure ParseTextButtonClick(Sender: TObject);
+    procedure CleanTextButtonClick(Sender: TObject);
     procedure TransformButtonClick(Sender: TObject);
   private
     procedure AddEvalTestFrame(EvalTest: TEvalTest); overload;
   public
     EvalGroup: TEvalGroup;
-    IntList: TList<Integer>;
     constructor Create(AOwner: TComponent; TempEvalGroup: TEvalGroup);
+    destructor destroy;
   end;
 
 const
@@ -76,16 +81,11 @@ var
   EvalTest: TEvalTest;
 begin
   inherited Create(AOwner);
-  IntList := TList<Integer>.Create;
-
   //Create EvalGroup Obj with Frame
   EvalGroup := TempEvalGroup; // Currently just a copy of the object passed to it
-
-
-  GroupFrameSetIDEDit.Text := EvalGroup.SetID.ToString;
-
+  GroupFrameSetIDEDit.Text := EvalGroup.SetID.ToString;  // Should display Group Num (i.e. Inprocess-#1)
   SpecTextMemo.AMemo.Clear;
-  GroupDescEdit.Text := 'In-Process #' + EvalGroup.GroupID.ToString; // use group num in future
+  GroupDescEdit.Text := 'In-Process #' + EvalGroup.GroupID.ToString;
   IDBox.Text := EvalGroup.GroupID.ToString;
   Name := 'EvalFrame' + EvalGroup.GroupID.ToString;
   for EvalTest in EvalGroup.TestList do
@@ -93,13 +93,22 @@ begin
     SpecTextMemo.AMemo.Lines.Add(EvalTest.Stringify);
     AddEvalTestFrame(EvalTest);
   end;
+  //  EvalTest.Free;  // need to figure out how to remove if it doesn't exist
+end;
 
+destructor TEvalTestGroupFrame.destroy;
+var
+  I: Integer;
+begin
+  for I := 0 to Self.ControlCount do
+    Self.Controls[I].Free;
+  EvalGroup.Free;
+  Self.Free;
 end;
 
 procedure TEvalTestGroupFrame.AddEvalTestButtonClick(Sender: TObject);
 var
   EvalTest: TEvalTest;
-  I: Integer;
 begin
   EvalTest := TEvalTest.Create(EvalGroup.GroupID, EvalGroup.SetID);
   EvalGroup.TestList.Add(EvalTest);
@@ -111,7 +120,7 @@ procedure TEvalTestGroupFrame.AddEvalTestFrame(EvalTest: TEvalTest);
 var
   TestFrame: TEvalFrame;
 begin
-  TestFrame := TEvalFrame.Create(EvalScrollBox, EvalTest.TestID);
+  TestFrame := TEvalFrame.Create(EvalScrollBox, EvalTest);
   with TestFrame do
   begin
     Name := 'EvalFrame_' + EvalTest.TestID.ToString;
@@ -138,7 +147,7 @@ begin
   end;
 end;
 
-procedure TEvalTestGroupFrame.ParseTextButtonClick(Sender: TObject);
+procedure TEvalTestGroupFrame.CleanTextButtonClick(Sender: TObject);
 var
   TempString: String;
 begin
@@ -152,8 +161,7 @@ var
   EvalTest: TEvalTest;
   StringList: TStringList;
   AString: String;
-  //testing
-  TestFrame: TEvalFrame;
+//  GroupID, SetID: Integer;
 begin
   EvalGroup.DeleteTestGroupTests;
   StringList := TStringList.Create;
@@ -167,26 +175,17 @@ begin
       EvalTest.Free;
     end;
   end;
-  //_SpectralAttributesForm.ResetPageControl;
-
-  // TESTING
-  // Try recreating scroll box
+  // TESTING: ScrollBox is not redrawing
   EvalScrollBox.Destroy;
-  EvalScrollBox := TScrollBox.Create(Self);
-  EvalScrollBox.Parent := Panel1;
+  EvalScrollBox := TScrollBox.Create(ScrollBoxPanel);
+  EvalScrollBox.Parent := ScrollBoxPanel;
   EvalScrollBox.Align := alClient;
   for EvalTest in EvalGroup.TestList do
   begin
-    TestFrame := TEvalFrame.Create(EvalScrollBox, EvalTest);     /// needs to pass groupID, setID
-    with TestFrame do
-    begin
-      Name := 'EvalFrame_' + EvalTest.TestID.ToString;
-      Parent := EvalScrollBox;
-      Align := alTop;
-      Height := FrameHeight;
-    end;
+    AddEvalTestFrame(EvalTest);
   end;
-
+  EvalScrollBox.Update;
+  StringList.Free;
 end;
 
 end.

@@ -35,9 +35,11 @@ type
     constructor Create(TestID: Integer); overload;
     constructor Create(GroupID: Integer; SetID: Integer) overload;
     constructor Create(GroupID: Integer; SetID: Integer; AString: String) overload;
+    destructor destroy;
     function GetNextTestID(): Integer;
     function GetFrameType(): Integer;
     function Stringify(): String;
+    procedure Delete;
     procedure ResetParameters;
     procedure UpdateParameters(ParamValue: String; ParamID: Integer);
     procedure WriteToDB;
@@ -141,6 +143,7 @@ var
   LambdaRangeList: TList<TLambdaRange>;
   LambdaRange: TLambdaRange;
   SpecValueList: TList<Real>;
+  LambdaAtList: TList<Real>;
   Value: Real;
   SymbolParam: Integer;
   Tolerance: TTolerance;
@@ -149,7 +152,6 @@ begin
     Self.SetID := SetID;
     Self.TestID := GetNextTestID;
     SpecParams := GetSpecParams(AString);
-    ///SOMETHING funny with getting spec value
     SpecValueList:= TList<Real>.Create;
     SpecValueList := GetSpecValuesList(AString);
     Self.Name := SpecParams.ParamName;
@@ -171,7 +173,8 @@ begin
         Self.Symbol := GetSymbolParamID(AString);
       end;
       4,5: begin  //At: T-Avg@, R-Avg@, B-Avg@
-        Self.LambdaAt :=  '';
+        LambdaAtList := GetLambdaAtList(AString);
+        Self.LambdaAt :=  FloatToStr(LambdaAtList[0]);
         Self.Symbol:= GetSymbolParamID(AString);
       end;
       7: begin  //CIE
@@ -181,6 +184,25 @@ begin
     end;
 
     WriteToDB; //WriteOutEvalTest
+end;
+
+procedure TEvalTest.Delete;
+var
+  Query: TADOQuery;
+begin
+  Query := TADOQuery.Create(Nil);
+  with Query do
+  begin
+    Connection := _ChromaDataModule.ChromaData;
+    SQL.Add('delete from EvalTests where TestID = ' + TestID.ToString);
+    ExecSQL;
+    Free;
+  end;
+end;
+
+destructor TEvalTest.destroy;
+begin
+  Self.Free;
 end;
 
 function TEvalTest.GetFrameType: Integer;
@@ -205,7 +227,7 @@ var
   NextTestID: Integer;
 begin
   Query := TADOQuery.Create(Nil);
-  with query do
+  with Query do
   begin
     // need Try/Except Blocks
     Connection := _ChromaDataModule.ChromaData;
@@ -240,7 +262,6 @@ begin
     SQL.Add('end');
     SQL.Add('commit tran');
     ExecSQL;
-    Close;
     Free;
   end;
   Result := NextTestID;
@@ -311,9 +332,9 @@ begin
       end;
     end;
     ExecSQL;
+    Free;
   end;
 end;
-
 
 function TEvalTest.Stringify: String;
 const
@@ -344,7 +365,7 @@ begin
     SQL.Add('Update EvalTests set ParamValue = ' + ParamValue);
     SQL.Add('where TestID = @TestID and ParamID = ' + ParamID.ToString);
     ExecSQL;
-    Free
+    Free;
   end;
 end;
 

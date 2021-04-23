@@ -29,19 +29,21 @@ type
     PartRevLogEdit: TLabeledEdit;
     ReloadSet: TSpeedButton;
     Panel1: TPanel;
+    DarkModeCheckBox: TCheckBox;
     procedure CreateGroupFrames(SetID: Integer);
     procedure DeleteTestGroupButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure AddTestGroupButtonClick(Sender: TObject);
     procedure ReloadSetClick(Sender: TObject);
     procedure ResetPageControl;
+    procedure DarkModeCheckBoxClick(Sender: TObject);
 
   type
     TMyTabSheet = class(TTabSheet)
       EditBox: TEdit;
       MemoBox: TMemo;
       ActiveButton: TButton;
-      MySpecSheet: TEvalTestGroupFrame;
+      SpecSheet: TEvalTestGroupFrame;
     end;
   private
     procedure AddTestGroupPage(EvalTestGroup: TEvalGroup);
@@ -52,6 +54,7 @@ type
 var
   _SpectralAttributesForm: T_SpectralAttributesForm;
   SetID: Integer;
+  DarkMode: Boolean;
 
 implementation
 
@@ -73,11 +76,6 @@ begin
   begin
     AddTestGroupPage(EvalTestGroup);
   end;
-end;
-
-procedure T_SpectralAttributesForm.ReloadSetClick(Sender: TObject);
-begin
-  ResetPageControl;
 end;
 
 procedure T_SpectralAttributesForm.ResetPageControl;
@@ -105,15 +103,14 @@ begin
     Name := 'TabSheet' + EvalTestGroup.GroupID.ToString;
     Tag := EvalTestGroup.GroupID;
     PageControl := PageControl1;
-    MySpecSheet := TEvalTestGroupFrame.Create(ATabSheet, EvalTestGroup);
-    with MySpecSheet do
+    SpecSheet := TEvalTestGroupFrame.Create(ATabSheet, EvalTestGroup);
+    with SpecSheet do
     begin
       Parent := ATabSheet;
       Align := alClient;
     end;
   end;
 end;
-
 
 procedure T_SpectralAttributesForm.AddTestGroupButtonClick(Sender: TObject);
 var
@@ -123,10 +120,21 @@ begin
   AddTestGroupPage(NewEvalTestGroup);
 end;
 
+procedure T_SpectralAttributesForm.DarkModeCheckBoxClick(Sender: TObject);
+begin
+  DarkMode := True;
+  Refresh;
+end;
+
 procedure T_SpectralAttributesForm.DeleteTestGroupButtonClick(Sender: TObject);
 begin
   EvalTestGroup.DeleteGroup(PageControl1.ActivePage.Tag);
   PageControl1.ActivePage.Destroy;
+end;
+
+procedure T_SpectralAttributesForm.ReloadSetClick(Sender: TObject);
+begin
+  ResetPageControl;
 end;
 
 Initialization

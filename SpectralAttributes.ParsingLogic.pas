@@ -58,7 +58,7 @@ const
   TolerancedSpedRegexString = '(\d{2,4})nm';
   SymbolRegexString = '>=|>|=|<|<=';
   LambdaRangesRegexString = '(\d{3,4}\.?\d?)-(\d{3,4}\.?\d?)';
-  LambdaAtRegexString = '@\s*?(\d{3,4}(?:\.\d{1,2})?)nm';
+  LambdaAtRegexString = '@\s*?(\d{2,4}(?:\.\d{1,2})?)nm';       // value treated like range
   TolerancesRegexString = '(?:\+(\d?(?:\.\d)?)\/\-(\d?(?:\.\d)?)nm)';
   BSpecValueRegexString = '(?:OD)(\d{1,2}(?:\.\d{1,2})?)';
 
@@ -100,7 +100,6 @@ begin
   end;
   Result := ValueList;
 end;
-
 
 function GetTolerance(AString: String): TTolerance;
 var
@@ -174,7 +173,6 @@ begin
   end;
   Result := LambdaAtList;
 end;
-
 
 function RemoveAvgAbs(AString: string): string;
 var

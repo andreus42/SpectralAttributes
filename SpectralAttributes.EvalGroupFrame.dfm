@@ -14,7 +14,7 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
   object GroupPanel: TPanel
     Left = 0
     Top = 0
-    Width = 281
+    Width = 276
     Height = 810
     Align = alLeft
     BevelEdges = []
@@ -24,21 +24,28 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
     ParentBackground = False
     TabOrder = 0
     object IDLabel: TLabel
-      Left = 13
+      Left = 140
       Top = 10
       Width = 96
       Height = 13
       Caption = 'Group ID (Op Level)'
     end
     object Label6: TLabel
-      Left = 140
+      Left = 8
       Top = 10
       Width = 48
       Height = 13
       Caption = 'Operation'
     end
+    object GroupSetLabel: TLabel
+      Left = 44
+      Top = 59
+      Width = 45
+      Height = 13
+      Caption = 'GroupSet'
+    end
     object IDBox: TEdit
-      Left = 13
+      Left = 8
       Top = 29
       Width = 121
       Height = 21
@@ -47,19 +54,19 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
       TabOrder = 0
       Text = 'IDBox'
     end
-    object ParseTextButton: TButton
-      Left = 15
-      Top = 332
+    object CleanTextButton: TButton
+      Left = 194
+      Top = 364
       Width = 77
       Height = 26
       Caption = 'Clean Text'
       TabOrder = 1
       TabStop = False
-      OnClick = ParseTextButtonClick
+      OnClick = CleanTextButtonClick
     end
     object SpecTextMemo: TLabledMemo
-      Left = 13
-      Top = 56
+      Left = 10
+      Top = 96
       Width = 260
       Height = 168
       AMemo.Left = 0
@@ -67,6 +74,13 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
       AMemo.Width = 260
       AMemo.Height = 155
       AMemo.Align = alClient
+      AMemo.Color = clBtnHighlight
+      AMemo.Font.Charset = DEFAULT_CHARSET
+      AMemo.Font.Color = clBlack
+      AMemo.Font.Height = -11
+      AMemo.Font.Name = 'Tahoma'
+      AMemo.Font.Style = []
+      AMemo.ParentFont = False
       AMemo.TabOrder = 0
       ALabel.Left = 0
       ALabel.Top = 0
@@ -83,14 +97,16 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
       ALabel.Layout = tlCenter
       ALabel.ExplicitWidth = 76
       Caption = 'Spectral Text'
+      Color = clActiveBorder
       FieldWidth = 100
       LabelSpacing = 1
+      ParentColor = False
       TabOrder = 2
       TabStop = False
       Text = ''
     end
     object TextToParseMemo: TLabledMemo
-      Left = 15
+      Left = 8
       Top = 444
       Width = 258
       Height = 168
@@ -99,6 +115,12 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
       AMemo.Width = 258
       AMemo.Height = 155
       AMemo.Align = alClient
+      AMemo.Font.Charset = DEFAULT_CHARSET
+      AMemo.Font.Color = clYellow
+      AMemo.Font.Height = -11
+      AMemo.Font.Name = 'Tahoma'
+      AMemo.Font.Style = []
+      AMemo.ParentFont = False
       AMemo.TabOrder = 0
       ALabel.Left = 0
       ALabel.Top = 0
@@ -122,8 +144,8 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
       Text = ''
     end
     object CommentsMemo: TLabledMemo
-      Left = 13
-      Top = 230
+      Left = 10
+      Top = 270
       Width = 260
       Height = 89
       AMemo.Left = 0
@@ -147,14 +169,16 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
       ALabel.Layout = tlCenter
       ALabel.ExplicitWidth = 120
       Caption = 'Operation Comments'
+      Color = clActiveBorder
       FieldWidth = 100
       LabelSpacing = 1
+      ParentColor = False
       TabOrder = 4
       TabStop = False
       Text = ''
     end
     object TestCommentsMemo: TLabledMemo
-      Left = 13
+      Left = 8
       Top = 618
       Width = 260
       Height = 89
@@ -185,6 +209,13 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
       TabStop = False
       Text = ''
     end
+    object GroupFrameSetIDEDit: TEdit
+      Left = 95
+      Top = 56
+      Width = 89
+      Height = 21
+      TabOrder = 6
+    end
   end
   object GroupDescEdit: TEdit
     Left = 140
@@ -196,80 +227,73 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
     TabOrder = 1
     Text = 'IDBox'
   end
-  object Panel1: TPanel
-    Left = 281
+  object ScrollBoxPanel: TPanel
+    Left = 276
     Top = 0
-    Width = 1121
+    Width = 1126
     Height = 810
     Align = alClient
-    Caption = 'Panel1'
     TabOrder = 2
-    object EvalScrollBox: TScrollBox
-      Left = 113
-      Top = 1
-      Width = 1007
-      Height = 808
-      Align = alClient
-      BevelEdges = []
-      Color = clBtnFace
-      ParentColor = False
-      TabOrder = 0
-    end
-    object GroupBox2: TGroupBox
+    ExplicitLeft = 281
+    ExplicitWidth = 1121
+    object ControlsPanel: TPanel
       Left = 1
       Top = 1
       Width = 112
       Height = 808
       Align = alLeft
-      TabOrder = 1
-      ExplicitLeft = 33
-      ExplicitTop = -127
-      object S3ParseButton: TButton
-        Left = 9
-        Top = 160
-        Width = 94
-        Height = 26
-        Caption = 'S^3 Parse'
+      ParentBackground = False
+      TabOrder = 0
+      object AddEvalTestButton: TButton
+        Left = 5
+        Top = 65
+        Width = 101
+        Height = 27
+        Caption = 'Add Eval Test'
         TabOrder = 0
         TabStop = False
-        OnClick = S3ParseButtonClick
+        OnClick = AddEvalTestButtonClick
       end
-      object Button1: TButton
-        Left = 9
-        Top = 114
-        Width = 94
+      object AddSetupParamButton: TButton
+        Left = 5
+        Top = 117
+        Width = 101
         Height = 27
         Caption = 'Add Setup Param'
         TabOrder = 1
         TabStop = False
         OnClick = AddEvalTestButtonClick
       end
-      object AddEvalTestButton: TButton
-        Left = 9
-        Top = 69
-        Width = 94
-        Height = 27
-        Caption = 'Add Eval Test'
+      object S3ParseButton: TButton
+        Left = 5
+        Top = 169
+        Width = 101
+        Height = 26
+        Caption = '<< S^3 Parse'
         TabOrder = 2
         TabStop = False
-        OnClick = AddEvalTestButtonClick
+        OnClick = S3ParseButtonClick
       end
       object TransformButton: TButton
-        Left = 9
-        Top = 206
-        Width = 94
+        Left = 5
+        Top = 222
+        Width = 101
         Height = 25
-        Caption = 'Text-to-table'
+        Caption = 'Transform Text >>'
         TabOrder = 3
         OnClick = TransformButtonClick
       end
-      object GroupFrameSetIDEDit: TEdit
-        Left = 17
-        Top = 28
-        Width = 89
-        Height = 21
-        TabOrder = 4
-      end
+    end
+    object EvalScrollBox: TScrollBox
+      Left = 113
+      Top = 1
+      Width = 1012
+      Height = 808
+      Align = alClient
+      TabOrder = 1
+      ExplicitLeft = 1
+      ExplicitWidth = 1010
+      ExplicitHeight = 806
     end
   end
 end

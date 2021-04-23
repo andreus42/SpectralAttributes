@@ -21,6 +21,7 @@ type
     TestList: TObjectList<TEvalTest>;
     constructor Create(SetID: Integer); overload;
     constructor Create(GroupID: Integer; SetID: Integer); overload;
+    destructor destroy;
     procedure DeleteTestGroupTests;
     procedure DeleteGroup(GroupID: Integer);
   end;
@@ -53,9 +54,7 @@ begin
     Close;
     Free;
   end;
-//  AEvalTest.Free; Can't free if not created
 end;
-
 
 constructor TEvalGroup.Create(SetID: Integer);
 // Replace by genearting groupID from Set...perhaps??
@@ -130,5 +129,16 @@ begin
     Free;
   end;
 end;
+
+destructor TEvalGroup.destroy;
+var
+  I: Integer;
+begin
+  for I := 0 to TestList.Count-1 do
+    TestList.Delete(I);
+  TestList.Free;
+  Self.Free;
+end;
+
 
 end.

@@ -40,7 +40,7 @@ type
     PlusTolEdit: DoulbedLabeledEdit_v3;
     MinusTolEdit: DoulbedLabeledEdit_v3;
     NoTolCheckBox: TCheckBox;
-    constructor Create (AOwner: TComponent; TestID: Integer);
+    constructor Create (AOwner: TComponent; TempEvalTest: TEvalTest);
     procedure SpeedButton1Click(Sender: TObject);
     procedure HideAllElements;
     procedure ClearVisualElements;
@@ -56,6 +56,9 @@ type
     FrameGroupID: Integer;
   end;
 
+const
+  DarkMode = False;
+
 implementation
 
 uses
@@ -63,16 +66,19 @@ uses
 
 {$R *.dfm}
 
-constructor TEvalFrame.Create(AOwner: TComponent; TestID: Integer);   // refactor to have eval test as parameter
+constructor TEvalFrame.Create(AOwner: TComponent; TempEvalTest: TEvalTest);   // refactor to have eval test as parameter
 var
   Query: TADOQuery;
 begin
   inherited Create(AOwner);
   ///want to refactor out ADODataSets
-  ADODataSet2.Parameters.ParamByName('TestID').Value := TestID;
+  ADODataSet2.Parameters.ParamByName('TestID').Value := TempEvalTest.TestID;
   ADODataSet2.Requery();
-  TestIDLabel.Caption := 'TestID: ' + TestID.ToString;
-  EvalTest := TEvalTest.Create(TestID);
+  TestIDLabel.Caption := 'TestID: ' + TempEvalTest.TestID.ToString;
+
+//  EvalTest := TEvalTest.Create(TempEvalTest.TestID);
+  EvalTest := TempEvalTest;
+
   RankEdit.Text := EvalTest.Rank;
   ToLambdaEdit.Text := EvalTest.LambdaTo;
   FromLambdaEdit.Text := EvalTest.LambdaFrom;
@@ -84,6 +90,10 @@ begin
   SymbolComboBox.ItemIndex := EvalTest.Symbol;
   FrameGroupID := EvalTest.GroupID;
   ShowFrame;
+
+  if DarkMode then
+    color := clBlack;
+
 end;
 
 procedure TEvalFrame.ShowFrame;
@@ -172,7 +182,6 @@ begin
   SymbolComboBox.ItemIndex := -1;
 end;
 
-
 procedure TEvalFrame.DBLookupComboBox1CloseUp(Sender: TObject);
 var
   Query: TADOQuery;
@@ -197,7 +206,6 @@ begin
   ShowFrame;
 end;
 
-
 procedure TEvalFrame.HideAllElements;
 begin
   SpecEdit.Visible := False;
@@ -216,17 +224,7 @@ end;
 
 procedure TEvalFrame.SpeedButton1Click(Sender: TObject);
 // move whole DestroyEvalTest into EvalTest
-var
-  Query: TADOQuery;
-begin
-  Query := TADOQuery.Create(Nil);
-  with Query do
-  begin
-    Connection := _ChromaDataModule.ChromaData;
-    SQL.Add('delete from EvalTests where TestID = ' + EvalTest.TestID.ToString);
-    ExecSQL;
-    Free;
-  end;
+  EvalTest.Delete;
   Destroy;
 end;
 
@@ -262,7 +260,7 @@ begin
   else if (Sender = ToLambdaEdit.AEdit) and (ToLambdaEdit.AEdit.Text <> '') then
     EvalTest.UpdateParameters(ToLambdaEdit.AEdit.Text, ToLambdaParam)
   else if (Sender = AtLambdaEdit.AEdit) and (AtLambdaEdit.AEdit.Text <> '') then
-    EvalTest.UpdateParameters(AtLambdaEdit.AEdit.Text, AtLambdaParam)
+      EvalTest.UpdateParameters(AtLambdaEdit.AEdit.Text, AtLambdaParam)
   else if (Sender = PlusTolEdit.AEdit) and (PlusTolEdit.AEdit.Text <> '') then
     EvalTest.UpdateParameters(PlusTolEdit.AEdit.Text, PlusTolParam)
   else if (Sender = MinusTolEdit.AEdit) and (MinusTolEdit.AEdit.Text <> '') then

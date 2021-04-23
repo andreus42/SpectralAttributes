@@ -29,6 +29,7 @@ object _SpectralAttributesForm: T_SpectralAttributesForm
     Width = 1346
     Height = 41
     Align = alTop
+    ParentBackground = False
     TabOrder = 1
     object ReloadSet: TSpeedButton
       Left = 311
@@ -80,6 +81,16 @@ object _SpectralAttributesForm: T_SpectralAttributesForm
       LabelPosition = lpRight
       ParentFont = False
       TabOrder = 2
+    end
+    object DarkModeCheckBox: TCheckBox
+      Left = 1240
+      Top = 10
+      Width = 97
+      Height = 17
+      Caption = 'Dark Mode'
+      TabOrder = 3
+      Visible = False
+      OnClick = DarkModeCheckBoxClick
     end
   end
 end
