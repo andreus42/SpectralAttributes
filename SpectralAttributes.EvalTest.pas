@@ -347,7 +347,7 @@ begin
     1: Result := Name + ': ' + Value + 'nm ' + '+' + TolPlus + '/' + '-' + TolMinus + 'nm';
     2: Result := Name + ': ' + TextSymbol + Value + '% ' + LambdaFrom + '-' + LambdaTo  + 'nm';
     3: Result := Name + ': ' + TextSymbol + ' OD' + Value + ' ' + LambdaFrom + '-' + LambdaTo + 'nm';
-    4: Result := Name + ': ' + TextSymbol +  Value + '% at ' + LambdaAt + 'nm';
+    4: Result := Name + ': ' + TextSymbol +  Value + '% @' + LambdaAt + 'nm';
     5: Result := Name + ': ' + TextSymbol + ' OD' + Value + ' @' + LambdaAt + 'nm';
     7: Result := Name + ': ' + Filepath;
   end;

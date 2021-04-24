@@ -24,12 +24,12 @@ uses
 type
   T_SpectralAttributesForm = class(TForm)
     PageControl1: TPageControl;
-    DeleteTestGroupButton: TButton;
-    AddTestGroupButton: TButton;
     PartRevLogEdit: TLabeledEdit;
     ReloadSet: TSpeedButton;
     Panel1: TPanel;
     DarkModeCheckBox: TCheckBox;
+    DeleteTestGroupSpeedButton: TSpeedButton;
+    AddTestGroupSpeedButton: TSpeedButton;
     procedure CreateGroupFrames(SetID: Integer);
     procedure DeleteTestGroupButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -37,6 +37,8 @@ type
     procedure ReloadSetClick(Sender: TObject);
     procedure ResetPageControl;
     procedure DarkModeCheckBoxClick(Sender: TObject);
+    procedure AddTestGroupSpeedButtonClick(Sender: TObject);
+    procedure DeleteTestGroupSpeedButtonClick(Sender: TObject);
 
   type
     TMyTabSheet = class(TTabSheet)
@@ -112,6 +114,15 @@ begin
   end;
 end;
 
+procedure T_SpectralAttributesForm.AddTestGroupSpeedButtonClick(
+  Sender: TObject);
+var
+  NewEvalTestGroup: TEvalGroup;
+begin
+  NewEvalTestGroup := TEvalGroup.Create(SetID);
+  AddTestGroupPage(NewEvalTestGroup);
+end;
+
 procedure T_SpectralAttributesForm.AddTestGroupButtonClick(Sender: TObject);
 var
   NewEvalTestGroup: TEvalGroup;
@@ -127,6 +138,13 @@ begin
 end;
 
 procedure T_SpectralAttributesForm.DeleteTestGroupButtonClick(Sender: TObject);
+begin
+  EvalTestGroup.DeleteGroup(PageControl1.ActivePage.Tag);
+  PageControl1.ActivePage.Destroy;
+end;
+
+procedure T_SpectralAttributesForm.DeleteTestGroupSpeedButtonClick(
+  Sender: TObject);
 begin
   EvalTestGroup.DeleteGroup(PageControl1.ActivePage.Tag);
   PageControl1.ActivePage.Destroy;

@@ -58,7 +58,7 @@ const
   TolerancedSpedRegexString = '(\d{2,4})nm';
   SymbolRegexString = '>=|>|=|<|<=';
   LambdaRangesRegexString = '(\d{3,4}\.?\d?)-(\d{3,4}\.?\d?)';
-  LambdaAtRegexString = '@\s*?(\d{2,4}(?:\.\d{1,2})?)nm';       // value treated like range
+  LambdaAtRegexString = '@\s*?(\d{2,4}(?:\.\d{1,2})?)nm';             // value treated like range
   TolerancesRegexString = '(?:\+(\d?(?:\.\d)?)\/\-(\d?(?:\.\d)?)nm)';
   BSpecValueRegexString = '(?:OD)(\d{1,2}(?:\.\d{1,2})?)';
 

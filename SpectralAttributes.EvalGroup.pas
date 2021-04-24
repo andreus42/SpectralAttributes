@@ -15,15 +15,15 @@ uses
 type
   TEvalGroup = class(TObject)
   public
-    GroupID: Integer;
-    GroupNum: Integer;
+    GroupID: Integer; //database #
+    GroupNum: Integer;  //in-process#id
     SetID: Integer;
     TestList: TObjectList<TEvalTest>;
     constructor Create(SetID: Integer); overload;
     constructor Create(GroupID: Integer; SetID: Integer); overload;
     destructor destroy;
     procedure DeleteTestGroupTests;
-    procedure DeleteGroup(GroupID: Integer);
+    procedure DeleteGroup(GroupID: Integer);   //should call delete tests, might be a destructor
   end;
 
 implementation

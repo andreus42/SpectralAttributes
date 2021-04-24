@@ -36,19 +36,14 @@ type
     GroupDescEdit: TEdit;
     GroupLabel: TLabel;
     Label6: TLabel;
-    SpecTextMemo: TLabledMemo;
-    TextToParseMemo: TLabledMemo;
-    TransformButton: TButton;
-    AddEvalTestButton: TButton;
-    AddSetupParamButton: TButton;
     S3ParseButton: TButton;
-    CommentsMemo: TLabledMemo;
-    TestCommentsMemo: TLabledMemo;
-    ScrollBoxPanel: TPanel;
-    ControlsPanel: TPanel;
     GroupFrameSetIDEDit: TEdit;
     GroupSetLabel: TLabel;
     EvalScrollBox: TScrollBox;
+    SpecTextMemo: TLabeledMemo;
+    CommentsMemo2: TLabeledMemo;
+    TransformTextButton: TSpeedButton;
+    AddSpecSpeedButton: TSpeedButton;
 
     //testing scrollbox
 //    EvalScrollBox: TScrollBox;
@@ -56,9 +51,13 @@ type
     procedure AddEvalTestButtonClick(Sender: TObject);
     procedure S3ParseButtonClick(Sender: TObject);
     procedure CleanTextButtonClick(Sender: TObject);
-    procedure TransformButtonClick(Sender: TObject);
+    procedure TransformTextButtonClick(Sender: TObject);
+    procedure FrameExit(Sender: TObject);
+    procedure FrameEnter(Sender: TObject);
+    procedure AddSpecSpeedButtonClick(Sender: TObject);
   private
     procedure AddEvalTestFrame(EvalTest: TEvalTest); overload;
+    procedure GroupStringify;
   public
     EvalGroup: TEvalGroup;
     constructor Create(AOwner: TComponent; TempEvalGroup: TEvalGroup);
@@ -106,6 +105,33 @@ begin
   Self.Free;
 end;
 
+procedure TEvalTestGroupFrame.FrameEnter(Sender: TObject);
+begin
+  GroupStringify;
+end;
+
+procedure TEvalTestGroupFrame.FrameExit(Sender: TObject);
+begin
+  GroupStringify;
+end;
+
+procedure TEvalTestGroupFrame.GroupStringify;
+var
+  EvalTest: TEvalTest;
+  GroupID, SetID: Integer;
+begin
+  GroupID := EvalGroup.GroupID;
+  SetID := EvalGroup.SetID;
+  SpecTextMemo.AMemo.Clear;
+  EvalGroup := TEvalGroup.Create(EvalGroup.GroupID, EvalGroup.SetID);
+  for EvalTest in Self.EvalGroup.TestList do
+  begin
+    SpecTextMemo.AMemo.Lines.Add(EvalTest.Stringify);
+  end;
+  //EvalGroup.Free;
+  //EvalTest.Free;
+end;
+
 procedure TEvalTestGroupFrame.AddEvalTestButtonClick(Sender: TObject);
 var
   EvalTest: TEvalTest;
@@ -130,21 +156,19 @@ begin
   end;
 end;
 
-procedure TEvalTestGroupFrame.S3ParseButtonClick(Sender: TObject);
+procedure TEvalTestGroupFrame.AddSpecSpeedButtonClick(Sender: TObject);
 var
   EvalTest: TEvalTest;
-  GroupID, SetID: Integer;
 begin
-  SpecTextMemo.AMemo.Clear;
-  //consider a better update to EvalGroup by Updating EvalTest in Group
-  GroupID := EvalGroup.GroupID;
-  SetID := EvalGroup.SetID;
-  EvalGroup.Free;
-  EvalGroup := TEvalGroup.Create(GroupID, SetID);
-  for EvalTest in Self.EvalGroup.TestList do
-  begin
-    SpecTextMemo.AMemo.Lines.Add(EvalTest.Stringify);
-  end;
+  EvalTest := TEvalTest.Create(EvalGroup.GroupID, EvalGroup.SetID);
+  EvalGroup.TestList.Add(EvalTest);
+  EvalTest.WriteToDB;
+  AddEvalTestFrame(EvalTest);
+end;
+
+procedure TEvalTestGroupFrame.S3ParseButtonClick(Sender: TObject);
+begin
+  GroupStringify;
 end;
 
 procedure TEvalTestGroupFrame.CleanTextButtonClick(Sender: TObject);
@@ -152,11 +176,9 @@ var
   TempString: String;
 begin
   // Clean text functions needed
-  TempString := TextToParseMemo.AMemo.Text;
-  TextToParseMemo.AMemo.Text := TempString;
 end;
 
-procedure TEvalTestGroupFrame.TransformButtonClick(Sender: TObject);
+procedure TEvalTestGroupFrame.TransformTextButtonClick(Sender: TObject);
 var
   EvalTest: TEvalTest;
   StringList: TStringList;
@@ -177,8 +199,8 @@ begin
   end;
   // TESTING: ScrollBox is not redrawing
   EvalScrollBox.Destroy;
-  EvalScrollBox := TScrollBox.Create(ScrollBoxPanel);
-  EvalScrollBox.Parent := ScrollBoxPanel;
+  EvalScrollBox := TScrollBox.Create(Self);
+  EvalScrollBox.Parent := Self;
   EvalScrollBox.Align := alClient;
   for EvalTest in EvalGroup.TestList do
   begin
@@ -186,6 +208,7 @@ begin
   end;
   EvalScrollBox.Update;
   StringList.Free;
+  GroupStringify;
 end;
 
 end.

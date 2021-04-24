@@ -3,7 +3,7 @@ object _SpectralAttributesForm: T_SpectralAttributesForm
   Top = 0
   ActiveControl = PageControl1
   Caption = 'Spectral Attributes'
-  ClientHeight = 883
+  ClientHeight = 845
   ClientWidth = 1346
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -19,7 +19,7 @@ object _SpectralAttributesForm: T_SpectralAttributesForm
     Left = 0
     Top = 41
     Width = 1346
-    Height = 842
+    Height = 804
     Align = alClient
     TabOrder = 0
   end
@@ -31,6 +31,7 @@ object _SpectralAttributesForm: T_SpectralAttributesForm
     Align = alTop
     ParentBackground = False
     TabOrder = 1
+    ExplicitTop = -6
     object ReloadSet: TSpeedButton
       Left = 311
       Top = 8
@@ -39,25 +40,21 @@ object _SpectralAttributesForm: T_SpectralAttributesForm
       Caption = '&Loat Set'
       OnClick = ReloadSetClick
     end
-    object AddTestGroupButton: TButton
-      Left = 0
-      Top = 8
-      Width = 93
-      Height = 25
-      Caption = '&Add Test Group'
-      TabOrder = 0
-      TabStop = False
-      OnClick = AddTestGroupButtonClick
-    end
-    object DeleteTestGroupButton: TButton
-      Left = 99
-      Top = 8
+    object DeleteTestGroupSpeedButton: TSpeedButton
+      Left = 128
+      Top = 10
       Width = 102
       Height = 25
-      Caption = '&Delete Test Group'
-      TabOrder = 1
-      TabStop = False
-      OnClick = DeleteTestGroupButtonClick
+      Caption = 'Delete Test Group'
+      OnClick = DeleteTestGroupSpeedButtonClick
+    end
+    object AddTestGroupSpeedButton: TSpeedButton
+      Left = 12
+      Top = 10
+      Width = 102
+      Height = 25
+      Caption = 'Add Test Group'
+      OnClick = AddTestGroupSpeedButtonClick
     end
     object PartRevLogEdit: TLabeledEdit
       Left = 438
@@ -80,7 +77,7 @@ object _SpectralAttributesForm: T_SpectralAttributesForm
       Font.Style = [fsBold]
       LabelPosition = lpRight
       ParentFont = False
-      TabOrder = 2
+      TabOrder = 0
     end
     object DarkModeCheckBox: TCheckBox
       Left = 1240
@@ -88,7 +85,7 @@ object _SpectralAttributesForm: T_SpectralAttributesForm
       Width = 97
       Height = 17
       Caption = 'Dark Mode'
-      TabOrder = 3
+      TabOrder = 1
       Visible = False
       OnClick = DarkModeCheckBoxClick
     end

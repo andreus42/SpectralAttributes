@@ -18,19 +18,11 @@ uses
 
 type
   TEvalFrame = class(TFrame)
-    SpeedButton1: TSpeedButton;
+    RemoveSpecButton: TSpeedButton;
     SpecEdit: TEdit;
     SpecLabel: TLabel;
     TestIDLabel: TLabel;
-    ADODataSet1: TADODataSet;
-    DataSource1: TDataSource;
-    ADODataSet2: TADODataSet;
-    DataSource2: TDataSource;
-    ADODataSet2ParamValue: TStringField;
-    DBLookupComboBox1: TDBLookupComboBox;
     RankEdit: TEdit;
-    ADODataSet1TypeID: TStringField;
-    ADODataSet1ParamName: TStringField;
     SymbolComboBox: TComboBox;
     RefOnlyCheckBox: TCheckBox;
     FilepathEdit: TLabeledEdit;
@@ -40,15 +32,19 @@ type
     PlusTolEdit: DoulbedLabeledEdit_v3;
     MinusTolEdit: DoulbedLabeledEdit_v3;
     NoTolCheckBox: TCheckBox;
+    NewSpecComboBox: TComboBox;
     constructor Create (AOwner: TComponent; TempEvalTest: TEvalTest);
-    procedure SpeedButton1Click(Sender: TObject);
+    procedure RemoveSpecButtonClick(Sender: TObject);
     procedure HideAllElements;
     procedure ClearVisualElements;
     procedure ShowFrame;
-    procedure DBLookupComboBox1CloseUp(Sender: TObject);
     procedure UpdateParameter(Sender: TObject);
     procedure SpeedButton2Click(Sender: TObject);
     procedure NolTolCheckBoxClick(Sender: TObject);
+    procedure AddComboBoxItemsFromDB;
+    procedure NewSpecComboBoxCloseUp(Sender: TObject);
+    procedure FrameEnter(Sender: TObject);
+    procedure FrameExit(Sender: TObject);
   private
     { Private declarations }
   public
@@ -71,12 +67,13 @@ var
   Query: TADOQuery;
 begin
   inherited Create(AOwner);
-  ///want to refactor out ADODataSets
-  ADODataSet2.Parameters.ParamByName('TestID').Value := TempEvalTest.TestID;
-  ADODataSet2.Requery();
-
 
   EvalTest := TempEvalTest;
+  AddComboBoxItemsFromDB;
+  NewSpecComboBox.ItemIndex := EvalTest.TestType.ToInteger;
+
+
+  //existing code
   TestIDLabel.Caption := 'TestID: ' + EvalTest.TestID.ToString;
   RankEdit.Text := EvalTest.Rank;
   ToLambdaEdit.Text := EvalTest.LambdaTo;
@@ -91,21 +88,30 @@ begin
   ShowFrame;
 end;
 
+procedure TEvalFrame.FrameEnter(Sender: TObject);
+begin
+  Color := clInactiveCaption;
+end;
+
+procedure TEvalFrame.FrameExit(Sender: TObject);
+begin
+  COlor := clBtnFace;
+end;
+
 procedure TEvalFrame.ShowFrame;
 const
   ControlOffSet = 290;
-  Spacing = 125;
-  LabelOffset = 78;
+  Spacing = 128;
   P1 = 200;
   P2 = ControlOffSet + Spacing*0;
   P3 = ControlOffSet + Spacing*1;
   P4 = ControlOffSet + Spacing*2;
-  P5 = ControlOffSet + Spacing*3 + 15;
-  P6 = ControlOffSet + Spacing*4;
+  P5 = ControlOffSet + Spacing*3+15;
+  P6 = ControlOffSet + Spacing*4+15;
 begin
   // Set locations of controls
   SpecEdit.Left := P2;
-  SpecLabel.Left := P2 + LabelOffset;
+  SpecLabel.Left := P2 + 80; //label offset, see about doublelabeled edit
   SymbolComboBox.Left := P1;
   SpecEdit.Left := P2;
   FromLambdaEdit.Left := P3;
@@ -119,6 +125,19 @@ begin
   SpecEdit.Visible := True;
   SpecLabel.Visible := True;
 
+  // Set Top
+  SpecEdit.Top := 3;
+  SpecLabel.Top := 3;
+  SymbolComboBox.Top := 3;
+  SpecEdit.Top := 3;
+  FromLambdaEdit.Top := 3;
+  ToLambdaEdit.Top := 3;
+  AtLambdaEdit.Top := 3;
+  PlusTolEdit.Top := 3;
+  MinusTolEdit.Top := 3;
+  RefOnlyCheckBox.Top := 3;
+  NoTolCheckBox.Top := 3;
+
   // Show control fields based on test type
   case EvalTest.FrameType of
     0:  HideAllElements;
@@ -129,8 +148,8 @@ begin
             RefOnlyCheckBox.Visible := True;
             NoTolCheckBox.Visible := True;
         end;
-    2:  begin
-            SpecLabel.Caption := '%';
+    2:  begin // T-peak???
+            SpecLabel.Caption := '%';           //????
             SymbolComboBox.Visible := True;
             FromLambdaEdit.Visible := True;
             ToLambdaEdit.Visible := True;
@@ -166,6 +185,30 @@ begin
   end;
 end;
 
+procedure TEvalFrame.AddComboBoxItemsFromDB;
+var
+  Query: TADOQuery;
+  TestTypeID: Integer;
+  TestName: String;
+begin
+  Query := TADOQuery.Create(Nil);
+  with Query do
+  begin
+    Connection := _ChromaDataModule.ChromaData;
+    SQL.Add('select TypeID, ParamName from TestTypes');
+    Open;
+    while not eof do
+    begin
+      TestTypeID := Query.FieldByName('TypeID').Value;
+      TestName := Query.FieldByName('ParamName').Value;
+      NewSpecComboBox.Items.Add(TestName);
+      Next;
+    End;
+    Close;
+    Free;
+  end;
+end;
+
 procedure TEvalFrame.ClearVisualElements;
 begin
   SpecEdit.Text := '';
@@ -175,30 +218,6 @@ begin
   AtLambdaEdit.Text := '';
   MinusTolEdit.Text := '';
   SymbolComboBox.ItemIndex := -1;
-end;
-
-procedure TEvalFrame.DBLookupComboBox1CloseUp(Sender: TObject);
-var
-  Query: TADOQuery;
-  Query2: TADOQuery;
-  NewFrameTypeID: Integer;
-  TestType: Integer;
-begin
-  TestType := ADODataset2.FieldByName('ParamValue').Value;
-  Query := TADOQuery.Create(Nil);
-  with query do
-  begin
-    EvalTest.TestType := TestType.ToString;
-    Connection := _ChromaDataModule.ChromaData;
-    SQL.Add('Declare @TestID int =' + EvalTest.TestID.ToString);
-    SQL.Add('Update EvalTests set ParamValue =' + TestType.ToString);
-    SQL.Add('where ParamID = 3 and TestID = @TestID');
-    ExecSQL;
-  end;
-  EvalTest.FrameType := EvalTest.GetFrameType;
-  EvalTest.ResetParameters;
-  ClearVisualElements; // Clear visual elements in text boxes
-  ShowFrame;
 end;
 
 procedure TEvalFrame.HideAllElements;
@@ -217,7 +236,7 @@ begin
   MinusTolEdit.Visible :=  False;
 end;
 
-procedure TEvalFrame.SpeedButton1Click(Sender: TObject);
+procedure TEvalFrame.RemoveSpecButtonClick(Sender: TObject);
 begin
   EvalTest.Delete;
   Self.Destroy;
@@ -226,6 +245,31 @@ end;
 procedure TEvalFrame.SpeedButton2Click(Sender: TObject);
 begin
   Self.ShowFrame;
+end;
+
+procedure TEvalFrame.NewSpecComboBoxCloseUp(Sender: TObject);
+var
+  Query: TADOQuery;
+  Query2: TADOQuery;
+  NewFrameTypeID: Integer;
+  ComboBoxTestType: Integer;
+begin
+  Query := TADOQuery.Create(Nil);
+  with query do
+  begin
+    if NewSpecComboBox.ItemIndex = -1 then
+      NewSpecComboBox.ItemIndex := 0;
+    EvalTest.TestType :=  NewSpecComboBox.ItemIndex.ToString;
+    Connection := _ChromaDataModule.ChromaData;
+    SQL.Add('Declare @TestID int =' + EvalTest.TestID.ToString);
+    SQL.Add('Update EvalTests set ParamValue =' + EvalTest.TestType);
+    SQL.Add('where ParamID = 3 and TestID = @TestID');
+    ExecSQL;
+  end;
+  EvalTest.FrameType := EvalTest.GetFrameType;
+  EvalTest.ResetParameters;
+  ClearVisualElements; // Clear visual elements in text boxes
+  ShowFrame;
 end;
 
 procedure TEvalFrame.NolTolCheckBoxClick(Sender: TObject);
