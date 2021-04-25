@@ -363,7 +363,7 @@ begin
   with Query do
   begin
     Connection := _ChromaDataModule.ChromaData;
-    SQL.Add('select TypeID, FrameTypeID from TestTypes where ParamName = ''' + SpecToken + '''');
+    SQL.Add('select TypeID, FrameTypeID from EvalTestTypes where ParamName = ''' + SpecToken + '''');
     Open;
     SpecParam.TypeID := FieldByName('TypeID').Value;
     SpecParam.FrameTypeID := FieldByName('FrameTypeID').Value;

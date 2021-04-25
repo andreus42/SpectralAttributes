@@ -21,7 +21,7 @@ type
   TEvalSet = class(TObject)
   public
     SetID: Integer;
-    EvalTestGroupList: TObjectList<TEvalGroup>;
+    EvalGroupList: TObjectList<TEvalGroup>;
     constructor Create(ID: Integer);
     destructor Destroy;
   end;
@@ -40,13 +40,13 @@ var
   GroupNum: Integer; // For ordering of in-process groups
 begin
   SetID := ID;
-  EvalTestGroupList := TObjectList<TEvalGroup>.Create;
+  EvalGroupList := TObjectList<TEvalGroup>.Create;
   Query := TADOQuery.Create(Nil);
   with Query do
   begin
     Connection := _ChromaDataModule.ChromaData;
     SQL.Add('SELECT GroupID, GroupNum');
-    SQL.Add('FROM EvalTestGroups WHERE SetID = ' + SetID.ToString);  // change to order by GroupNum for future revs
+    SQL.Add('FROM EvalGroups WHERE SetID = ' + SetID.ToString);  // change to order by GroupNum for future revs
     SQL.Add('ORDER BY GroupID, GroupNum');
     Open;
     while not eof do
@@ -54,7 +54,7 @@ begin
         GroupID := Query.FieldByName('GroupID').Value;
         GroupNum := Query.FieldByName('GroupNum').Value; // Eventually need this as In-Process#1,#2,etc.
         EvalTestGroup := TEvalGroup.Create(GroupID, SetID);
-        EvalTestGroupList.Add(EvalTestGroup);
+        EvalGroupList.Add(EvalTestGroup);
         Next;
     end;
     Close;
@@ -66,9 +66,9 @@ destructor TEvalSet.Destroy;
 var
   I: Integer;
 begin
-  for I := 0 to EvalTestGroupList.Count-1 do
-    EvalTestGroupList.Delete(I);
-  EvalTestGroupList.Free;
+  for I := 0 to EvalGroupList.Count-1 do
+    EvalGroupList.Delete(I);
+  EvalGroupList.Free;
   Self.Free;
 end;
 

@@ -26,8 +26,8 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
     ParentBackground = False
     TabOrder = 0
     object IDLabel: TLabel
-      Left = 13
-      Top = 522
+      Left = 18
+      Top = 418
       Width = 96
       Height = 13
       Caption = 'Group ID (Op Level)'
@@ -40,14 +40,14 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
       Caption = 'Operation'
     end
     object GroupSetLabel: TLabel
-      Left = 64
-      Top = 552
+      Left = 69
+      Top = 448
       Width = 45
       Height = 13
       Caption = 'GroupSet'
     end
     object TransformTextButton: TSpeedButton
-      Left = 140
+      Left = 146
       Top = 210
       Width = 121
       Height = 26
@@ -55,12 +55,20 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
       OnClick = TransformTextButtonClick
     end
     object AddSpecSpeedButton: TSpeedButton
-      Left = 140
-      Top = 29
+      Left = 160
+      Top = 24
       Width = 101
-      Height = 27
+      Height = 26
       Caption = 'Add Spec'
       OnClick = AddSpecSpeedButtonClick
+    end
+    object CleanTextSpeedButton: TSpeedButton
+      Left = 8
+      Top = 210
+      Width = 121
+      Height = 26
+      Caption = 'Clean Text'
+      OnClick = CleanTextSpeedButtonClick
     end
     object IDBox: TEdit
       Left = 8
@@ -72,22 +80,12 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
       TabOrder = 0
       Text = 'IDBox'
     end
-    object CleanTextButton: TButton
-      Left = 8
-      Top = 210
-      Width = 121
-      Height = 26
-      Caption = 'Clean Text'
-      TabOrder = 1
-      TabStop = False
-      OnClick = CleanTextButtonClick
-    end
     object GroupFrameSetIDEDit: TEdit
-      Left = 115
-      Top = 546
-      Width = 116
+      Left = 120
+      Top = 442
+      Width = 121
       Height = 21
-      TabOrder = 2
+      TabOrder = 1
     end
     object SpecTextMemo: TLabeledMemo
       Left = 8
@@ -124,7 +122,7 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
       Font.Style = []
       LabelSpacing = 1
       ParentFont = False
-      TabOrder = 3
+      TabOrder = 2
       TabStop = False
       Text = ''
     end
@@ -163,25 +161,14 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
       Font.Style = []
       LabelSpacing = 1
       ParentFont = False
-      TabOrder = 4
+      TabOrder = 3
       TabStop = False
       Text = ''
     end
-    object S3ParseButton: TButton
-      Left = 94
-      Top = 573
-      Width = 101
-      Height = 26
-      Caption = '<< S^3 Parse'
-      TabOrder = 5
-      TabStop = False
-      Visible = False
-      OnClick = S3ParseButtonClick
-    end
   end
   object GroupDescEdit: TEdit
-    Left = 115
-    Top = 519
+    Left = 120
+    Top = 415
     Width = 121
     Height = 21
     TabStop = False

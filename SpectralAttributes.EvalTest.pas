@@ -211,13 +211,16 @@ var
 begin
   // Use TestType to LookUp Frame Type
   Query := TADOQuery.Create(Nil);
-  Query.Connection := _ChromaDataModule.ChromaData;
-  Query.SQL.Add('select FrameTypeID, ParamName from TestTypes where TypeID = ' + TestType);
-  Query.Open;
-  FrameType := Query.FieldByName('FrameTypeID').Value;
-  Name := Query.FieldByName('ParamName').Value;
-  Query.Close;
-  Query.Free;
+  with Query do
+  begin
+    Connection := _ChromaDataModule.ChromaData;
+    SQL.Add('select FrameTypeID, ParamName from EvalTestTypes where TypeID = ' + TestType);
+    Open;
+    FrameType := Query.FieldByName('FrameTypeID').Value;
+    Name := Query.FieldByName('ParamName').Value;
+    Close;
+    Free;
+  end;
   Result := FrameType;
 end;
 
@@ -245,15 +248,15 @@ begin
   begin
     Connection := _ChromaDataModule.ChromaData;
     SQL.Add('begin tran');
-    SQL.Add('Declare @TestID int = ' + NextTestID.ToString);
-    SQL.Add('Declare @GroupID int = ' + GroupID.ToString);
-    SQL.Add('Declare @SetID int = ' + SetID.ToString);
-    SQL.Add('Declare @TestParam int =' + TestID.ToString);
-    SQL.Add('Declare @TestTypeParam int =' + TestTypeParam.ToString);
+    SQL.Add('Declare @TestID int = :TestID');
+    SQL.Add('Declare @GroupID int = :GroupID');
+    SQL.Add('Declare @SetID int = :SetID');
+    SQL.Add('Declare @TestTypeParam int = :TestTypeParam');
+    SQL.Add('Declare @ParamValueID int = :ParamValueID');
     SQL.Add('if exists (select * from EvalTests with (updlock,serializable) where TestID = @TestID) ');
     SQL.Add('begin');
     SQL.Add('update EvalTests set ParamValue = 0 ');
-    SQL.Add('where TestID = @TestID and ParamID = @TestParam ');
+    SQL.Add('where TestID = @TestID and ParamID = @ParamValueID ');
     SQL.Add('end');
     SQL.Add('else');
     SQL.Add('begin');
@@ -261,6 +264,12 @@ begin
     SQL.Add('values (@TestID, @GroupID, @SetID, @TestTypeParam, 0)');
     SQL.Add('end');
     SQL.Add('commit tran');
+    Parameters.ParamByName('TestID').Value := NextTestID;
+    Parameters.ParamByName('GroupID').Value := GroupID;
+    Parameters.ParamByName('SetID').Value := SetID;
+    Parameters.ParamByName('TestTypeParam').Value := TestTypeParam;
+    Parameters.ParamByName('ParamValueID').Value := SpecParam;
+    Prepared := True;
     ExecSQL;
     Free;
   end;
@@ -275,9 +284,9 @@ begin
   with Query do
   begin
     Connection := _ChromaDataModule.ChromaData;
-    SQL.Add('Declare @TestID int =' + TestID.ToString);
     SQL.Add('delete from EvalTests');
-    SQL.Add('where ParamID != 3 and TestID = @TestID');
+    SQL.Add('where ParamID != 3 and TestID = :TestID');
+    Parameters.ParamByName('TestID').Value := TestID;
     ExecSQL;
     WriteToDB;
     Free;
@@ -305,8 +314,8 @@ begin
     SQL.Add('Declare @SymbolParam int =' + SymbolParam.ToString );
     SQL.Add('Declare @PlusTolParam int =' + PlusTolParam.ToString);
     SQL.Add('Declare @MinusTolParam int =' + MinusTolParam.ToString);
-    // Inserts for all
-    SQL.Add('update EvalTests set ParamValue = '''+TestType+''' where TestID = '+TestID.ToString+' and ParamID = @TestTypeParam');
+    // Inserts that exist for all tests
+    SQL.Add('update EvalTests set ParamValue = '''+TestType+''' where TestID = @TestID and ParamID = @TestTypeParam');
     SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @RankParam, '''+Rank+''')');
 
     // Write Value if exists
@@ -361,9 +370,13 @@ begin
   with Query do
   begin
     Connection := _ChromaDataModule.ChromaData;
-    SQL.Add('Declare @TestID int = ' + TestID.ToString);
-    SQL.Add('Update EvalTests set ParamValue = ' + ParamValue);
-    SQL.Add('where TestID = @TestID and ParamID = ' + ParamID.ToString);
+    SQL.Add('Update EvalTests set ParamValue = :ParamValue');
+    SQL.Add('where TestID = :TestID and ParamID = :ParamID');
+    Parameters.ParamByName('TestID').Value := Self.TestID;
+    Parameters.ParamByName('ParamID').DataType := ftString;
+    Parameters.ParamByName('ParamID').Value := ParamID.ToString;
+    Parameters.ParamByName('ParamValue').DataType := ftString;
+    Parameters.ParamByName('ParamValue').Value := Self.Value;
     ExecSQL;
     Free;
   end;

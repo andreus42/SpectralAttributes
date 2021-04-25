@@ -22,7 +22,7 @@ type
     constructor Create(SetID: Integer); overload;
     constructor Create(GroupID: Integer; SetID: Integer); overload;
     destructor destroy;
-    procedure DeleteTestGroupTests;
+    procedure DeleteGroupTests;
     procedure DeleteGroup(GroupID: Integer);   //should call delete tests, might be a destructor
   end;
 
@@ -43,6 +43,7 @@ begin
     Connection := _ChromaDataModule.ChromaData;
     SQL.Add('select distinct TestID');
     SQL.Add('from EvalTests where GroupID = ' + GroupID.ToString);
+//  Order by rank somehow...try sorting the tests in the group
     Open;
     while not eof do
     begin
@@ -58,7 +59,7 @@ end;
 
 constructor TEvalGroup.Create(SetID: Integer);
 // Replace by genearting groupID from Set...perhaps??
-// Add CreateDateTime to EvalTestGroups
+// Add CreateDateTime to EvalGroups
 var
   Query: TADOQuery;
   NextGroupID: Integer;
@@ -67,13 +68,14 @@ begin
   with Query do
   begin
     Connection := _ChromaDataModule.ChromaData;
-    SQL.Add('select max(GroupID) last_id from EvalTestGroups');
+    SQL.Add('select max(GroupID) last_id from EvalGroups');
     Open;
     // need Try/Except Blocks
     if (FieldByName('last_id').IsNull) then
       NextGroupID := 1
     else
       NextGroupID := FieldByName('last_id').Value + 1;
+    ExecSQL;
     Close;
     Free;
   end;
@@ -87,12 +89,11 @@ begin
   with Query do
   begin
     Connection := _ChromaDataModule.ChromaData;
-    SQL.Add('begin tran');
-    SQL.Add('Declare @SetID int = ' + SetID.ToString);
-    SQL.Add('Declare @GroupID int = ' + GroupID.ToString);
-    SQL.Add('Declare @NextGroupNum int = 1'); // Need to enumerate group nums
-    SQL.Add('insert into EvalTestGroups values (@GroupID, @NextGroupNum, @SetID)');
-    SQL.Add('commit tran');
+    SQL.Add('insert into EvalGroups values (:GroupID, :NextGroupNum, :SetID)');
+    Parameters.ParamByName('SetID').Value := SetID.ToString;
+    Parameters.ParamByName('GroupID').Value := GroupID.ToString;
+    Parameters.ParamByName('NextGroupNum').Value :=  1; // Need to enumerate group nums
+    Prepared := True;
     ExecSQL;
     Close;
     Free;
@@ -107,16 +108,20 @@ begin
   Query := TADOQuery.Create(Nil);
   with Query do
   begin
-    Connection := _ChromaDataModule.ChromaData;
-      SQL.Add('delete from EvalTestGroups where GroupID = ' + GroupID.ToString);
-      ExecSQL;
-      SQL.Add('delete from EvalTests where GroupID = ' + GroupID.ToString);
+    try
+      DeleteGroupTests;
+      Connection := _ChromaDataModule.ChromaData;
+      SQL.Add('delete from EvalGroups where GroupID = :GroupID');
+      Parameters.ParamByName('GroupID').Value := GroupID.ToString;
       ExecSQL;
       Free;
+    except
+      ///Raise some type of error
+    end;
   end;
 end;
 
-procedure TEvalGroup.DeleteTestGroupTests;
+procedure TEvalGroup.DeleteGroupTests;
 var
   Query: TADOQuery;
 begin
@@ -124,7 +129,7 @@ begin
   with Query do
   begin
     Connection := _ChromaDataModule.ChromaData;
-    SQL.Add('delete from EvalTests where GroupID = ' + GroupID.ToString);
+    SQL.Add('delete from EvalGroups where GroupID = ' + GroupID.ToString);
     ExecSQL;
     Free;
   end;

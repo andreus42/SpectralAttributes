@@ -31,12 +31,10 @@ type
   TEvalTestGroupFrame = class(TFrame)
     GroupPanel: TPanel;
     IDBox: TEdit;
-    CleanTextButton: TButton;
     IDLabel: TLabel;
     GroupDescEdit: TEdit;
     GroupLabel: TLabel;
     Label6: TLabel;
-    S3ParseButton: TButton;
     GroupFrameSetIDEDit: TEdit;
     GroupSetLabel: TLabel;
     EvalScrollBox: TScrollBox;
@@ -44,6 +42,7 @@ type
     CommentsMemo2: TLabeledMemo;
     TransformTextButton: TSpeedButton;
     AddSpecSpeedButton: TSpeedButton;
+    CleanTextSpeedButton: TSpeedButton;
 
     //testing scrollbox
 //    EvalScrollBox: TScrollBox;
@@ -55,6 +54,7 @@ type
     procedure FrameExit(Sender: TObject);
     procedure FrameEnter(Sender: TObject);
     procedure AddSpecSpeedButtonClick(Sender: TObject);
+    procedure CleanTextSpeedButtonClick(Sender: TObject);
   private
     procedure AddEvalTestFrame(EvalTest: TEvalTest); overload;
     procedure GroupStringify;
@@ -86,7 +86,7 @@ begin
   SpecTextMemo.AMemo.Clear;
   GroupDescEdit.Text := 'In-Process #' + EvalGroup.GroupID.ToString;
   IDBox.Text := EvalGroup.GroupID.ToString;
-  Name := 'EvalFrame' + EvalGroup.GroupID.ToString;
+  Name := 'EvalFrame' + EvalTest.TestID.ToString;
   for EvalTest in EvalGroup.TestList do
   begin
     SpecTextMemo.AMemo.Lines.Add(EvalTest.Stringify);
@@ -178,6 +178,14 @@ begin
   // Clean text functions needed
 end;
 
+procedure TEvalTestGroupFrame.CleanTextSpeedButtonClick(Sender: TObject);
+var
+  TempString: String;
+begin
+  // Clean text functions needed
+
+end;
+
 procedure TEvalTestGroupFrame.TransformTextButtonClick(Sender: TObject);
 var
   EvalTest: TEvalTest;
@@ -185,7 +193,7 @@ var
   AString: String;
 //  GroupID, SetID: Integer;
 begin
-  EvalGroup.DeleteTestGroupTests;
+  EvalGroup.DeleteGroupTests;
   StringList := TStringList.Create;
   StringList.Assign(SpecTextMemo.AMemo.Lines);
   for AString in StringList do

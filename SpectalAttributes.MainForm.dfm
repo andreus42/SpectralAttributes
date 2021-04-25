@@ -61,6 +61,7 @@ object _SpectralAttributesForm: T_SpectralAttributesForm
       Top = 8
       Width = 77
       Height = 21
+      TabStop = False
       EditLabel.Width = 111
       EditLabel.Height = 13
       EditLabel.Caption = 'SetID (PartRevLog)'

@@ -39,6 +39,7 @@ type
     procedure ClearVisualElements;
     procedure ShowFrame;
     procedure UpdateParameter(Sender: TObject);
+    procedure EditKeyPressEnter(Sender: TObject; var Key: Char);
     procedure SpeedButton2Click(Sender: TObject);
     procedure NolTolCheckBoxClick(Sender: TObject);
     procedure AddComboBoxItemsFromDB;
@@ -98,11 +99,12 @@ begin
   COlor := clBtnFace;
 end;
 
+
 procedure TEvalFrame.ShowFrame;
 const
   ControlOffSet = 290;
-  Spacing = 128;
-  P1 = 200;
+  Spacing = 125;
+  P1 = 210;
   P2 = ControlOffSet + Spacing*0;
   P3 = ControlOffSet + Spacing*1;
   P4 = ControlOffSet + Spacing*2;
@@ -195,7 +197,7 @@ begin
   with Query do
   begin
     Connection := _ChromaDataModule.ChromaData;
-    SQL.Add('select TypeID, ParamName from TestTypes');
+    SQL.Add('select TypeID, ParamName from EvalTestTypes');
     Open;
     while not eof do
     begin
@@ -257,18 +259,18 @@ begin
   Query := TADOQuery.Create(Nil);
   with query do
   begin
-    if NewSpecComboBox.ItemIndex = -1 then
-      NewSpecComboBox.ItemIndex := 0;
+    if NewSpecComboBox.ItemIndex = -1 then NewSpecComboBox.ItemIndex := 0;
     EvalTest.TestType :=  NewSpecComboBox.ItemIndex.ToString;
     Connection := _ChromaDataModule.ChromaData;
-    SQL.Add('Declare @TestID int =' + EvalTest.TestID.ToString);
-    SQL.Add('Update EvalTests set ParamValue =' + EvalTest.TestType);
-    SQL.Add('where ParamID = 3 and TestID = @TestID');
+    SQL.Add('Update EvalTests set ParamValue = :ParamValue');
+    SQL.Add('where ParamID = 3 and TestID = :TestID');
+    Parameters.ParamByName('TestID').Value := EvalTest.TestID.ToString;
+    Parameters.ParamByName('ParamValue').Value := EvalTest.TestType;
     ExecSQL;
   end;
   EvalTest.FrameType := EvalTest.GetFrameType;
   EvalTest.ResetParameters;
-  ClearVisualElements; // Clear visual elements in text boxes
+  ClearVisualElements;
   ShowFrame;
 end;
 
@@ -306,6 +308,16 @@ begin
     EvalTest.UpdateParameters(MinusTolEdit.AEdit.Text, MinusTolParam)
   else if (Sender = FilepathEdit) and (FilepathEdit.Text <> '') then
     EvalTest.UpdateParameters(FilepathEdit.Text, FilepathParam);
+end;
+
+procedure TEvalFrame.EditKeyPressEnter(Sender: TObject; var Key: Char);
+begin
+  if Key = #13 then
+    begin
+      UpdateParameter(Sender);
+      Self.DoExit;
+      Parent.Parent.Parent.SetFocus;
+    end;
 end;
 
 end.

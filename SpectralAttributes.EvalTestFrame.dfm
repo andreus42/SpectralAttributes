@@ -1,8 +1,8 @@
 object EvalFrame: TEvalFrame
   Left = 0
   Top = 0
-  Width = 1230
-  Height = 421
+  Width = 1156
+  Height = 127
   Align = alClient
   Color = clBtnFace
   ParentBackground = False
@@ -28,14 +28,15 @@ object EvalFrame: TEvalFrame
     OnClick = RemoveSpecButtonClick
   end
   object TestIDLabel: TLabel
-    Left = 1198
+    Left = 1124
     Top = 0
     Width = 32
-    Height = 421
+    Height = 127
     Align = alRight
     Alignment = taCenter
     Caption = 'TestID'
     Layout = tlCenter
+    ExplicitLeft = 1198
     ExplicitTop = 3
     ExplicitHeight = 110
   end
@@ -46,9 +47,10 @@ object EvalFrame: TEvalFrame
     Width = 75
     Height = 20
     Alignment = taCenter
-    TabOrder = 2
+    TabOrder = 3
     Visible = False
     OnExit = UpdateParameter
+    OnKeyPress = EditKeyPressEnter
   end
   object RankEdit: TEdit
     Left = 29
@@ -64,10 +66,10 @@ object EvalFrame: TEvalFrame
     Top = 3
     Width = 47
     Height = 21
-    TabOrder = 1
-    TabStop = False
+    TabOrder = 2
     Visible = False
     OnChange = UpdateParameter
+    OnKeyPress = EditKeyPressEnter
     Items.Strings = (
       '>='
       '>'
@@ -82,7 +84,7 @@ object EvalFrame: TEvalFrame
     Height = 20
     TabStop = False
     Caption = 'Ref Only'
-    TabOrder = 4
+    TabOrder = 9
     Visible = False
   end
   object FilepathEdit: TLabeledEdit
@@ -94,7 +96,7 @@ object EvalFrame: TEvalFrame
     EditLabel.Height = 13
     EditLabel.Caption = 'Filepath'
     LabelPosition = lpLeft
-    TabOrder = 3
+    TabOrder = 11
     Visible = False
     OnExit = UpdateParameter
   end
@@ -105,7 +107,7 @@ object EvalFrame: TEvalFrame
     Height = 20
     TabStop = False
     Caption = 'No Tol'
-    TabOrder = 5
+    TabOrder = 10
     Visible = False
     OnClick = NolTolCheckBoxClick
   end
@@ -115,21 +117,24 @@ object EvalFrame: TEvalFrame
     Width = 121
     Height = 21
     DropDownCount = 50
-    TabOrder = 6
+    TabOrder = 1
+    OnChange = NewSpecComboBoxCloseUp
     OnCloseUp = NewSpecComboBoxCloseUp
+    OnKeyPress = EditKeyPressEnter
   end
   object FromLambdaEdit: DoulbedLabeledEdit_v3
     Left = 376
     Top = 3
-    Width = 129
+    Width = 121
     Height = 24
     AEdit.Left = 26
     AEdit.Top = 0
-    AEdit.Width = 85
+    AEdit.Width = 75
     AEdit.Height = 21
     AEdit.Alignment = taCenter
     AEdit.TabOrder = 0
     AEdit.OnExit = UpdateParameter
+    AEdit.OnKeyPress = EditKeyPressEnter
     LLabel.Left = 0
     LLabel.Top = 0
     LLabel.Width = 24
@@ -140,7 +145,7 @@ object EvalFrame: TEvalFrame
     LLabel.Layout = tlCenter
     LLabel.ExplicitLeft = -8
     LLabel.ExplicitHeight = 13
-    RLabel.Left = 115
+    RLabel.Left = 107
     RLabel.Top = 0
     RLabel.Width = 14
     RLabel.Height = 24
@@ -152,22 +157,23 @@ object EvalFrame: TEvalFrame
     LCaption = 'From'
     RCaption = 'nm'
     OnExit = UpdateParameter
-    TabOrder = 7
+    TabOrder = 4
     TabStop = False
     Text = ''
   end
   object ToLambdaEdit: DoulbedLabeledEdit_v3
     Left = 511
     Top = 3
-    Width = 129
+    Width = 122
     Height = 24
     AEdit.Left = 26
     AEdit.Top = 0
-    AEdit.Width = 85
+    AEdit.Width = 75
     AEdit.Height = 21
     AEdit.Alignment = taCenter
     AEdit.TabOrder = 0
     AEdit.OnExit = UpdateParameter
+    AEdit.OnKeyPress = EditKeyPressEnter
     LLabel.Left = 0
     LLabel.Top = 0
     LLabel.Width = 21
@@ -178,7 +184,7 @@ object EvalFrame: TEvalFrame
     LLabel.Layout = tlCenter
     LLabel.ExplicitLeft = -3
     LLabel.ExplicitHeight = 13
-    RLabel.Left = 115
+    RLabel.Left = 108
     RLabel.Top = 0
     RLabel.Width = 14
     RLabel.Height = 24
@@ -189,22 +195,23 @@ object EvalFrame: TEvalFrame
     RLabel.ExplicitHeight = 13
     LCaption = '   To'
     OnExit = UpdateParameter
-    TabOrder = 8
+    TabOrder = 6
     TabStop = False
     Text = ''
   end
   object AtLambdaEdit: DoulbedLabeledEdit_v3
     Left = 376
     Top = 33
-    Width = 129
+    Width = 121
     Height = 24
     AEdit.Left = 26
     AEdit.Top = 0
-    AEdit.Width = 85
+    AEdit.Width = 75
     AEdit.Height = 21
     AEdit.Alignment = taCenter
     AEdit.TabOrder = 0
     AEdit.OnExit = UpdateParameter
+    AEdit.OnKeyPress = EditKeyPressEnter
     LLabel.Left = 0
     LLabel.Top = 0
     LLabel.Width = 20
@@ -215,7 +222,7 @@ object EvalFrame: TEvalFrame
     LLabel.Layout = tlCenter
     LLabel.ExplicitLeft = -3
     LLabel.ExplicitHeight = 13
-    RLabel.Left = 115
+    RLabel.Left = 107
     RLabel.Top = 0
     RLabel.Width = 14
     RLabel.Height = 24
@@ -227,22 +234,23 @@ object EvalFrame: TEvalFrame
     LCaption = '   At'
     RCaption = 'nm'
     OnExit = UpdateParameter
-    TabOrder = 9
+    TabOrder = 5
     TabStop = False
     Text = ''
   end
   object MinusTolEdit: DoulbedLabeledEdit_v3
     Left = 781
     Top = 3
-    Width = 129
+    Width = 124
     Height = 24
     AEdit.Left = 26
     AEdit.Top = 0
-    AEdit.Width = 85
+    AEdit.Width = 75
     AEdit.Height = 21
     AEdit.Alignment = taCenter
     AEdit.TabOrder = 0
     AEdit.OnExit = UpdateParameter
+    AEdit.OnKeyPress = EditKeyPressEnter
     LLabel.Left = 0
     LLabel.Top = 0
     LLabel.Width = 19
@@ -253,7 +261,7 @@ object EvalFrame: TEvalFrame
     LLabel.Layout = tlCenter
     LLabel.ExplicitLeft = -3
     LLabel.ExplicitHeight = 13
-    RLabel.Left = 115
+    RLabel.Left = 110
     RLabel.Top = 0
     RLabel.Width = 14
     RLabel.Height = 24
@@ -264,22 +272,23 @@ object EvalFrame: TEvalFrame
     RLabel.ExplicitHeight = 13
     LCaption = '     -'
     OnExit = UpdateParameter
-    TabOrder = 10
+    TabOrder = 8
     TabStop = False
     Text = ''
   end
   object PlusTolEdit: DoulbedLabeledEdit_v3
     Left = 646
     Top = 3
-    Width = 129
+    Width = 123
     Height = 24
     AEdit.Left = 26
     AEdit.Top = 0
-    AEdit.Width = 85
+    AEdit.Width = 75
     AEdit.Height = 21
     AEdit.Alignment = taCenter
     AEdit.TabOrder = 0
     AEdit.OnExit = UpdateParameter
+    AEdit.OnKeyPress = EditKeyPressEnter
     LLabel.Left = 0
     LLabel.Top = 0
     LLabel.Width = 20
@@ -290,7 +299,7 @@ object EvalFrame: TEvalFrame
     LLabel.Layout = tlCenter
     LLabel.ExplicitLeft = -3
     LLabel.ExplicitHeight = 13
-    RLabel.Left = 115
+    RLabel.Left = 109
     RLabel.Top = 0
     RLabel.Width = 14
     RLabel.Height = 24
@@ -302,7 +311,7 @@ object EvalFrame: TEvalFrame
     LCaption = '    +'
     RCaption = 'nm'
     OnExit = UpdateParameter
-    TabOrder = 11
+    TabOrder = 7
     TabStop = False
     Text = ''
   end

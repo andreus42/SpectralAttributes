@@ -50,7 +50,7 @@ type
   private
     procedure AddTestGroupPage(EvalTestGroup: TEvalGroup);
   published
-    EvalTestSet: TEvalSet;
+    EvalSet: TEvalSet;
   end;
 
 var
@@ -71,12 +71,12 @@ end;
 
 procedure T_SpectralAttributesForm.CreateGroupFrames(SetID: Integer);
 var
-  EvalTestGroup: TEvalGroup;
+  EvalGroup: TEvalGroup;
 begin
-  EvalTestSet := TEvalSet.Create(SetID);
-  for EvalTestGroup in EvalTestSet.EvalTestGroupList do
+  EvalSet := TEvalSet.Create(SetID);
+  for EvalGroup in EvalSet.EvalGroupList do
   begin
-    AddTestGroupPage(EvalTestGroup);
+    AddTestGroupPage(EvalGroup);
   end;
 end;
 
@@ -85,9 +85,8 @@ var
   EvalTestGroup: TEvalGroup;
   I: Integer;
 begin
-  EvalTestSet.Destroy;
+  EvalSet.Destroy;
   SetID := StrToInt(PartRevLogEdit.Text);
-  // Remove pages from page control
   for I := 0  to  pagecontrol1.PageCount-1 do
     pagecontrol1.Pages[0].Free;
   CreateGroupFrames(SetID);
