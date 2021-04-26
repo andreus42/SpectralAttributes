@@ -75,7 +75,6 @@ begin
       NextGroupID := 1
     else
       NextGroupID := FieldByName('last_id').Value + 1;
-    ExecSQL;
     Close;
     Free;
   end;
@@ -89,9 +88,9 @@ begin
   with Query do
   begin
     Connection := _ChromaDataModule.ChromaData;
-    SQL.Add('insert into EvalGroups values (:GroupID, :NextGroupNum, :SetID)');
+    SQL.Add('insert into EvalGroups values (:NextGroupID, :NextGroupNum, :SetID)');
     Parameters.ParamByName('SetID').Value := SetID.ToString;
-    Parameters.ParamByName('GroupID').Value := GroupID.ToString;
+    Parameters.ParamByName('NextGroupID').Value := NextGroupID.ToString;
     Parameters.ParamByName('NextGroupNum').Value :=  1; // Need to enumerate group nums
     Prepared := True;
     ExecSQL;
@@ -129,19 +128,15 @@ begin
   with Query do
   begin
     Connection := _ChromaDataModule.ChromaData;
-    SQL.Add('delete from EvalGroups where GroupID = ' + GroupID.ToString);
+    SQL.Add('delete from EvalTests where GroupID = ' + GroupID.ToString);
     ExecSQL;
     Free;
   end;
 end;
 
 destructor TEvalGroup.destroy;
-var
-  I: Integer;
 begin
-  for I := 0 to TestList.Count-1 do
-    TestList.Delete(I);
-  TestList.Free;
+  DeleteGroup(Self.GroupID);
   Self.Free;
 end;
 

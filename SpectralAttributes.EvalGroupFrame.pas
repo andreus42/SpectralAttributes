@@ -48,16 +48,18 @@ type
 //    EvalScrollBox: TScrollBox;
 
     procedure AddEvalTestButtonClick(Sender: TObject);
-    procedure S3ParseButtonClick(Sender: TObject);
     procedure CleanTextButtonClick(Sender: TObject);
     procedure TransformTextButtonClick(Sender: TObject);
     procedure FrameExit(Sender: TObject);
     procedure FrameEnter(Sender: TObject);
     procedure AddSpecSpeedButtonClick(Sender: TObject);
     procedure CleanTextSpeedButtonClick(Sender: TObject);
+    procedure SpecTextMemoLabledMemoEnter(Sender: TObject);
+    procedure SpecTextMemoLabledMemoExit(Sender: TObject);
   private
     procedure AddEvalTestFrame(EvalTest: TEvalTest); overload;
     procedure GroupStringify;
+    procedure TransformText;
   public
     EvalGroup: TEvalGroup;
     constructor Create(AOwner: TComponent; TempEvalGroup: TEvalGroup);
@@ -74,19 +76,17 @@ uses
 
 {$R *.dfm}
 
-constructor TEvalTestGroupFrame.Create(AOwner: TComponent;
-  TempEvalGroup: TEvalGroup);
+constructor TEvalTestGroupFrame.Create(AOwner: TComponent; TempEvalGroup: TEvalGroup);
 var
   EvalTest: TEvalTest;
 begin
   inherited Create(AOwner);
-  //Create EvalGroup Obj with Frame
   EvalGroup := TempEvalGroup; // Currently just a copy of the object passed to it
-  GroupFrameSetIDEDit.Text := EvalGroup.SetID.ToString;  // Should display Group Num (i.e. Inprocess-#1)
+  GroupFrameSetIDEDit.Text := SetID.ToString;  // Should display Group Num (i.e. Inprocess-#1)
   SpecTextMemo.AMemo.Clear;
   GroupDescEdit.Text := 'In-Process #' + EvalGroup.GroupID.ToString;
   IDBox.Text := EvalGroup.GroupID.ToString;
-  Name := 'EvalFrame' + EvalTest.TestID.ToString;
+  Name := 'EvalFrame' + EvalGroup.GroupID.ToString;
   for EvalTest in EvalGroup.TestList do
   begin
     SpecTextMemo.AMemo.Lines.Add(EvalTest.Stringify);
@@ -105,7 +105,7 @@ begin
   Self.Free;
 end;
 
-procedure TEvalTestGroupFrame.FrameEnter(Sender: TObject);
+procedure TEvalTestGroupFrame.FrameEnter(Sender: TObject); //not sure these needs to happen on enter and exit
 begin
   GroupStringify;
 end;
@@ -132,6 +132,20 @@ begin
   //EvalTest.Free;
 end;
 
+procedure TEvalTestGroupFrame.SpecTextMemoLabledMemoEnter(Sender: TObject);
+begin
+  SpecTextMemo.AMemo.Color := clInactiveCaption;
+  TransformTextButton.Font.Style := [fsBold];
+  Parent.
+end;
+
+procedure TEvalTestGroupFrame.SpecTextMemoLabledMemoExit(Sender: TObject);
+begin
+  SpecTextMemo.AMemo.Color := clWhite;
+  TransformTextButton.Font.Style := [];
+  GroupStringify;
+end;
+
 procedure TEvalTestGroupFrame.AddEvalTestButtonClick(Sender: TObject);
 var
   EvalTest: TEvalTest;
@@ -154,6 +168,7 @@ begin
     Align := alTop;
     Height := FrameHeight;
   end;
+//  EvalScrollBox.Update;
 end;
 
 procedure TEvalTestGroupFrame.AddSpecSpeedButtonClick(Sender: TObject);
@@ -164,11 +179,6 @@ begin
   EvalGroup.TestList.Add(EvalTest);
   EvalTest.WriteToDB;
   AddEvalTestFrame(EvalTest);
-end;
-
-procedure TEvalTestGroupFrame.S3ParseButtonClick(Sender: TObject);
-begin
-  GroupStringify;
 end;
 
 procedure TEvalTestGroupFrame.CleanTextButtonClick(Sender: TObject);
@@ -186,12 +196,11 @@ begin
 
 end;
 
-procedure TEvalTestGroupFrame.TransformTextButtonClick(Sender: TObject);
+procedure TEvalTestGroupFrame.TransformText;
 var
   EvalTest: TEvalTest;
   StringList: TStringList;
   AString: String;
-//  GroupID, SetID: Integer;
 begin
   EvalGroup.DeleteGroupTests;
   StringList := TStringList.Create;
@@ -201,22 +210,28 @@ begin
     if AString <> '' then
     begin
       EvalTest := TEvalTest.Create(EvalGroup.GroupID, EvalGroup.SetID, AString);
-      EvalTest.WriteToDB;
       EvalTest.Free;
     end;
   end;
-  // TESTING: ScrollBox is not redrawing
   EvalScrollBox.Destroy;
   EvalScrollBox := TScrollBox.Create(Self);
   EvalScrollBox.Parent := Self;
   EvalScrollBox.Align := alClient;
+
+  EvalGroup := TEvalGroup.Create(EvalGroup.GroupID, EvalGroup.SetID);
   for EvalTest in EvalGroup.TestList do
   begin
     AddEvalTestFrame(EvalTest);
   end;
-  EvalScrollBox.Update;
   StringList.Free;
   GroupStringify;
+end;
+
+procedure TEvalTestGroupFrame.TransformTextButtonClick(Sender: TObject);
+var
+  EvalTest: TEvalTest;
+begin
+  TransformText;
 end;
 
 end.

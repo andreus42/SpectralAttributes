@@ -1,8 +1,8 @@
 object EvalFrame: TEvalFrame
   Left = 0
   Top = 0
-  Width = 1156
-  Height = 127
+  Width = 865
+  Height = 189
   Align = alClient
   Color = clBtnFace
   ParentBackground = False
@@ -28,10 +28,10 @@ object EvalFrame: TEvalFrame
     OnClick = RemoveSpecButtonClick
   end
   object TestIDLabel: TLabel
-    Left = 1124
+    Left = 833
     Top = 0
     Width = 32
-    Height = 127
+    Height = 189
     Align = alRight
     Alignment = taCenter
     Caption = 'TestID'
@@ -78,7 +78,7 @@ object EvalFrame: TEvalFrame
       '<')
   end
   object RefOnlyCheckBox: TCheckBox
-    Left = 960
+    Left = 672
     Top = 3
     Width = 73
     Height = 20
@@ -89,7 +89,7 @@ object EvalFrame: TEvalFrame
   end
   object FilepathEdit: TLabeledEdit
     Left = 264
-    Top = 63
+    Top = 103
     Width = 492
     Height = 24
     EditLabel.Width = 38
@@ -101,7 +101,7 @@ object EvalFrame: TEvalFrame
     OnExit = UpdateParameter
   end
   object NoTolCheckBox: TCheckBox
-    Left = 1039
+    Left = 751
     Top = 3
     Width = 73
     Height = 20
@@ -118,7 +118,6 @@ object EvalFrame: TEvalFrame
     Height = 21
     DropDownCount = 50
     TabOrder = 1
-    OnChange = NewSpecComboBoxCloseUp
     OnCloseUp = NewSpecComboBoxCloseUp
     OnKeyPress = EditKeyPressEnter
   end
@@ -239,8 +238,8 @@ object EvalFrame: TEvalFrame
     Text = ''
   end
   object MinusTolEdit: DoulbedLabeledEdit_v3
-    Left = 781
-    Top = 3
+    Left = 511
+    Top = 63
     Width = 124
     Height = 24
     AEdit.Left = 26
@@ -277,8 +276,8 @@ object EvalFrame: TEvalFrame
     Text = ''
   end
   object PlusTolEdit: DoulbedLabeledEdit_v3
-    Left = 646
-    Top = 3
+    Left = 374
+    Top = 63
     Width = 123
     Height = 24
     AEdit.Left = 26

@@ -52,6 +52,12 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
       Width = 121
       Height = 26
       Caption = 'Transform Text >>'
+      Font.Charset = DEFAULT_CHARSET
+      Font.Color = clWindowText
+      Font.Height = -11
+      Font.Name = 'Tahoma'
+      Font.Style = []
+      ParentFont = False
       OnClick = TransformTextButtonClick
     end
     object AddSpecSpeedButton: TSpeedButton
@@ -88,7 +94,7 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
       TabOrder = 1
     end
     object SpecTextMemo: TLabeledMemo
-      Left = 8
+      Left = 14
       Top = 56
       Width = 253
       Height = 148
@@ -98,6 +104,8 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
       AMemo.Height = 135
       AMemo.Align = alClient
       AMemo.TabOrder = 0
+      AMemo.OnEnter = SpecTextMemoLabledMemoEnter
+      AMemo.OnExit = SpecTextMemoLabledMemoExit
       AMemo.ExplicitHeight = 103
       ALabel.Left = 0
       ALabel.Top = 0

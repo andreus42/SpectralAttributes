@@ -35,14 +35,16 @@ type
     constructor Create(TestID: Integer); overload;
     constructor Create(GroupID: Integer; SetID: Integer) overload;
     constructor Create(GroupID: Integer; SetID: Integer; AString: String) overload;
-    destructor destroy;
     function GetNextTestID(): Integer;
     function GetFrameType(): Integer;
     function Stringify(): String;
-    procedure Delete;
     procedure ResetParameters;
     procedure UpdateParameters(ParamValue: String; ParamID: Integer);
     procedure WriteToDB;
+    procedure Delete;
+    destructor destroy;
+
+
   end;
 
 const
@@ -217,7 +219,7 @@ begin
     SQL.Add('select FrameTypeID, ParamName from EvalTestTypes where TypeID = ' + TestType);
     Open;
     FrameType := Query.FieldByName('FrameTypeID').Value;
-    Name := Query.FieldByName('ParamName').Value;
+    Self.Name := Query.FieldByName('ParamName').Value;
     Close;
     Free;
   end;
@@ -366,6 +368,7 @@ procedure TEvalTest.UpdateParameters(ParamValue: String; ParamID: Integer);
 var
   Query: TADOQuery;
 begin
+  Self.Value := ParamValue;
   Query := TADOQuery.Create(Nil);
   with Query do
   begin
@@ -373,9 +376,7 @@ begin
     SQL.Add('Update EvalTests set ParamValue = :ParamValue');
     SQL.Add('where TestID = :TestID and ParamID = :ParamID');
     Parameters.ParamByName('TestID').Value := Self.TestID;
-    Parameters.ParamByName('ParamID').DataType := ftString;
     Parameters.ParamByName('ParamID').Value := ParamID.ToString;
-    Parameters.ParamByName('ParamValue').DataType := ftString;
     Parameters.ParamByName('ParamValue').Value := Self.Value;
     ExecSQL;
     Free;

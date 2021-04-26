@@ -100,7 +100,8 @@ begin
   ATabSheet := TMyTabSheet.Create(PageControl1);
   with ATabSheet do
   begin
-    Caption := 'In-Process #' + EvalTestGroup.GroupID.ToString;
+    Caption := 'In-Process #' + EvalTestGroup.GroupNum.ToString;
+//    Caption := 'In-Process #' + EvalTestGroup.GroupID.ToString;
     Name := 'TabSheet' + EvalTestGroup.GroupID.ToString;
     Tag := EvalTestGroup.GroupID;
     PageControl := PageControl1;

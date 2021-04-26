@@ -68,21 +68,22 @@ var
   Query: TADOQuery;
 begin
   inherited Create(AOwner);
-
   EvalTest := TempEvalTest;
   AddComboBoxItemsFromDB;
   NewSpecComboBox.ItemIndex := EvalTest.TestType.ToInteger;
 
-
   //existing code
   TestIDLabel.Caption := 'TestID: ' + EvalTest.TestID.ToString;
-  RankEdit.Text := EvalTest.Rank;
-  ToLambdaEdit.Text := EvalTest.LambdaTo;
-  FromLambdaEdit.Text := EvalTest.LambdaFrom;
-  AtLambdaEdit.Text := EvalTest.LambdaAt;
-  PlusTolEdit.Text := EvalTest.TolPlus;
-  MinusTolEdit.Text := EvalTest.TolMinus;
+
+  //SPEC not reading in
+//  RankEdit.Text := EvalTest.Rank;
   SpecEdit.Text := EvalTest.Value;
+  ////
+  ToLambdaEdit.AEdit.Text := EvalTest.LambdaTo;
+  FromLambdaEdit.AEdit.Text := EvalTest.LambdaFrom;
+  AtLambdaEdit.AEdit.Text := EvalTest.LambdaAt;
+  PlusTolEdit.AEdit.Text := EvalTest.TolPlus;
+  MinusTolEdit.AEdit.Text := EvalTest.TolMinus;
   FilepathEdit.Text := EvalTest.FilePath;
   SymbolComboBox.ItemIndex := EvalTest.Symbol;
   FrameGroupID := EvalTest.GroupID;
@@ -292,8 +293,11 @@ procedure TEvalFrame.UpdateParameter(Sender: TObject);
 begin
   if (Sender = SpecEdit) and (SpecEdit.Text <> '') then
     EvalTest.UpdateParameters(SpecEdit.Text, SpecParam) // TODO: Change second conditions to validate as real
+
   else if (Sender = RankEdit) and (RankEdit.Text <> '') then
     EvalTest.UpdateParameters(RankEdit.Text, RankParam)
+
+
   else if (Sender = SymbolComboBox) and (SymbolComboBox.ItemIndex <> -1) then
     EvalTest.UpdateParameters(SymbolComboBox.ItemIndex.ToString, SymbolParam)
   else if (Sender = FromLambdaEdit.AEdit) and (FromLambdaEdit.AEdit.Text <> '') then
@@ -318,6 +322,11 @@ begin
       Self.DoExit;
       Parent.Parent.Parent.SetFocus;
     end;
+//    Add new test if final key is tab
+//  if (Sender = ToLambdaEdit.AEdit) and Key = #9 then
+//      UpdateParameter(Sender);
+//      Self.DoExit;
+//      Parent.Parent.Parent.SetFocus;
 end;
 
 end.
