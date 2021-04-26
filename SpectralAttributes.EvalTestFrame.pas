@@ -97,7 +97,7 @@ end;
 
 procedure TEvalFrame.FrameExit(Sender: TObject);
 begin
-  COlor := clBtnFace;
+  Color := clBtnFace;
 end;
 
 
@@ -242,6 +242,7 @@ end;
 procedure TEvalFrame.RemoveSpecButtonClick(Sender: TObject);
 begin
   EvalTest.Delete;
+//  Parent.Parent.SetFocus;
   Self.Destroy;
 end;
 
@@ -320,7 +321,8 @@ begin
     begin
       UpdateParameter(Sender);
       Self.DoExit;
-      Parent.Parent.Parent.SetFocus;
+      Parent.Parent.SetFocus;
+//      Parent.Parent.Parent.SetFocus;
     end;
 //    Add new test if final key is tab
 //  if (Sender = ToLambdaEdit.AEdit) and Key = #9 then

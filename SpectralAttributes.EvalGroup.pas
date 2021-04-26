@@ -97,8 +97,8 @@ begin
     Close;
     Free;
   end;
-
 end;
+
 
 procedure TEvalGroup.DeleteGroup(GroupID: Integer);
 var

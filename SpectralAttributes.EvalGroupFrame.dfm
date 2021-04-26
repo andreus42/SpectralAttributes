@@ -32,7 +32,7 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
       Height = 13
       Caption = 'Group ID (Op Level)'
     end
-    object Label6: TLabel
+    object OperationIDBoxLabel: TLabel
       Left = 8
       Top = 10
       Width = 48
@@ -106,7 +106,6 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
       AMemo.TabOrder = 0
       AMemo.OnEnter = SpecTextMemoLabledMemoEnter
       AMemo.OnExit = SpecTextMemoLabledMemoExit
-      AMemo.ExplicitHeight = 103
       ALabel.Left = 0
       ALabel.Top = 0
       ALabel.Width = 253
@@ -145,7 +144,6 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
       AMemo.Height = 93
       AMemo.Align = alClient
       AMemo.TabOrder = 0
-      AMemo.ExplicitHeight = 77
       ALabel.Left = 0
       ALabel.Top = 0
       ALabel.Width = 253
@@ -191,9 +189,5 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
     Height = 810
     Align = alClient
     TabOrder = 2
-    ExplicitLeft = 1
-    ExplicitTop = 1
-    ExplicitWidth = 1127
-    ExplicitHeight = 808
   end
 end

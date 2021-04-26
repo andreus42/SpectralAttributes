@@ -34,7 +34,7 @@ type
     IDLabel: TLabel;
     GroupDescEdit: TEdit;
     GroupLabel: TLabel;
-    Label6: TLabel;
+    OperationIDBoxLabel: TLabel;
     GroupFrameSetIDEDit: TEdit;
     GroupSetLabel: TLabel;
     EvalScrollBox: TScrollBox;
@@ -92,7 +92,7 @@ begin
     SpecTextMemo.AMemo.Lines.Add(EvalTest.Stringify);
     AddEvalTestFrame(EvalTest);
   end;
-  //  EvalTest.Free;  // need to figure out how to remove if it doesn't exist
+  if Assigned(EvalTest) then EvalTest.Free;
 end;
 
 destructor TEvalTestGroupFrame.destroy;
@@ -119,6 +119,7 @@ procedure TEvalTestGroupFrame.GroupStringify;
 var
   EvalTest: TEvalTest;
   GroupID, SetID: Integer;
+  Line: String;
 begin
   GroupID := EvalGroup.GroupID;
   SetID := EvalGroup.SetID;
@@ -126,21 +127,24 @@ begin
   EvalGroup := TEvalGroup.Create(EvalGroup.GroupID, EvalGroup.SetID);
   for EvalTest in Self.EvalGroup.TestList do
   begin
+//    Line := EvalTest.Stringify;
+//    if Line <> '' then SpecTextMemo.AMemo.Lines.Add(Line);
     SpecTextMemo.AMemo.Lines.Add(EvalTest.Stringify);
   end;
-  //EvalGroup.Free;
-  //EvalTest.Free;
+  if Assigned(EvalTest) then EvalTest.Free;
 end;
 
 procedure TEvalTestGroupFrame.SpecTextMemoLabledMemoEnter(Sender: TObject);
 begin
+  GroupStringify;
+  SpecTextMemo.Tag := 1;
   SpecTextMemo.AMemo.Color := clInactiveCaption;
   TransformTextButton.Font.Style := [fsBold];
-  Parent.
 end;
 
 procedure TEvalTestGroupFrame.SpecTextMemoLabledMemoExit(Sender: TObject);
 begin
+  SpecTextMemo.Tag := 0;
   SpecTextMemo.AMemo.Color := clWhite;
   TransformTextButton.Font.Style := [];
   GroupStringify;
@@ -168,7 +172,6 @@ begin
     Align := alTop;
     Height := FrameHeight;
   end;
-//  EvalScrollBox.Update;
 end;
 
 procedure TEvalTestGroupFrame.AddSpecSpeedButtonClick(Sender: TObject);
@@ -231,7 +234,12 @@ procedure TEvalTestGroupFrame.TransformTextButtonClick(Sender: TObject);
 var
   EvalTest: TEvalTest;
 begin
-  TransformText;
+  // Translate if spec box has been tagged as 1 to indicate change
+  if SpecTextMemo.Tag = 1 then
+  begin
+    TransformText;
+  end;
+  Parent.SetFocus;
 end;
 
 end.

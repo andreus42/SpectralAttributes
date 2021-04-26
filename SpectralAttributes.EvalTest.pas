@@ -355,6 +355,7 @@ var
 begin
   TextSymbol := SymbolArray[Self.Symbol];
   case Self.FrameType of
+    -1,0: Result := '';
     1: Result := Name + ': ' + Value + 'nm ' + '+' + TolPlus + '/' + '-' + TolMinus + 'nm';
     2: Result := Name + ': ' + TextSymbol + Value + '% ' + LambdaFrom + '-' + LambdaTo  + 'nm';
     3: Result := Name + ': ' + TextSymbol + ' OD' + Value + ' ' + LambdaFrom + '-' + LambdaTo + 'nm';

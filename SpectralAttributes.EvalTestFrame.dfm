@@ -2,7 +2,7 @@ object EvalFrame: TEvalFrame
   Left = 0
   Top = 0
   Width = 865
-  Height = 189
+  Height = 146
   Align = alClient
   Color = clBtnFace
   ParentBackground = False
@@ -14,7 +14,7 @@ object EvalFrame: TEvalFrame
     Left = 345
     Top = 3
     Width = 11
-    Height = 20
+    Height = 13
     Caption = '%'
     Layout = tlCenter
     Visible = False
@@ -31,21 +31,19 @@ object EvalFrame: TEvalFrame
     Left = 833
     Top = 0
     Width = 32
-    Height = 189
+    Height = 146
     Align = alRight
     Alignment = taCenter
     Caption = 'TestID'
     Layout = tlCenter
-    ExplicitLeft = 1198
-    ExplicitTop = 3
-    ExplicitHeight = 110
+    ExplicitHeight = 13
   end
   object SpecEdit: TEdit
     Tag = 7
     Left = 264
     Top = 3
     Width = 75
-    Height = 20
+    Height = 21
     Alignment = taCenter
     TabOrder = 3
     Visible = False
@@ -56,7 +54,7 @@ object EvalFrame: TEvalFrame
     Left = 29
     Top = 3
     Width = 24
-    Height = 20
+    Height = 21
     Alignment = taCenter
     TabOrder = 0
     OnChange = UpdateParameter
@@ -91,7 +89,7 @@ object EvalFrame: TEvalFrame
     Left = 264
     Top = 103
     Width = 492
-    Height = 24
+    Height = 21
     EditLabel.Width = 38
     EditLabel.Height = 13
     EditLabel.Caption = 'Filepath'
@@ -142,7 +140,6 @@ object EvalFrame: TEvalFrame
     LLabel.Alignment = taRightJustify
     LLabel.Caption = 'From'
     LLabel.Layout = tlCenter
-    LLabel.ExplicitLeft = -8
     LLabel.ExplicitHeight = 13
     RLabel.Left = 107
     RLabel.Top = 0
@@ -151,7 +148,6 @@ object EvalFrame: TEvalFrame
     RLabel.Align = alRight
     RLabel.Caption = 'nm'
     RLabel.Layout = tlCenter
-    RLabel.ExplicitLeft = 160
     RLabel.ExplicitHeight = 13
     LCaption = 'From'
     RCaption = 'nm'
@@ -181,7 +177,6 @@ object EvalFrame: TEvalFrame
     LLabel.Alignment = taRightJustify
     LLabel.Caption = '   To'
     LLabel.Layout = tlCenter
-    LLabel.ExplicitLeft = -3
     LLabel.ExplicitHeight = 13
     RLabel.Left = 108
     RLabel.Top = 0
@@ -190,7 +185,6 @@ object EvalFrame: TEvalFrame
     RLabel.Align = alRight
     RLabel.Caption = 'nm'
     RLabel.Layout = tlCenter
-    RLabel.ExplicitLeft = 251
     RLabel.ExplicitHeight = 13
     LCaption = '   To'
     OnExit = UpdateParameter
@@ -219,7 +213,6 @@ object EvalFrame: TEvalFrame
     LLabel.Alignment = taRightJustify
     LLabel.Caption = '   At'
     LLabel.Layout = tlCenter
-    LLabel.ExplicitLeft = -3
     LLabel.ExplicitHeight = 13
     RLabel.Left = 107
     RLabel.Top = 0
@@ -228,7 +221,6 @@ object EvalFrame: TEvalFrame
     RLabel.Align = alRight
     RLabel.Caption = 'nm'
     RLabel.Layout = tlCenter
-    RLabel.ExplicitLeft = 200
     RLabel.ExplicitHeight = 13
     LCaption = '   At'
     RCaption = 'nm'
@@ -258,7 +250,6 @@ object EvalFrame: TEvalFrame
     LLabel.Alignment = taRightJustify
     LLabel.Caption = '     -'
     LLabel.Layout = tlCenter
-    LLabel.ExplicitLeft = -3
     LLabel.ExplicitHeight = 13
     RLabel.Left = 110
     RLabel.Top = 0
@@ -267,7 +258,6 @@ object EvalFrame: TEvalFrame
     RLabel.Align = alRight
     RLabel.Caption = 'nm'
     RLabel.Layout = tlCenter
-    RLabel.ExplicitLeft = 251
     RLabel.ExplicitHeight = 13
     LCaption = '     -'
     OnExit = UpdateParameter
@@ -296,7 +286,6 @@ object EvalFrame: TEvalFrame
     LLabel.Alignment = taRightJustify
     LLabel.Caption = '    +'
     LLabel.Layout = tlCenter
-    LLabel.ExplicitLeft = -3
     LLabel.ExplicitHeight = 13
     RLabel.Left = 109
     RLabel.Top = 0
@@ -305,7 +294,6 @@ object EvalFrame: TEvalFrame
     RLabel.Align = alRight
     RLabel.Caption = 'nm'
     RLabel.Layout = tlCenter
-    RLabel.ExplicitLeft = 241
     RLabel.ExplicitHeight = 13
     LCaption = '    +'
     RCaption = 'nm'
