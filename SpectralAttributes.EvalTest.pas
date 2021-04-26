@@ -175,6 +175,8 @@ begin
         Tolerance := GetTolerance(AString);
         Self.TolPlus := FloatToStr(Tolerance.PlusTol);
         Self.TolMinus := FloatToStr(Tolerance.MinusTol);
+        Self.RefOnly := '0'; //need to translate these
+        Self.NoTol := '0';
       end;
       2,3: begin  //To-From: T-Avg, R-Avg, B-Avg
         LambdaRangeList := GetRangeList(AString);
@@ -364,15 +366,27 @@ const
   SymbolArray: array[0..4] of string = ('>=', '>', '=', '<=', '<');
 var
   TextSymbol: String;
+  RefOnlyString: String;
 begin
   TextSymbol := SymbolArray[Self.Symbol];
+  if RefOnly.ToBoolean = True then
+    RefOnlyString := ' (ref only)'
+  else
+    RefOnlyString := '';
   case Self.FrameType of
     -1,0: Result := '';
-    1: Result := Name + ': ' + Value + 'nm ' + '+' + TolPlus + '/' + '-' + TolMinus + 'nm';
-    2: Result := Name + ': ' + TextSymbol + Value + '% ' + LambdaFrom + '-' + LambdaTo  + 'nm';
-    3: Result := Name + ': ' + TextSymbol + ' OD' + Value + ' ' + LambdaFrom + '-' + LambdaTo + 'nm';
-    4: Result := Name + ': ' + TextSymbol +  Value + '% @' + LambdaAt + 'nm';
-    5: Result := Name + ': ' + TextSymbol + ' OD' + Value + ' @' + LambdaAt + 'nm';
+    1: begin
+      if NoTol = '-1' then
+        Result := Name + ': ' + Value + 'nm' + RefOnlyString
+//        Result := Name + RefOnlyString + ': ' + Value + 'nm'
+      else
+        Result := Name  + ': ' + Value + 'nm ' + '+' + TolPlus + '/' + '-' + TolMinus + 'nm' + RefOnlyString;
+//        Result := Name + RefOnlyString + ': ' + Value + 'nm ' + '+' + TolPlus + '/' + '-' + TolMinus + 'nm';
+      end;
+    2: Result := Name + ': ' + TextSymbol + Value + '% ' + LambdaFrom + '-' + LambdaTo  + 'nm' + RefOnlyString;
+    3: Result := Name + ': ' + TextSymbol + ' OD' + Value + ' ' + LambdaFrom + '-' + LambdaTo + 'nm' + RefOnlyString;
+    4: Result := Name + ': ' + TextSymbol +  Value + '% @' + LambdaAt + 'nm' + RefOnlyString;
+    5: Result := Name + ': ' + TextSymbol + ' OD' + Value + ' @' + LambdaAt + 'nm' + RefOnlyString;
     7: Result := Name + ': ' + Filepath;
   end;
 end;

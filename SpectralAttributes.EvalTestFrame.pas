@@ -154,15 +154,17 @@ begin
           begin
             PlusTolEdit.Visible := True;
             MinusTolEdit.Visible := True;
-            NoTolCheckBox.Visible := False;
           end
           else
           begin
             PlusTolEdit.Visible := False;
             MinusTolEdit.Visible := False;
-            NoTolCheckBox.Visible := True;
           end;
           RefOnlyCheckBox.Visible := True;
+          if (EvalTest.RefOnly.ToBoolean = True) then
+            NoTolCheckBox.Visible := True
+          else
+            NoTolCheckBox.Visible := False;
         end;
     2:  begin // T-peak???, Blocking???
             SpecLabel.Caption := 'OD';           //????
@@ -258,13 +260,16 @@ procedure TEvalFrame.RefOnlyCheckBoxClick(Sender: TObject);
 begin
   if (RefOnlyCheckBox.Checked = True) then
     NoTolCheckBox.Visible := True
-  else
+  else if (RefOnlyCheckBox.Checked = False)  then
   begin
     NoTolCheckBox.Visible := False;
     PlusTolEdit.Visible :=  True;
     MinusTolEdit.Visible :=  True;
+//    EvalTest.UpdateParameters(NoTolCheckBox.Checked.ToString, NoTolParam);
+    EvalTest.UpdateParameters('0', NoTolParam);
   end;
   EvalTest.UpdateParameters(RefOnlyCheckBox.Checked.ToString, RefOnlyParam);
+  (Owner.Owner as TEvalTestGroupFrame).GroupStringify;
 end;
 
 procedure TEvalFrame.RemoveSpecButtonClick(Sender: TObject);
@@ -310,13 +315,22 @@ begin
   begin
     PlusTolEdit.Visible :=  False;
     MinusTolEdit.Visible :=  False;
+    PlusTolEdit.AEdit.Text := '';
+    MinusTolEdit.AEdit.Text := '';
+    EvalTest.UpdateParameters('', PlusTolParam);
+    EvalTest.UpdateParameters('', MinusTolParam);
   end
   else if (NoTolCheckBox.Checked = False) then // and (EvalTest.FrameType = 1) then
   begin
     PlusTolEdit.Visible :=  True;
     MinusTolEdit.Visible :=  True;
+    PlusTolEdit.AEdit.Text := '0';
+    MinusTolEdit.AEdit.Text := '0';
+    EvalTest.UpdateParameters('0', PlusTolParam);
+    EvalTest.UpdateParameters('0', MinusTolParam);
   end;
   EvalTest.UpdateParameters(NoTolCheckBox.Checked.ToString, NoTolParam);
+  (Owner.Owner as TEvalTestGroupFrame).GroupStringify;
 end;
 
 procedure TEvalFrame.UpdateParameter(Sender: TObject);
@@ -326,7 +340,6 @@ begin
 
   else if (Sender = RankEdit) and (RankEdit.Text <> '') then
     EvalTest.UpdateParameters(RankEdit.Text, RankParam)
-
 
   else if (Sender = SymbolComboBox) and (SymbolComboBox.ItemIndex <> -1) then
     EvalTest.UpdateParameters(SymbolComboBox.ItemIndex.ToString, SymbolParam)

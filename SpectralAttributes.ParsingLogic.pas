@@ -54,6 +54,7 @@ function ConcatStr(sArray: TArray<string>): string;
 // function WriteSpecFromParams(ParamsList: List): String;
 
 const
+//  SpecTokenRegexString = '(.*)(?:\(ref only\))?:';
   SpecTokenRegexString = '(.*):';
   TolerancedSpedRegexString = '(\d{2,4})nm';
   SymbolRegexString = '>=|>|=|<|<=';
