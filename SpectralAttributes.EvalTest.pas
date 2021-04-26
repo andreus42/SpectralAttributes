@@ -32,6 +32,8 @@ type
     FilePath: String;
     TolPlus: String;
     TolMinus: String;
+    RefOnly: String;
+    NoTol: String;
     constructor Create(TestID: Integer); overload;
     constructor Create(GroupID: Integer; SetID: Integer) overload;
     constructor Create(GroupID: Integer; SetID: Integer; AString: String) overload;
@@ -58,6 +60,8 @@ const
   PlusTolParam = 9;
   MinusTolParam = 10;
   SymbolParam = 11;
+  RefOnlyParam = 12;
+  NoTolParam = 13;
 
 implementation
 
@@ -79,6 +83,8 @@ begin
     Self.FilePath := '';
     Self.TolPlus := '';
     Self.TolMinus := '';
+    Self.RefOnly := '0';
+    Self.NoTol := '0';
     Self.WriteToDB;
 end;
 
@@ -130,6 +136,8 @@ begin
         SymbolParam: Symbol := ParamValue.ToInteger;
         PlusTolParam: TolPlus := ParamValue;
         MinusTolParam: TolMinus := ParamValue;
+        RefOnlyParam: RefOnly := ParamValue;
+        NoTolParam: NoTol:= ParamValue;
       End;
       Next;
     end;
@@ -316,18 +324,22 @@ begin
     SQL.Add('Declare @SymbolParam int =' + SymbolParam.ToString );
     SQL.Add('Declare @PlusTolParam int =' + PlusTolParam.ToString);
     SQL.Add('Declare @MinusTolParam int =' + MinusTolParam.ToString);
+    SQL.Add('Declare @RefOnlyParam int =' + RefOnlyParam.ToString);
+    SQL.Add('Declare @NoTolParam int =' + NoTolParam.ToString);
     // Inserts that exist for all tests
     SQL.Add('update EvalTests set ParamValue = '''+TestType+''' where TestID = @TestID and ParamID = @TestTypeParam');
     SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @RankParam, '''+Rank+''')');
 
     // Write Value if exists
-//    If (Value <> '') then
-      SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @SpecParam, '''+Value+''')');
+//   If (Value <> '') then
+    SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @SpecParam, '''+Value+''')');
+    SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @RefOnlyParam, '''+RefOnly+''')');
 
     case FrameType of
       1: begin  //With Tol+, Tol-, CWL, FWHM, Cuton, Cutoff
           SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @PlusTolParam, '''+TolPlus+''')');
           SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @MinusTolParam, '''+TolMinus+''')');
+          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @NoTolParam, '''+NoTol+''')');
       end;
       2,3: begin  //To-From: T-Avg, R-Avg, B-Avg
           SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @FromLambdaParam, '''+LambdaFrom+''')');
@@ -364,6 +376,7 @@ begin
     7: Result := Name + ': ' + Filepath;
   end;
 end;
+
 
 procedure TEvalTest.UpdateParameters(ParamValue: String; ParamID: Integer);
 var

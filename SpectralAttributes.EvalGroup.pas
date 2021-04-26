@@ -63,6 +63,7 @@ constructor TEvalGroup.Create(SetID: Integer);
 var
   Query: TADOQuery;
   NextGroupID: Integer;
+  NextGroupNum: Integer;
 begin
   Query := TADOQuery.Create(Nil);
   with Query do
@@ -81,7 +82,7 @@ begin
 
   TestList := TObjectList<TEvalTest>.Create;
   GroupID := NextGroupID;
-  GroupNum := 1;
+  GroupNum := NextGroupNum;
   Self.SetID := SetID;
 
   Query := TADOQuery.Create(Nil);
@@ -91,10 +92,10 @@ begin
     SQL.Add('insert into EvalGroups values (:NextGroupID, :NextGroupNum, :SetID)');
     Parameters.ParamByName('SetID').Value := SetID.ToString;
     Parameters.ParamByName('NextGroupID').Value := NextGroupID.ToString;
-    Parameters.ParamByName('NextGroupNum').Value :=  1; // Need to enumerate group nums
+    Parameters.ParamByName('NextGroupNum').Value := NextGroupNum; // Need to enumerate group nums
     Prepared := True;
     ExecSQL;
-    Close;
+//    Close;
     Free;
   end;
 end;

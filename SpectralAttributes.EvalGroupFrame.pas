@@ -58,10 +58,10 @@ type
     procedure SpecTextMemoLabledMemoExit(Sender: TObject);
   private
     procedure AddEvalTestFrame(EvalTest: TEvalTest); overload;
-    procedure GroupStringify;
     procedure TransformText;
   public
     EvalGroup: TEvalGroup;
+    procedure GroupStringify;
     constructor Create(AOwner: TComponent; TempEvalGroup: TEvalGroup);
     destructor destroy;
   end;
@@ -92,7 +92,7 @@ begin
     SpecTextMemo.AMemo.Lines.Add(EvalTest.Stringify);
     AddEvalTestFrame(EvalTest);
   end;
-  if Assigned(EvalTest) then EvalTest.Free;
+//  if Assigned(EvalTest) then EvalTest.Free;
 end;
 
 destructor TEvalTestGroupFrame.destroy;
@@ -107,7 +107,7 @@ end;
 
 procedure TEvalTestGroupFrame.FrameEnter(Sender: TObject); //not sure these needs to happen on enter and exit
 begin
-  GroupStringify;
+//  GroupStringify;
 end;
 
 procedure TEvalTestGroupFrame.FrameExit(Sender: TObject);
@@ -127,24 +127,22 @@ begin
   EvalGroup := TEvalGroup.Create(EvalGroup.GroupID, EvalGroup.SetID);
   for EvalTest in Self.EvalGroup.TestList do
   begin
-//    Line := EvalTest.Stringify;
-//    if Line <> '' then SpecTextMemo.AMemo.Lines.Add(Line);
-    SpecTextMemo.AMemo.Lines.Add(EvalTest.Stringify);
+    Line := EvalTest.Stringify;
+    if Line <> '' then SpecTextMemo.AMemo.Lines.Add(Line);
   end;
   if Assigned(EvalTest) then EvalTest.Free;
 end;
 
+
 procedure TEvalTestGroupFrame.SpecTextMemoLabledMemoEnter(Sender: TObject);
 begin
-  GroupStringify;
-  SpecTextMemo.Tag := 1;
   SpecTextMemo.AMemo.Color := clInactiveCaption;
+  TransformTextButton.Enabled := True;
   TransformTextButton.Font.Style := [fsBold];
 end;
 
 procedure TEvalTestGroupFrame.SpecTextMemoLabledMemoExit(Sender: TObject);
 begin
-  SpecTextMemo.Tag := 0;
   SpecTextMemo.AMemo.Color := clWhite;
   TransformTextButton.Font.Style := [];
   GroupStringify;
@@ -234,11 +232,7 @@ procedure TEvalTestGroupFrame.TransformTextButtonClick(Sender: TObject);
 var
   EvalTest: TEvalTest;
 begin
-  // Translate if spec box has been tagged as 1 to indicate change
-  if SpecTextMemo.Tag = 1 then
-  begin
-    TransformText;
-  end;
+  TransformText;
   Parent.SetFocus;
 end;
 

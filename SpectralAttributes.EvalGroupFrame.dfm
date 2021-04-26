@@ -52,6 +52,7 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
       Width = 121
       Height = 26
       Caption = 'Transform Text >>'
+      Enabled = False
       Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -11

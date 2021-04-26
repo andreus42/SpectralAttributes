@@ -41,11 +41,12 @@ type
     procedure UpdateParameter(Sender: TObject);
     procedure EditKeyPressEnter(Sender: TObject; var Key: Char);
     procedure SpeedButton2Click(Sender: TObject);
-    procedure NolTolCheckBoxClick(Sender: TObject);
     procedure AddComboBoxItemsFromDB;
     procedure NewSpecComboBoxCloseUp(Sender: TObject);
     procedure FrameEnter(Sender: TObject);
     procedure FrameExit(Sender: TObject);
+    procedure RefOnlyCheckBoxClick(Sender: TObject);
+    procedure NolTolCheckBoxClick(Sender: TObject);
   private
     { Private declarations }
   public
@@ -87,6 +88,8 @@ begin
   FilepathEdit.Text := EvalTest.FilePath;
   SymbolComboBox.ItemIndex := EvalTest.Symbol;
   FrameGroupID := EvalTest.GroupID;
+  RefOnlyCheckBox.Checked := EvalTest.RefOnly.ToBoolean;
+  NoTolCheckBox.Checked := EvalTest.NoTol.ToBoolean;
   ShowFrame;
 end;
 
@@ -98,6 +101,7 @@ end;
 procedure TEvalFrame.FrameExit(Sender: TObject);
 begin
   Color := clBtnFace;
+  (Owner.Owner as TEvalTestGroupFrame).GroupStringify;
 end;
 
 
@@ -145,14 +149,23 @@ begin
   case EvalTest.FrameType of
     0:  HideAllElements;
     1:  begin       //With Tol+, Tol-, CWL, FWHM, Cuton, Cutoff
-            SpecLabel.Caption := 'nm';
+          SpecLabel.Caption := 'nm';
+          if (EvalTest.NoTol.ToBoolean = False) then
+          begin
             PlusTolEdit.Visible := True;
             MinusTolEdit.Visible := True;
-            RefOnlyCheckBox.Visible := True;
+            NoTolCheckBox.Visible := False;
+          end
+          else
+          begin
+            PlusTolEdit.Visible := False;
+            MinusTolEdit.Visible := False;
             NoTolCheckBox.Visible := True;
+          end;
+          RefOnlyCheckBox.Visible := True;
         end;
-    2:  begin // T-peak???
-            SpecLabel.Caption := '%';           //????
+    2:  begin // T-peak???, Blocking???
+            SpecLabel.Caption := 'OD';           //????
             SymbolComboBox.Visible := True;
             FromLambdaEdit.Visible := True;
             ToLambdaEdit.Visible := True;
@@ -237,12 +250,27 @@ begin
   AtLambdaEdit.Visible :=  False;
   PlusTolEdit.Visible :=  False;
   MinusTolEdit.Visible :=  False;
+  RefOnlyCheckBox.Visible :=  False;
+  NoTolCheckBox.Visible :=  False;
+end;
+
+procedure TEvalFrame.RefOnlyCheckBoxClick(Sender: TObject);
+begin
+  if (RefOnlyCheckBox.Checked = True) then
+    NoTolCheckBox.Visible := True
+  else
+  begin
+    NoTolCheckBox.Visible := False;
+    PlusTolEdit.Visible :=  True;
+    MinusTolEdit.Visible :=  True;
+  end;
+  EvalTest.UpdateParameters(RefOnlyCheckBox.Checked.ToString, RefOnlyParam);
 end;
 
 procedure TEvalFrame.RemoveSpecButtonClick(Sender: TObject);
 begin
   EvalTest.Delete;
-//  Parent.Parent.SetFocus;
+  (Owner.Owner as TEvalTestGroupFrame).GroupStringify;
   Self.Destroy;
 end;
 
@@ -278,16 +306,17 @@ end;
 
 procedure TEvalFrame.NolTolCheckBoxClick(Sender: TObject);
 begin
-  if (RefOnlyCheckBox.Checked = True) then //and (EvalTest.FrameType = 1)then
+  if (NoTolCheckBox.Checked = True) then //and (EvalTest.FrameType = 1)then
   begin
     PlusTolEdit.Visible :=  False;
     MinusTolEdit.Visible :=  False;
   end
-  else if (RefOnlyCheckBox.Checked = False) then // and (EvalTest.FrameType = 1) then
+  else if (NoTolCheckBox.Checked = False) then // and (EvalTest.FrameType = 1) then
   begin
     PlusTolEdit.Visible :=  True;
     MinusTolEdit.Visible :=  True;
   end;
+  EvalTest.UpdateParameters(NoTolCheckBox.Checked.ToString, NoTolParam);
 end;
 
 procedure TEvalFrame.UpdateParameter(Sender: TObject);
@@ -320,15 +349,8 @@ begin
   if Key = #13 then
     begin
       UpdateParameter(Sender);
-      Self.DoExit;
-      Parent.Parent.SetFocus;
-//      Parent.Parent.Parent.SetFocus;
+     (Owner.Owner as TEvalTestGroupFrame).GroupStringify;
     end;
-//    Add new test if final key is tab
-//  if (Sender = ToLambdaEdit.AEdit) and Key = #9 then
-//      UpdateParameter(Sender);
-//      Self.DoExit;
-//      Parent.Parent.Parent.SetFocus;
 end;
 
 end.

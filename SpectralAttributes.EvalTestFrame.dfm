@@ -84,6 +84,7 @@ object EvalFrame: TEvalFrame
     Caption = 'Ref Only'
     TabOrder = 9
     Visible = False
+    OnClick = RefOnlyCheckBoxClick
   end
   object FilepathEdit: TLabeledEdit
     Left = 264
