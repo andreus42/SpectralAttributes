@@ -258,9 +258,9 @@ end;
 
 procedure TEvalFrame.RefOnlyCheckBoxClick(Sender: TObject);
 begin
-  if (RefOnlyCheckBox.Checked = True) then
+  if (RefOnlyCheckBox.Checked = True) and (EvalTest.FrameType = 1) then
     NoTolCheckBox.Visible := True
-  else if (RefOnlyCheckBox.Checked = False)  then
+  else if (RefOnlyCheckBox.Checked = False) and (EvalTest.FrameType = 1) then
   begin
     NoTolCheckBox.Visible := False;
     PlusTolEdit.Visible :=  True;
