@@ -14,7 +14,8 @@ uses
   ChromaDataModule,
   SpectralAttributes.EvalTest,
   DoubledLabeledEdit,
-  DoubledLabeledEdit_v3;
+  DoubledLabeledEdit_v3,
+  ChromaPackageLite;
 
 type
   TEvalFrame = class(TFrame)
@@ -338,6 +339,7 @@ begin
   if (Sender = SpecEdit) and (SpecEdit.Text <> '') then
     EvalTest.UpdateParameters(SpecEdit.Text, SpecParam) // TODO: Change second conditions to validate as real
 
+    ////something is also screwed up here
   else if (Sender = RankEdit) and (RankEdit.Text <> '') then
     EvalTest.UpdateParameters(RankEdit.Text, RankParam)
 

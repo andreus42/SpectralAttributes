@@ -172,6 +172,15 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
       TabStop = False
       Text = ''
     end
+    object TestEditBox: TEdit
+      Left = 69
+      Top = 528
+      Width = 121
+      Height = 21
+      TabOrder = 4
+      Text = 'Edit1'
+      OnKeyPress = TestEditBoxKeyPress
+    end
   end
   object GroupDescEdit: TEdit
     Left = 120

@@ -19,6 +19,7 @@ uses
 
   // Mine
   ChromaDataModule,
+  ChromaPackageLite,
   SpectralAttributes.EvalGroup,
   SpectralAttributes.EvalTestFrame,
   SpectralAttributes.EvalTest,
@@ -43,6 +44,7 @@ type
     TransformTextButton: TSpeedButton;
     AddSpecSpeedButton: TSpeedButton;
     CleanTextSpeedButton: TSpeedButton;
+    TestEditBox: TEdit;
 
     //testing scrollbox
 //    EvalScrollBox: TScrollBox;
@@ -56,6 +58,7 @@ type
     procedure CleanTextSpeedButtonClick(Sender: TObject);
     procedure SpecTextMemoLabledMemoEnter(Sender: TObject);
     procedure SpecTextMemoLabledMemoExit(Sender: TObject);
+    procedure TestEditBoxKeyPress(Sender: TObject; var Key: Char);
   private
     procedure AddEvalTestFrame(EvalTest: TEvalTest); overload;
     procedure TransformText;
@@ -195,6 +198,12 @@ var
 begin
   // Clean text functions needed
 
+end;
+
+procedure TEvalTestGroupFrame.TestEditBoxKeyPress(Sender: TObject;
+  var Key: Char);
+begin
+  ValidateAsFloat(TestEditBox);
 end;
 
 procedure TEvalTestGroupFrame.TransformText;

@@ -9,7 +9,8 @@ uses
   SpectralAttributes.EvalSet in 'SpectralAttributes.EvalSet.pas',
   SpectralAttributes.EvalTestFrame in 'SpectralAttributes.EvalTestFrame.pas' {EvalFrame: TFrame},
   SpectralAttributes.ParsingLogic in 'SpectralAttributes.ParsingLogic.pas',
-  SpectralAttributes.EvalTest in 'SpectralAttributes.EvalTest.pas';
+  SpectralAttributes.EvalTest in 'SpectralAttributes.EvalTest.pas',
+  ChromaPackageLite in '..\MyUses\ChromaPackageLite.pas';
 
 {$R *.res}
 
