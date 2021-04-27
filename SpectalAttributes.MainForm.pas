@@ -30,6 +30,7 @@ type
     DarkModeCheckBox: TCheckBox;
     DeleteTestGroupSpeedButton: TSpeedButton;
     AddTestGroupSpeedButton: TSpeedButton;
+    ResetDataButton: TButton;
     procedure CreateGroupFrames(SetID: Integer);
     procedure DeleteTestGroupButtonClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -39,6 +40,7 @@ type
     procedure DarkModeCheckBoxClick(Sender: TObject);
     procedure AddTestGroupSpeedButtonClick(Sender: TObject);
     procedure DeleteTestGroupSpeedButtonClick(Sender: TObject);
+    procedure ResetDataButtonClick(Sender: TObject);
 
   type
     TMyTabSheet = class(TTabSheet)
@@ -77,6 +79,34 @@ begin
   for EvalGroup in EvalSet.EvalGroupList do
   begin
     AddTestGroupPage(EvalGroup);
+  end;
+end;
+
+procedure T_SpectralAttributesForm.ResetDataButtonClick(Sender: TObject);
+var
+  Query: TADOQuery;
+begin
+  begin
+  if Dialogs.MessageDlg('This will clear all data from the database ' +
+                        'if it becomes corrupted during testing.' +
+                        'Proceed only if you want to reset all existing ' +
+                        'data. This will remove work done by other testers.',
+    mtConfirmation, [mbYes, mbNo], 0, mbYes) = mrYes then
+    begin
+      Dialogs.MessageDlg('Database reset.', mtInformation,
+        [mbOk], 0, mbOk);
+      Query := TADOQuery.Create(Nil);
+      with Query do
+      begin
+        Connection := _ChromaDataModule.ChromaData;
+        SQL.Add('Delete from EvalTests');
+        ExecSQL;
+        SQL.Add('Delete from EvalGroups');
+        ExecSQL;
+        Free;
+      end;
+      ResetPageControl;
+    end;
   end;
 end;
 

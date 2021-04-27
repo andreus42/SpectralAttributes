@@ -14,7 +14,7 @@ object EvalFrame: TEvalFrame
     Left = 345
     Top = 3
     Width = 11
-    Height = 13
+    Height = 21
     Caption = '%'
     Layout = tlCenter
     Visible = False

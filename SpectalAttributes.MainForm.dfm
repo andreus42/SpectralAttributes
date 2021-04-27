@@ -31,7 +31,6 @@ object _SpectralAttributesForm: T_SpectralAttributesForm
     Align = alTop
     ParentBackground = False
     TabOrder = 1
-    ExplicitTop = -6
     object ReloadSet: TSpeedButton
       Left = 311
       Top = 8
@@ -90,5 +89,14 @@ object _SpectralAttributesForm: T_SpectralAttributesForm
       Visible = False
       OnClick = DarkModeCheckBoxClick
     end
+  end
+  object ResetDataButton: TButton
+    Left = 1096
+    Top = 6
+    Width = 105
+    Height = 25
+    Caption = 'Reset Data'
+    TabOrder = 2
+    OnClick = ResetDataButtonClick
   end
 end
