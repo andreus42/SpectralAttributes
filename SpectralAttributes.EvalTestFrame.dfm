@@ -47,6 +47,7 @@ object EvalFrame: TEvalFrame
     Alignment = taCenter
     TabOrder = 3
     Visible = False
+    OnChange = ParamChange
     OnExit = UpdateParameter
     OnKeyPress = EditKeyPressEnter
   end
@@ -57,7 +58,8 @@ object EvalFrame: TEvalFrame
     Height = 21
     Alignment = taCenter
     TabOrder = 0
-    OnChange = UpdateParameter
+    OnChange = ParamChange
+    OnExit = UpdateParameter
   end
   object SymbolComboBox: TComboBox
     Left = 194
@@ -131,6 +133,7 @@ object EvalFrame: TEvalFrame
     AEdit.Height = 21
     AEdit.Alignment = taCenter
     AEdit.TabOrder = 0
+    AEdit.OnChange = ParamChange
     AEdit.OnExit = UpdateParameter
     AEdit.OnKeyPress = EditKeyPressEnter
     LLabel.Left = 0
@@ -168,6 +171,7 @@ object EvalFrame: TEvalFrame
     AEdit.Height = 21
     AEdit.Alignment = taCenter
     AEdit.TabOrder = 0
+    AEdit.OnChange = ParamChange
     AEdit.OnExit = UpdateParameter
     AEdit.OnKeyPress = EditKeyPressEnter
     LLabel.Left = 0
@@ -204,6 +208,7 @@ object EvalFrame: TEvalFrame
     AEdit.Height = 21
     AEdit.Alignment = taCenter
     AEdit.TabOrder = 0
+    AEdit.OnChange = ParamChange
     AEdit.OnExit = UpdateParameter
     AEdit.OnKeyPress = EditKeyPressEnter
     LLabel.Left = 0
@@ -241,6 +246,7 @@ object EvalFrame: TEvalFrame
     AEdit.Height = 21
     AEdit.Alignment = taCenter
     AEdit.TabOrder = 0
+    AEdit.OnChange = ParamChange
     AEdit.OnExit = UpdateParameter
     AEdit.OnKeyPress = EditKeyPressEnter
     LLabel.Left = 0
@@ -277,6 +283,7 @@ object EvalFrame: TEvalFrame
     AEdit.Height = 21
     AEdit.Alignment = taCenter
     AEdit.TabOrder = 0
+    AEdit.OnChange = ParamChange
     AEdit.OnExit = UpdateParameter
     AEdit.OnKeyPress = EditKeyPressEnter
     LLabel.Left = 0

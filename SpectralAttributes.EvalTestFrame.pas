@@ -48,6 +48,7 @@ type
     procedure FrameExit(Sender: TObject);
     procedure RefOnlyCheckBoxClick(Sender: TObject);
     procedure NolTolCheckBoxClick(Sender: TObject);
+    procedure ParamChange(Sender: TObject);
   private
     { Private declarations }
   public
@@ -280,6 +281,24 @@ begin
   Self.Destroy;
 end;
 
+procedure TEvalFrame.ParamChange(Sender: TObject);
+begin
+  if (Sender = SpecEdit) then
+    ValidateAsFloat(SpecEdit)
+  else if (Sender = RankEdit)then
+    ValidateAsFloat(RankEdit)
+  else if (Sender = FromLambdaEdit.AEdit) then
+    ValidateAsFloat(FromLambdaEdit.AEdit)
+  else if (Sender = ToLambdaEdit.AEdit) then
+    ValidateAsFloat(ToLambdaEdit.AEdit)
+  else if (Sender = AtLambdaEdit.AEdit) then
+    ValidateAsFloat(AtLambdaEdit.AEdit)
+  else if (Sender = PlusTolEdit.AEdit) then
+    ValidateAsFloat(PlusTolEdit.AEdit)
+  else if (Sender = MinusTolEdit.AEdit) then
+    ValidateAsFloat(MinusTolEdit.AEdit)
+end;
+
 procedure TEvalFrame.SpeedButton2Click(Sender: TObject);
 begin
   Self.ShowFrame;
@@ -336,24 +355,24 @@ end;
 
 procedure TEvalFrame.UpdateParameter(Sender: TObject);
 begin
-  if (Sender = SpecEdit) and (SpecEdit.Text <> '') then
+  if (Sender = SpecEdit) and ValidateAsFloat(SpecEdit) then
     EvalTest.UpdateParameters(SpecEdit.Text, SpecParam) // TODO: Change second conditions to validate as real
 
     ////something is also screwed up here
-  else if (Sender = RankEdit) and (RankEdit.Text <> '') then
+  else if (Sender = RankEdit) and ValidateAsInt(RankEdit) then
     EvalTest.UpdateParameters(RankEdit.Text, RankParam)
 
   else if (Sender = SymbolComboBox) and (SymbolComboBox.ItemIndex <> -1) then
     EvalTest.UpdateParameters(SymbolComboBox.ItemIndex.ToString, SymbolParam)
-  else if (Sender = FromLambdaEdit.AEdit) and (FromLambdaEdit.AEdit.Text <> '') then
+  else if (Sender = FromLambdaEdit.AEdit) and ValidateAsFloat(FromLambdaEdit.AEdit) then
     EvalTest.UpdateParameters(FromLambdaEdit.AEdit.Text, FromLambdaParam)
-  else if (Sender = ToLambdaEdit.AEdit) and (ToLambdaEdit.AEdit.Text <> '') then
+  else if (Sender = ToLambdaEdit.AEdit) and ValidateAsFloat(ToLambdaEdit.AEdit) then
     EvalTest.UpdateParameters(ToLambdaEdit.AEdit.Text, ToLambdaParam)
-  else if (Sender = AtLambdaEdit.AEdit) and (AtLambdaEdit.AEdit.Text <> '') then
+  else if (Sender = AtLambdaEdit.AEdit) and ValidateAsFloat(AtLambdaEdit.AEdit) then
       EvalTest.UpdateParameters(AtLambdaEdit.AEdit.Text, AtLambdaParam)
-  else if (Sender = PlusTolEdit.AEdit) and (PlusTolEdit.AEdit.Text <> '') then
+  else if (Sender = PlusTolEdit.AEdit) and ValidateAsFloat(PlusTolEdit.AEdit) then
     EvalTest.UpdateParameters(PlusTolEdit.AEdit.Text, PlusTolParam)
-  else if (Sender = MinusTolEdit.AEdit) and (MinusTolEdit.AEdit.Text <> '') then
+  else if (Sender = MinusTolEdit.AEdit) and ValidateAsFloat(MinusTolEdit.AEdit) then
     EvalTest.UpdateParameters(MinusTolEdit.AEdit.Text, MinusTolParam)
   else if (Sender = FilepathEdit) and (FilepathEdit.Text <> '') then
     EvalTest.UpdateParameters(FilepathEdit.Text, FilepathParam);

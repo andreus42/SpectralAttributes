@@ -178,7 +178,6 @@ object EvalTestGroupFrame: TEvalTestGroupFrame
       Width = 121
       Height = 21
       TabOrder = 4
-      Text = 'Edit1'
       OnKeyPress = TestEditBoxKeyPress
     end
   end
