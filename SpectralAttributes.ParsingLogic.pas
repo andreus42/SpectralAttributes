@@ -38,6 +38,7 @@ function GetRangeList(AString: String): TList<TLambdaRange>;
 function GetTolerance(AString: String): TTolerance;
 function GetSpecValuesList(AString: String): TList<Real>;
 function GetLambdaAtList(AString: String): TList<Real>;
+function FindRefOnly(AString: String): Boolean;
 
 // Unformatted Text Cleaning
 function CommentNonSpecs(AString: string): string;
@@ -62,6 +63,7 @@ const
   LambdaAtRegexString = '@\s*?(\d{2,4}(?:\.\d{1,2})?)nm';             // value treated like range
   TolerancesRegexString = '(?:\+(\d?(?:\.\d)?)\/\-(\d?(?:\.\d)?)nm)';
   BSpecValueRegexString = '(?:OD)(\d{1,2}(?:\.\d{1,2})?)';
+  RefOnlyRegexString = '\(ref only\)';
 
   //Spec Value Regexs
   TransSpecValueRegexString = '(\d{1,2}(?:\.\d{1,2})?)(?:%)';
@@ -71,6 +73,16 @@ const
   FilepathRegexString = '(e:\\.*)';
 
 implementation
+
+function FindRefOnly(AString: String): Boolean;
+//var
+//  Regex: TRegex;
+//  Matches: TMatchCollection;
+begin
+//  Regex := TRegEx.Create(RefOnlyRegexString);
+//  Result := TRegex.IsMatch(AString);
+  Result :=  TRegex.IsMatch(AString, RefOnlyRegexString);
+end;
 
 function GetSpecValuesList(AString: String): TList<Real>;
 var

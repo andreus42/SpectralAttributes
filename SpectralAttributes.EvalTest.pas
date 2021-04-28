@@ -83,8 +83,8 @@ begin
     Self.FilePath := '';
     Self.TolPlus := '';
     Self.TolMinus := '';
-    Self.RefOnly := '0';
-    Self.NoTol := '0';
+    Self.RefOnly := 'False';
+    Self.NoTol := 'False';
     Self.WriteToDB;
 end;
 
@@ -170,25 +170,29 @@ begin
     Self.Rank := '0'; // needs logic
     Self.Value :=  FloatToStr(SpecValueList[0]); //temp until looping for vals/ranges
 
+    //new
+    Self.RefOnly := BoolToStr(FindRefOnly(AString), True);
+    Self.NoTol := 'False';
+
     case FrameType of
       1: begin  //With Tol+, Tol-, CWL, FWHM, Cuton, Cutoff
         Tolerance := GetTolerance(AString);
         Self.TolPlus := FloatToStr(Tolerance.PlusTol);
         Self.TolMinus := FloatToStr(Tolerance.MinusTol);
-        Self.RefOnly := '0'; //need to translate these
-        Self.NoTol := '0';
-      end;
+//        Self.RefOnly := 'False'; //need to translate these
+//        Self.RefOnly := FindRefOnly(AString);
+         end;
       2,3: begin  //To-From: T-Avg, R-Avg, B-Avg
         LambdaRangeList := GetRangeList(AString);
         Self.LambdaFrom := FloatToStr(LambdaRangeList[0].FromLambda);
         Self.LambdaTo := FloatToStr(LambdaRangeList[0].ToLambda);
         Self.Symbol := GetSymbolParamID(AString);
-      end;
+          end;
       4,5: begin  //At: T-Avg@, R-Avg@, B-Avg@
         LambdaAtList := GetLambdaAtList(AString);
         Self.LambdaAt :=  FloatToStr(LambdaAtList[0]);
         Self.Symbol:= GetSymbolParamID(AString);
-      end;
+          end;
       7: begin  //CIE
           //get filepath
         Self.FilePath := '';
@@ -328,32 +332,75 @@ begin
     SQL.Add('Declare @MinusTolParam int =' + MinusTolParam.ToString);
     SQL.Add('Declare @RefOnlyParam int =' + RefOnlyParam.ToString);
     SQL.Add('Declare @NoTolParam int =' + NoTolParam.ToString);
+    // Parameters
+    SQL.Add('Declare @Rank Varchar(2) = :Rank');
+    SQL.Add('Declare @Value Varchar(128) = :Value');
+    SQL.Add('Declare @RefOnly VarChar(5) = :RefOnly');
+    SQL.Add('Declare @TolPlus VarChar(4) = :TolPlus');
+    SQL.Add('Declare @TolMinus VarChar(4) = :TolMinus');
+    SQL.Add('Declare @NoTol VarChar(5) = :NoTol');
+    SQL.Add('Declare @LambdaFrom VarChar(16) = :LambdaFrom');
+    SQL.Add('Declare @LambdaTo VarChar(16) = :LambdaTo');
+    SQL.Add('Declare @Symbol VarChar(5) = :Symbol');
+    SQL.Add('Declare @LambdaAt VarChar(8) = :LambdaAt');
+    SQL.Add('Declare @Filepath VarChar(8) = :Filepath');
+    Parameters.ParamByName('Rank').Value := Rank;
+    Parameters.ParamByName('Value').Value := Value;
+    Parameters.ParamByName('RefOnly').Value := RefOnly;
+    Parameters.ParamByName('TolPlus').Value := TolPlus;
+    Parameters.ParamByName('TolMinus').Value := TolMinus;
+    Parameters.ParamByName('NoTol').Value := NoTol;
+    Parameters.ParamByName('LambdaFrom').Value := LambdaFrom;
+    Parameters.ParamByName('LambdaTo').Value := LambdaTo;
+    Parameters.ParamByName('Symbol').Value := Symbol.ToString;
+    Parameters.ParamByName('LambdaAt').Value := LambdaAt;
+    Parameters.ParamByName('Filepath').Value := Filepath;
+
     // Inserts that exist for all tests
     SQL.Add('update EvalTests set ParamValue = '''+TestType+''' where TestID = @TestID and ParamID = @TestTypeParam');
-    SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @RankParam, '''+Rank+''')');
+    SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @RankParam, @Rank)');
 
     // Write Value if exists
-//   If (Value <> '') then
-    SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @SpecParam, '''+Value+''')');
+  If (Value <> '') then
+    SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @SpecParam, @Value)');
+
     SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @RefOnlyParam, '''+RefOnly+''')');
 
+//    case FrameType of
+//      1: begin  //With Tol+, Tol-, CWL, FWHM, Cuton, Cutoff
+//          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @PlusTolParam, '''+TolPlus+''')');
+//          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @MinusTolParam, '''+TolMinus+''')');
+//          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @NoTolParam, '''+NoTol+''')');
+//      end;
+//      2,3: begin  //To-From: T-Avg, R-Avg, B-Avg
+//          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @FromLambdaParam, '''+LambdaFrom+''')');
+//          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @ToLambdaParam, '''+LambdaTo+''')');
+//          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @SymbolParam, '''+Symbol.ToString+''')');
+//      end;
+//      4,5: begin  //At: T-Avg@, R-Avg@, B-Avg@
+//          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @AtLambdaParam, '''+LambdaAt+''')');
+//          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @SymbolParam, '''+Symbol.ToString+''')');
+//      end;
+//      7: begin  //CIE
+//          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @FilepathParam, '''+Filepath+''')');
+//       end;
     case FrameType of
       1: begin  //With Tol+, Tol-, CWL, FWHM, Cuton, Cutoff
-          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @PlusTolParam, '''+TolPlus+''')');
-          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @MinusTolParam, '''+TolMinus+''')');
-          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @NoTolParam, '''+NoTol+''')');
+          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @PlusTolParam, @TolPlus)');
+          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @MinusTolParam, @TolMinus)');
+          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @NoTolParam, @NoTol)');
       end;
       2,3: begin  //To-From: T-Avg, R-Avg, B-Avg
-          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @FromLambdaParam, '''+LambdaFrom+''')');
-          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @ToLambdaParam, '''+LambdaTo+''')');
-          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @SymbolParam, '''+Symbol.ToString+''')');
+          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @FromLambdaParam, @LambdaFrom)');
+          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @ToLambdaParam, @LambdaTo)');
+          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @SymbolParam, @Symbol)');
       end;
       4,5: begin  //At: T-Avg@, R-Avg@, B-Avg@
-          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @AtLambdaParam, '''+LambdaAt+''')');
-          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @SymbolParam, '''+Symbol.ToString+''')');
+          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @AtLambdaParam, @LambdaAt)');
+          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @SymbolParam, @Symbol)');
       end;
       7: begin  //CIE
-          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @FilepathParam, '''+Filepath+''')');
+          SQL.Add('insert into EvalTests values (@TestID, @GroupID, @SetID, @FilepathParam, @Filepath)');
       end;
     end;
     ExecSQL;
@@ -369,7 +416,7 @@ var
   RefOnlyString: String;
 begin
   TextSymbol := SymbolArray[Self.Symbol];
-  if RefOnly.ToBoolean = True then
+  if StrToBool(RefOnly) = True then
     RefOnlyString := ' (ref only)'
   else
     RefOnlyString := '';

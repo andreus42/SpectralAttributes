@@ -78,10 +78,11 @@ begin
   //existing code
   TestIDLabel.Caption := 'TestID: ' + EvalTest.TestID.ToString;
 
-  //SPEC not reading in
+// DEBUGGING...rank edit seemed to do strange things to spec edit
 //  RankEdit.Text := EvalTest.Rank;
+
+
   SpecEdit.Text := EvalTest.Value;
-  ////
   ToLambdaEdit.AEdit.Text := EvalTest.LambdaTo;
   FromLambdaEdit.AEdit.Text := EvalTest.LambdaFrom;
   AtLambdaEdit.AEdit.Text := EvalTest.LambdaAt;
@@ -91,7 +92,7 @@ begin
   SymbolComboBox.ItemIndex := EvalTest.Symbol;
   FrameGroupID := EvalTest.GroupID;
   RefOnlyCheckBox.Checked := EvalTest.RefOnly.ToBoolean;
-  NoTolCheckBox.Checked := EvalTest.NoTol.ToBoolean;
+  if EvalTest.TestType = '1' then  NoTolCheckBox.Checked := EvalTest.NoTol.ToBoolean;
   ShowFrame;
 end;
 
@@ -238,6 +239,8 @@ begin
   AtLambdaEdit.Text := '';
   MinusTolEdit.Text := '';
   SymbolComboBox.ItemIndex := -1;
+  RefOnlyCheckBox.Checked := False;
+  NoTolCheckBox.Checked := False;
 end;
 
 procedure TEvalFrame.HideAllElements;
@@ -267,6 +270,7 @@ begin
     NoTolCheckBox.Visible := False;
     PlusTolEdit.Visible :=  True;
     MinusTolEdit.Visible :=  True;
+// DUBUGGING
 //    EvalTest.UpdateParameters(NoTolCheckBox.Checked.ToString, NoTolParam);
     EvalTest.UpdateParameters('0', NoTolParam);
   end;

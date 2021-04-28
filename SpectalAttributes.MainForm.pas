@@ -74,6 +74,14 @@ begin
   if pagecontrol1.PageCount = 0 then DeleteTestGroupSpeedButton.Enabled := False;
 end;
 
+procedure T_SpectralAttributesForm.AppException(Sender: TObject; E: Exception);
+begin
+//  ShowMessage('Appolgoies for the inconvience, but your last action caused ' +
+//              'the application to become unstable. The resulting error has been ' +
+//              'logged.');
+  Application.ShowException(E);
+end;
+
 
 procedure T_SpectralAttributesForm.CreateGroupFrames(SetID: Integer);
 var
@@ -111,7 +119,6 @@ begin
         Free;
       end;
       ResetPageControl;
-//      PageControl1.ActivePage.Destroy;
     end;
   end;
 end;
@@ -163,13 +170,6 @@ begin
   DeleteTestGroupSpeedButton.Enabled := True;
 end;
 
-procedure T_SpectralAttributesForm.AppException(Sender: TObject; E: Exception);
-begin
-  ShowMessage('Appolgoies for the inconvience, but your last action caused ' +
-              'the application to become unstable. The resulting error has been ' +
-              'logged.');
-//  Application.ShowException(E);
-end;
 
 procedure T_SpectralAttributesForm.AddTestGroupButtonClick(Sender: TObject);
 var
@@ -205,6 +205,6 @@ begin
 end;
 
 Initialization
-  SetID :=  2;
+  SetID :=  1;
 
 end.

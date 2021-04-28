@@ -207,6 +207,8 @@ begin
 end;
 
 procedure TEvalTestGroupFrame.TransformText;
+// Take a memo field, break into strings, and translate each line into
+// an EvalTest.
 var
   EvalTest: TEvalTest;
   StringList: TStringList;
