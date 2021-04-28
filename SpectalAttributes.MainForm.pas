@@ -41,6 +41,7 @@ type
     procedure AddTestGroupSpeedButtonClick(Sender: TObject);
     procedure DeleteTestGroupSpeedButtonClick(Sender: TObject);
     procedure ResetDataButtonClick(Sender: TObject);
+    procedure AppException(Sender: TObject; E: Exception);
 
   type
     TMyTabSheet = class(TTabSheet)
@@ -67,9 +68,12 @@ implementation
 
 procedure T_SpectralAttributesForm.FormCreate(Sender: TObject);
 begin
+  Application.OnException := AppException;
   PartRevLogEdit.Text := SetID.ToString;
   CreateGroupFrames(SetID);
+  if pagecontrol1.PageCount = 0 then DeleteTestGroupSpeedButton.Enabled := False;
 end;
+
 
 procedure T_SpectralAttributesForm.CreateGroupFrames(SetID: Integer);
 var
@@ -88,7 +92,8 @@ var
 begin
   begin
   if Dialogs.MessageDlg('This will clear all data from the database ' +
-                        'if it becomes corrupted during testing.' +
+                        '(a.k.a. "The Nuclear Option") ' +
+                        'if it becomes corrupted during testing. ' +
                         'Proceed only if you want to reset all existing ' +
                         'data. This will remove work done by other testers.',
     mtConfirmation, [mbYes, mbNo], 0, mbYes) = mrYes then
@@ -106,6 +111,7 @@ begin
         Free;
       end;
       ResetPageControl;
+//      PageControl1.ActivePage.Destroy;
     end;
   end;
 end;
@@ -120,6 +126,7 @@ begin
   for I := 0  to  pagecontrol1.PageCount-1 do
     pagecontrol1.Pages[0].Free;
   CreateGroupFrames(SetID);
+  DeleteTestGroupSpeedButton.Enabled := False;
 end;
 
 procedure T_SpectralAttributesForm.AddTestGroupPage(EvalTestGroup
@@ -142,6 +149,8 @@ begin
       Align := alClient;
     end;
   end;
+  if pagecontrol1.PageCount = 0 then DeleteTestGroupSpeedButton.Enabled := False;
+
 end;
 
 procedure T_SpectralAttributesForm.AddTestGroupSpeedButtonClick(
@@ -151,6 +160,15 @@ var
 begin
   NewEvalTestGroup := TEvalGroup.Create(SetID);
   AddTestGroupPage(NewEvalTestGroup);
+  DeleteTestGroupSpeedButton.Enabled := True;
+end;
+
+procedure T_SpectralAttributesForm.AppException(Sender: TObject; E: Exception);
+begin
+  ShowMessage('Appolgoies for the inconvience, but your last action caused ' +
+              'the application to become unstable. The resulting error has been ' +
+              'logged.');
+//  Application.ShowException(E);
 end;
 
 procedure T_SpectralAttributesForm.AddTestGroupButtonClick(Sender: TObject);
@@ -178,6 +196,7 @@ procedure T_SpectralAttributesForm.DeleteTestGroupSpeedButtonClick(
 begin
   EvalTestGroup.DeleteGroup(PageControl1.ActivePage.Tag);
   PageControl1.ActivePage.Destroy;
+  if pagecontrol1.PageCount = 0 then DeleteTestGroupSpeedButton.Enabled := False;
 end;
 
 procedure T_SpectralAttributesForm.ReloadSetClick(Sender: TObject);

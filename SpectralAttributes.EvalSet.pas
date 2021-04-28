@@ -23,7 +23,7 @@ type
     SetID: Integer;
     EvalGroupList: TObjectList<TEvalGroup>;
     constructor Create(ID: Integer);
-    destructor Destroy;
+//    destructor Destroy;
   end;
 
 var
@@ -62,14 +62,13 @@ begin
   end;
 end;
 
-destructor TEvalSet.Destroy;
-var
-  I: Integer;
-begin
-  for I := 0 to EvalGroupList.Count-1 do
-    EvalGroupList.Delete(I);
-  EvalGroupList.Free;
-  Self.Free;
-end;
+//destructor TEvalSet.Destroy;
+//var
+//  I: Integer;
+//begin
+////  for I := 0 to EvalGroupList.Count-1 do
+////    EvalGroupList.Delete(I);
+//  EvalGroupList.Free;
+//end;
 
 end.

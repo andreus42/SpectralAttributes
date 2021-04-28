@@ -22,3 +22,5 @@ begin
   Application.CreateForm(T_SpectralAttributesForm, _SpectralAttributesForm);
   Application.Run;
 end.
+
+

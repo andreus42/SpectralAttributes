@@ -169,7 +169,7 @@ begin
             NoTolCheckBox.Visible := False;
         end;
     2:  begin // T-peak???, Blocking???
-            SpecLabel.Caption := 'OD';           //????
+            SpecLabel.Caption := '%';           //????
             SymbolComboBox.Visible := True;
             FromLambdaEdit.Visible := True;
             ToLambdaEdit.Visible := True;
